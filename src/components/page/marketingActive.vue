@@ -132,7 +132,7 @@ import { log } from "util";
 export default {
   name: "marketingActive",
   data() {
-    return { 
+    return {
       ifDrag: false,
       openData:false
     };
@@ -145,7 +145,7 @@ export default {
     jsPlumb() {
       jsplumb.jsPlumb.ready(function() {
         jsplumb.jsPlumb.connect({
-          
+
         });
       });
     },
@@ -154,6 +154,11 @@ export default {
     },
     appendDiv(left, top) {
       this.ifDrag = true
+      this.$nextTick(()=>{
+        this.$refs.refData.style.position = 'fixed'
+        this.$refs.refData.style.top = top+'px'
+        this.$refs.refData.style.left = left+'px'
+      })
     },
     dragInit() {
       let minleft = $(".imaginary-circle").offset().left;
