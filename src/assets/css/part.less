@@ -1,0 +1,76 @@
+.imaginary{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    li{
+        border: 1.5px dashed #d8def1;
+        float: left;
+    }
+    .imaginary-circle{
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+    .imaginary-square{
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        margin-top: 7.5px;
+    }
+    .imaginary-rhombus{
+        width: 30px;
+        height: 30px;
+        transform:rotate(45deg);  
+        -ms-transform:rotate(45deg); /* Internet Explorer */   
+        -moz-transform:rotate(45deg); /* Firefox */   
+        -webkit-transform:rotate(45deg); /* Safari 和 Chrome */   
+        -o-transform:rotate(45deg);
+        border-radius: 6px;
+        margin: 10px 3px 0 3px;
+    }
+    .imaginary-wire{
+        border: none;
+        color: #d8def1;
+        line-height: 50px;
+    }
+    .transforb{
+        transform:rotate(90deg);  
+        position: absolute;
+        top: 56px;
+        left: 378px;
+    }
+    .transforl{
+        position: absolute;
+        top: 89px;
+        left: 408px;
+    }
+    .transforr{
+        position: absolute;
+        top: 89px;
+        left: 484px;
+    }
+}
+// 侧滑框
+.v-modal{
+    background: #fff !important;
+    height:88% !important; 
+    top: 9% !important;
+    opacity: .8;
+}
+.el-dialog__wrapper{
+    top: 23px !important;
+    .el-dialog{
+        box-shadow: 1px 1px 7px rgba(0,0,0,.3) !important;
+    }
+    .el-dialog__close{
+        font-size: 20px !important;
+    }
+    .el-dialog__footer{
+        width: 100%;
+        height: 60px;
+        box-shadow: 1px 1px 5px rgba(0,0,0,.3) !important;
+        .el-button{
+            padding: 9px 20px !important;
+        }
+    }
+}
