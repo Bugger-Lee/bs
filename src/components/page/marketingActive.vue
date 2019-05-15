@@ -123,55 +123,11 @@
             </span>
           </div>
         </el-col>
-        <el-dialog
-          title="Data Extension Summary"
-          :visible.sync="openData"
-          width="60%">
-          <span slot="title" class="data-title">
-            <span class="icon-shouye"></span>Data Extension Summary
-          </span>
-          <div class="data-content">
-            <p><span class="redStar">*</span>Data Extension</p>
-            <div class="data-content-c">
-              <img src="@/assets/img/noneData.png"/>
-              <p class="c-explain-one">Let's get going!</p>
-              <p>Select the data extension whose contacts should enter this journey</p>
-              <el-button type="primary" class="c-explain-select" @click="sltDataContent()">Select Data Extension</el-button>
-            </div>
-          </div>
-          <span slot="footer">
-            <el-button @click="openData = false">Cancel</el-button>
-            <el-button type="primary" @click="openData = false">Done</el-button>
-          </span>
-        </el-dialog>
-        <el-dialog
-          :visible.sync="openDataContent"
-          class="data-content"
-          :show-close=false
-          width="98%">
-          <el-col :span="3">
-            <div class="data-content-summary">
-              <span>
-                <i class="icon-shouye"></i>
-              </span>
-              <p class="summary-title mt10">Summary</p>
-            </div>
-            <div class="data-content-summary">
-              <p><i class="redStar">*</i>Data</p>
-              <p>Extension</p>
-            </div>
-            <div class="data-content-summary">
-
-            </div>
-          </el-col>
-          <el-col :span="19">
-          </el-col>
-          <span slot="footer">
-            <el-button @click="openDataContent = false">Cancel</el-button>
-            <el-button type="primary" @click="openData = false">Summary</el-button>
-          </span>
-        </el-dialog>
       </div>
+      <popupDrag :openData ="openData" 
+        :openDataContent ="openDataContent"
+        @sltDataContent ="sltDataContent">
+      </popupDrag>
     </div>
   </div>
 </template>
@@ -180,24 +136,28 @@ import "@/assets/css/part.less";
 import jsplumb from "jsplumb";
 import $ from "jquery";
 import { log } from "util";
+import popupDrag from "../public/popupDrag.vue"
 export default {
   name: "marketingActive",
   data() {
-    return {
+    return { 
       ifDrag: false,
       openData:false,
-      openDataContent:false
+      openDataContent:false,
     };
   },
   mounted() {
     this.dragInit();
     this.jsPlumb();
   },
+  components:{
+    popupDrag
+  },
   methods: {
     jsPlumb() {
       jsplumb.jsPlumb.ready(function() {
         jsplumb.jsPlumb.connect({
-
+          
         });
       });
     },
