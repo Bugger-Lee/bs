@@ -105,8 +105,18 @@
             <li class="imaginary-wire">-------></li>
             <li class="imaginary-square"></li>
           </ul>
-          <div class="window" ref="refData" v-if="ifDrag">
+          <div class="window" id="data1" ref="refData1" v-if="ifDrag">
             <span class="crowd-style" @click="dataExtension()">
+              <i class="icon-shouye"></i>
+            </span>
+          </div>
+          <div class="window" id="return1" ref="refData2" v-if="ifDrag">
+            <span class="msg-style" @click="dataExtension()">
+              <i class="icon-shouye"></i>
+            </span>
+          </div>
+          <div class="window" id="return2" ref="refData3" v-if="ifDrag">
+            <span class="ctl-style" @click="dataExtension()">
               <i class="icon-shouye"></i>
             </span>
           </div>
@@ -139,13 +149,25 @@ export default {
   },
   mounted() {
     this.dragInit();
-    this.jsPlumb();
+    // this.jsPlumb();
   },
   methods: {
-    jsPlumb() {
+    jsPlumb(ele1,ele2) {
       jsplumb.jsPlumb.ready(function() {
         jsplumb.jsPlumb.connect({
-
+          source: ele1,
+          target: ele2,
+          anchors: ['Right','Left'],
+          endpoint: ['Dot',{
+            radius: '1',
+          }],
+          connector:'Straight',
+          elementsDraggable: false,
+          ConnectionsDetachable: false,
+          overlays: [
+            ["Arrow", { width: 10, length: 10, location: 1, id: "arrow" }],
+          ["Label", { label: "", id: "label" }]
+          ],
         });
       });
     },
@@ -155,9 +177,20 @@ export default {
     appendDiv(left, top) {
       this.ifDrag = true
       this.$nextTick(()=>{
-        this.$refs.refData.style.position = 'fixed'
-        this.$refs.refData.style.top = top+'px'
-        this.$refs.refData.style.left = left+'px'
+        this.$refs.refData1.style.position = 'fixed'
+        this.$refs.refData1.style.top = top+'px'
+        this.$refs.refData1.style.left = left+'px'
+
+        this.$refs.refData2.style.position = 'fixed'
+        this.$refs.refData2.style.top = top+'px'
+        this.$refs.refData2.style.left = left+200+'px'
+
+        this.$refs.refData3.style.position = 'fixed'
+        this.$refs.refData3.style.top = top+'px'
+        this.$refs.refData3.style.left = left+400+'px'
+        this.jsPlumb("data1","return1")
+        this.jsPlumb("return1","return2")
+        this.dargNext()
       })
     },
     dragInit() {
@@ -183,6 +216,28 @@ export default {
           ) {
             that.appendDiv(ui.offset.left, ui.offset.top);
           }
+        }
+      });
+    },
+    dargNext() {
+      let that = this;
+      $(".msg-style").draggable({
+        zIndex: 999,
+        helper: "clone",
+        scope: "dragflag",
+        appendTo: "body"
+      });
+      $(".marketing-drag").droppable({
+        scope: "dragflag",
+        drop: function(event, ui) {
+          // if (
+          //   minleft <= ui.offset.left &&
+          //   ui.offset.left <= minleft + maxleft &&
+          //   mintop <= ui.offset.top &&
+          //   ui.offset.top < mintop + maxtop
+          // ) {
+            that.appendDiv(ui.offset.left, ui.offset.top);
+          // }
         }
       });
     }
