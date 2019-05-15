@@ -52,15 +52,57 @@
 }
 // 侧滑框
 .v-modal{
-    background: #fff !important;
-    height:88% !important; 
+    background: #ececec !important;
+    height:90% !important; 
+    width: 98% !important;
     top: 9% !important;
+    left: 1% !important;
     opacity: .8;
+    border-radius: 10px;
 }
 .el-dialog__wrapper{
     top: 23px !important;
     .el-dialog{
         box-shadow: 1px 1px 7px rgba(0,0,0,.3) !important;
+        height: 82%;
+        margin-bottom: 1px;
+    }
+    .data-title{
+        font-size: 20px;
+        line-height: 30px;
+        span{
+            background-color: #95d160;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            color: #fff;
+            display: inline-block;
+            text-align: center;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+    }
+    .data-content{
+        width: 100%;
+        height: 60%;
+        .data-content-c{
+            width: 100%;
+            text-align: center;
+            img{
+                display: block;
+                margin: 0 auto;
+                width: 55%;
+            }
+            .c-explain-one{
+                font-size: 18px;
+                margin-bottom: 8px;
+            }
+            .c-explain-select{
+                padding: 6px 15px;
+                background-color: #0070D2; 
+                margin-top: 16px;
+            }
+        }
     }
     .el-dialog__close{
         font-size: 20px !important;
@@ -69,8 +111,116 @@
         width: 100%;
         height: 60px;
         box-shadow: 1px 1px 5px rgba(0,0,0,.3) !important;
+        position: absolute;
+        bottom: 0;
         .el-button{
             padding: 9px 20px !important;
+        }
+    }
+}
+.data-content{
+    .el-dialog{
+        background-color: #f9f9fa !important;
+        .el-dialog__body{
+            padding: 0 !important;
+        }
+        .el-dialog__header{
+            padding: 0 !important;
+        }
+        .data-content-l{
+            .data-content-summary{
+                text-align: center;
+                color:#8ec5f4;
+                padding: 20px 10px;
+                span{
+                    width: 50px;
+                    height: 50px;
+                    display: block;
+                    border-radius: 50%;
+                    background: #95d160;
+                    text-align: center;
+                    line-height: 50px;
+                    margin: 0 auto;
+                    i{
+                        font-size: 25px;
+                        color: #fff;
+                    }
+                }
+                .summary-title{
+                    font-size: 16px;
+                }
+            }
+            .data-Selected{
+                background-color: #fff; 
+                border-top: 1px solid #ebeced;
+                border-bottom: 1px solid #ebeced;
+                color: #094070;
+            }
+        }
+        .data-content-r{
+            width: 87.5%;
+            padding: 0px 15px;
+            .r-header{
+                padding: 20px 0px 15px 0px;
+                .r-header-t{
+                    font-size: 20px;
+                    width: 100%;
+                    position: relative;
+                    margin-bottom: 20px;
+                    span:nth-child(2){
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        color: #c9c7c5;
+                    }
+                }
+            }
+            .r-content{
+                width: 83.5%;
+                position: fixed;
+                height: 51%;
+                border-radius: 8px;
+                border: 1px solid #e2e7eb;
+                .r-content-l{
+                    height: 100%;
+                    background-color: #f5f5f5;
+                    padding: 0px 15px;
+                    .r-content-l-t{
+                        padding: 15px 0px;
+                    }
+                    .r-content-l-b{
+                        width: 100%;
+                        height: 80%;
+                        background-color: #fff;
+                        box-shadow: 1px 1px 3px rgba(0,0,0,.3) !important;
+                        border-radius: 3px;
+                        padding-top: 10px;
+                        .el-tree-node{
+                            span:nth-child(2){
+                                background-color: #d9eaf5;
+                                border-radius: 5px;
+                                padding: 3px 2px;
+                            }
+                        }
+                    }
+                }
+                .r-content-c{
+                    height: 100%;
+                    width: 1%;
+                    span{
+                    width: 100%;
+                    height: 100%;
+                    display: inline-block;
+                    border-left: 1px solid #e7eaed;
+                    border-right: 1px solid #e7eaed;
+                    }
+                }
+                .r-content-r{
+                    width: 78%;
+                    height: 100%;
+                    background-color: #f4f6f9;
+                }
+            }
         }
     }
 }

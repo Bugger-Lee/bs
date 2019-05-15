@@ -36,6 +36,12 @@
                     <p>Data</p>
                     <p>Extension</p>
                   </li>
+                  <li>
+                    <span class="crowd-style">
+                      <i class="icon-shouye"></i>
+                    </span>
+                    <p>DMP</p>
+                  </li>
                 </ul>
               </el-menu-item-group>
             </el-submenu>
@@ -52,6 +58,12 @@
                         <i class="icon-shouye"></i>
                       </span>
                       <p>SMS</p>
+                    </li>
+                    <li>
+                      <span class="msg-style">
+                        <i class="icon-shouye"></i>
+                      </span>
+                      <p>Email</p>
                     </li>
                   </ul>
                 </el-menu-item-group>
@@ -88,7 +100,7 @@
           </el-menu>
         </el-col>
         <el-col :span="1" class="middle-style"></el-col>
-        <el-col :span="19" class="marketing-drag">
+        <el-col :span="18" class="marketing-drag">
           <ul class="imaginary"  v-if="!ifDrag">
             <li class="imaginary-circle"></li>
             <li class="imaginary-wire">---------></li>
@@ -121,16 +133,11 @@
             </span>
           </div>
         </el-col>
-        <el-dialog
-          title="Data Extension Summary"
-          :visible.sync="openData"
-          width="50%">
-          <span slot="footer" class="data-footer">
-            <el-button @click="openData = false">Cancel</el-button>
-            <el-button type="primary" @click="openData = false">Done</el-button>
-          </span>
-        </el-dialog>
       </div>
+      <popupDrag :openData ="openData" 
+        :openDataContent ="openDataContent"
+        @sltDataContent ="sltDataContent">
+      </popupDrag>
     </div>
   </div>
 </template>
@@ -139,17 +146,22 @@ import "@/assets/css/part.less";
 import jsplumb from "jsplumb";
 import $ from "jquery";
 import { log } from "util";
+import popupDrag from "../public/popupDrag.vue"
 export default {
   name: "marketingActive",
   data() {
     return {
       ifDrag: false,
-      openData:false
+      openData:false,
+      openDataContent:false,
     };
   },
   mounted() {
     this.dragInit();
     // this.jsPlumb();
+  },
+  components:{
+    popupDrag
   },
   methods: {
     jsPlumb(ele1,ele2) {
@@ -192,6 +204,10 @@ export default {
         this.jsPlumb("return1","return2")
         this.dargNext()
       })
+    },
+    sltDataContent() {
+      this.openData = false
+      this.openDataContent = true
     },
     dragInit() {
       let minleft = $(".imaginary-circle").offset().left;
@@ -249,15 +265,17 @@ export default {
   width: 100%;
   height: 100%;
   .marketing {
-    width: 100%;
-    height: 99%;
+    width: 98%;
+    height: 98.5%;
     margin: auto;
     background-color: #fff;
+    border-radius: 10px;
     .marketing-header {
       width: 100%;
       height: 60px;
       line-height: 60px;
       background-color: #f3f2f2;
+      border-radius: 10px 10px 0 0;
       .marketing-header-l {
         .l-icon {
           width: 30px;
@@ -307,11 +325,11 @@ export default {
       }
       .middle-style {
         width: 10px;
-        height: 80.5%;
+        height: 80%;
         position: fixed;
         border-left: 1px solid #dedede;
         border-right: 1px solid #dedede;
-        left: 16.67%;
+        left: 17.2%;
       }
       .marketing-drag {
         // margin-left: 17.5%;
