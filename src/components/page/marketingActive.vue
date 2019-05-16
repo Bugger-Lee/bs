@@ -123,21 +123,37 @@
             </span>
           </div>
           <div class="window" id="return1" ref="refData2" v-if="ifDrag">
-            <span class="msg-style">
+            <span class="ctl-style" @click="selectTime()">
               <i class="icon-shouye"></i>
             </span>
           </div>
           <div class="window" id="return2" ref="refData3" v-if="ifDrag">
-            <span class="ctl-style">
+            <span class="msg-style">
               <i class="icon-shouye"></i>
             </span>
           </div>
         </el-col>
       </div>
-      <popupDrag :openData ="openData" 
+      <popupDrag :openData ="openData"
+        :popupDatas ="popupDatasExten" 
         :openDataContent ="openDataContent"
         @sltDataContent ="sltDataContent">
       </popupDrag>
+      <popupDrag :openData ="openSms"
+        :popupDatas ="popupDatasSms" 
+        :openDataContent ="openSmsContent"
+        @sltDataContent ="sltDataContent">
+      </popupDrag>
+      <el-dialog
+        :visible.sync="openTime"
+        :close-on-click-modal="false"
+        class="openTime"
+        width="45%">
+        <span slot="title" class="data-title">
+          <span class="icon-shouye"></span>Wait By Duration
+        </span>
+        <popupOpenTime></popupOpenTime>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -147,13 +163,55 @@ import jsplumb from "jsplumb";
 import $ from "jquery";
 import { log } from "util";
 import popupDrag from "../public/popupDrag.vue"
+import popupOpenTime from "./children/popupOpenTime.vue"
 export default {
   name: "marketingActive",
   data() {
     return {
       ifDrag: false,
       openData:false,
+      openSms:false,
       openDataContent:false,
+      openSmsContent:false,
+      openTime:false,
+      popupDatasExten:{
+        popupType:1,
+        popupOneTitle1:"Data Extension Summary",
+        popupOneTitle2:"Data Extension",
+        pupupImgTit1:"Let's get going!",
+        pupupImgTit2:"Select the data extension whose contacts should enter this journey",
+        popupBtn:"Select Data Extension",
+        tabSelect1:"Summary",
+        tabSelect2One:'Data',
+        tabSelect2Two:"Extension",
+        tabSelect3One:"Sales",
+        tabSelect3Two:"Promotion",
+        popupTwoTit1:"Data Extension",
+        popupTwoTit2:"Select your audience to enter the Journey",
+        dataExtensions: [
+          {
+            label: "Data Extensions",
+            con: "el-icon-arrow-right",
+            icon: "icon-wenjian"
+          }
+        ],
+        SalesPromotions:[
+          {
+            label: "Sales Promotion",
+            con: "el-icon-arrow-right",
+            icon: "icon-wenjian"
+          }
+        ],
+        salesTable:[{}],
+        popupthreeTit1:"Sales Promotion",
+        popupthreeTit2:"Select your audience to enter the Journey",
+        popupTable1:"日期",
+        popupTable2:"姓名",
+        popupTable3:"地址"
+      },
+      popupDatasSms:{
+
+      }
     };
   },
   mounted() {
@@ -161,7 +219,8 @@ export default {
     // this.jsPlumb();
   },
   components:{
-    popupDrag
+    popupDrag,
+    popupOpenTime
   },
   methods: {
     jsPlumb(ele1,ele2) {
@@ -183,10 +242,6 @@ export default {
         });
       });
     },
-    dataExtension() {
-      console.log(this.openData)
-      this.openData = true
-    },
     appendDiv(left, top) {
       this.ifDrag = true
       this.$nextTick(()=>{
@@ -206,9 +261,14 @@ export default {
         this.dargNext()
       })
     },
+    dataExtension() {
+      this.openData = true
+    },
+    selectTime() {
+      this.openTime = true
+    },
     sltDataContent(val) {
-      console.log(val)
-        this.openData = false      
+      this.openData = false      
       if (val == 'close1') {
         this.openDataContent = false
       } else if (val == 'openNext') {

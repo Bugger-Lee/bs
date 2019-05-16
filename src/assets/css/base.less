@@ -156,6 +156,10 @@ html,body{
       -webkit-transform:rotate(45deg); /* Safari 和 Chrome */
       -o-transform:rotate(45deg);
       border-radius: 6px;
+      i:before{
+        transform: rotate(315deg);
+        display: inline-block;
+      }
     }
   }
 }
@@ -202,9 +206,11 @@ html,body{
   -webkit-transform:rotate(45deg); /* Safari 和 Chrome */
   -o-transform:rotate(45deg);
   border-radius: 6px;
-  i{
+  i:before{
     color: #fff;
     font-size: 25px;
     line-height: 42px;
+    display: inline-block;
+    transform:rotate(315deg);
   }
 }

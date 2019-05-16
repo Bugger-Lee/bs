@@ -1,27 +1,25 @@
 <template>
   <div class="popupDrag">
     <el-dialog
-      title="Data Extension Summary"
       :visible.sync="openDataProps"
       :close-on-click-modal="false"
-      width="60%"
-    >
+      width="60%">
       <span slot="title" class="data-title">
-        <span class="icon-shouye"></span>Data Extension Summary
+        <span class="icon-shouye"></span>{{popupDatas.popupOneTitle1}}
       </span>
       <div class="data-content">
         <p>
-          <span class="redStar">*</span>Data Extension
+          <span class="redStar">*</span>{{popupDatas.popupOneTitle2}}
         </p>
         <div class="data-content-c">
           <img src="@/assets/img/noneData.png">
-          <p class="c-explain-one">Let's get going!</p>
-          <p>Select the data extension whose contacts should enter this journey</p>
+          <p class="c-explain-one">{{popupDatas.pupupImgTit1}}</p>
+          <p>{{popupDatas.pupupImgTit2}}</p>
           <el-button
             type="primary"
             class="c-explain-select"
             @click="clickPopup('openNext')"
-          >Select Data Extension</el-button>
+          >{{popupDatas.popupBtn}}</el-button>
         </div>
       </div>
       <span slot="footer">
@@ -34,38 +32,37 @@
       :close-on-click-modal="false"
       class="data-content"
       :show-close="false"
-      width="98%"
-    >
+      width="98%">
       <el-col :span="3" class="data-content-l">
         <div class="data-content-summary" :class="{'data-Selected':dataSelected == 1}" @click="tabSelect(1)">
           <span>
             <i class="icon-shouye"></i>
           </span>
-          <p class="summary-title mt10">Summary</p>
+          <p class="summary-title mt10">{{popupDatas.tabSelect1}}</p>
         </div>
         <div class="data-content-summary" :class="{'data-Selected':dataSelected == 2}" @click="tabSelect(2)">
           <p>
-            <i class="redStar">*</i>Data
+            <i class="redStar">*</i>{{popupDatas.tabSelect2One}}
           </p>
-          <p>Extension</p>
+          <p>{{popupDatas.tabSelect2Two}}</p>
         </div>
         <div class="data-content-summary" :class="{'data-Selected':dataSelected == 3}" @click="tabSelect(3)">
-          <p><i class="redStar">*</i>Sales</p>
-          <p>Promotion</p>
+          <p><i class="redStar">*</i>{{popupDatas.tabSelect3One}}</p>
+          <p>{{popupDatas.tabSelect3Two}}</p>
         </div>
       </el-col>
       <el-col :span="21" v-if="this.dataSelected == 2" class="data-content-r">
         <div class="r-header">
           <p class="r-header-t">
-            <span>Data Extension</span>
+            <span>{{popupDatas.popupTwoTit1}}</span>
             <span class="el-icon-back"></span>
           </p>
-          <p class="r-header-b">Select your audience to enter the Journey</p>
+          <p class="r-header-b">{{popupDatas.popupTwoTit2}}</p>
         </div>
         <div class="r-content">
           <el-col :span="5" class="r-content-l">
             <p class="r-content-l-t">Folders</p>
-            <el-tree :data="dataExtensions" class="r-content-l-b">
+            <el-tree :data="popupDatas.dataExtensions" class="r-content-l-b">
               <span slot-scope="{ node, data }">
                 <span>
                   <i :class="data.con"></i>
@@ -142,15 +139,15 @@
        <el-col :span="21" v-if="this.dataSelected == 3" class="data-content-r">
         <div class="r-header">
           <p class="r-header-t">
-            <span>Sales Promotion</span>
+            <span>{{popupDatas.popupthreeTit1}}</span>
             <span class="el-icon-back"></span>
           </p>
-          <p class="r-header-b">Select your audience to enter the Journey</p>
+          <p class="r-header-b">{{popupDatas.popupthreeTit2}}</p>
         </div>
         <div class="r-content">
           <el-col :span="5" class="r-content-l">
             <p class="r-content-l-t">Folders</p>
-            <el-tree :data="SalesPromotions" class="r-content-l-b">
+            <el-tree :data="popupDatas.SalesPromotions" class="r-content-l-b">
               <span slot-scope="{ node, data }">
                 <span>
                   <i :class="data.con"></i>
@@ -174,11 +171,11 @@
                 </el-input>
               </div>
               <div class="select-msg-table">
-                <el-table :data="salesTable" style="width: 100%" height="220">
+                <el-table :data="popupDatas.salesTable" style="width: 100%" height="220">
                   <el-table-column type="selection" width="55"></el-table-column>
-                  <el-table-column prop="date" label="日期" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="name" label="姓名" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="address" label="地址" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="date" :label="popupDatas.popupTable1" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="name" :label="popupDatas.popupTable2" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="address" :label="popupDatas.popupTable3" show-overflow-tooltip> </el-table-column>
                 </el-table>
               </div>
               <div class="select-msg-page">
@@ -217,25 +214,6 @@ export default {
   data() {
     return {
       dataSelected: 2,
-      dataExtensions: [
-        {
-          label: "Data Extensions",
-          con: "el-icon-arrow-right",
-          icon: "icon-wenjian"
-        }
-      ],
-      SalesPromotions:[
-        {
-          label: "Sales Promotion",
-          con: "el-icon-arrow-right",
-          icon: "icon-wenjian"
-        }
-      ],
-      salesTable:[
-        {
-
-        }
-      ],
       brandList: [{
           value: '1',
           label: '黄金糕'
@@ -302,7 +280,7 @@ export default {
       }
     }
   },
-  props: ["openData", "openDataContent"],
+  props: ["openData", "openDataContent","popupDatas"],
   methods: {
     clickPopup(value) {
       this.$emit("sltDataContent", value);
