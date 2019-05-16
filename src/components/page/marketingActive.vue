@@ -123,12 +123,12 @@
             </span>
           </div>
           <div class="window" id="return1" ref="refData2" v-if="ifDrag">
-            <span class="msg-style" @click="dataExtension()">
+            <span class="msg-style">
               <i class="icon-shouye"></i>
             </span>
           </div>
           <div class="window" id="return2" ref="refData3" v-if="ifDrag">
-            <span class="ctl-style" @click="dataExtension()">
+            <span class="ctl-style">
               <i class="icon-shouye"></i>
             </span>
           </div>
@@ -184,6 +184,7 @@ export default {
       });
     },
     dataExtension() {
+      console.log(this.openData)
       this.openData = true
     },
     appendDiv(left, top) {
@@ -205,9 +206,14 @@ export default {
         this.dargNext()
       })
     },
-    sltDataContent() {
-      this.openData = false
-      this.openDataContent = true
+    sltDataContent(val) {
+      console.log(val)
+        this.openData = false      
+      if (val == 'close1') {
+        this.openDataContent = false
+      } else if (val == 'openNext') {
+        this.openDataContent = true
+      }
     },
     dragInit() {
       let minleft = $(".imaginary-circle").offset().left;
