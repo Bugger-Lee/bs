@@ -134,7 +134,7 @@
           </div>
         </el-col>
       </div>
-      <popupDrag :openData ="openData" 
+      <popupDrag :openData ="openData"
         :openDataContent ="openDataContent"
         @sltDataContent ="sltDataContent">
       </popupDrag>
@@ -164,7 +164,9 @@ export default {
     popupDrag
   },
   methods: {
+
     jsPlumb(ele1,ele2) {
+      let that = this
       jsplumb.jsPlumb.ready(function() {
         jsplumb.jsPlumb.connect({
           source: ele1,
@@ -208,7 +210,7 @@ export default {
     },
     sltDataContent(val) {
       console.log(val)
-        this.openData = false      
+        this.openData = false
       if (val == 'close1') {
         this.openDataContent = false
       } else if (val == 'openNext') {
@@ -240,6 +242,12 @@ export default {
           }
         }
       });
+    },
+    delConnect() {
+      let allconn = jsplumb.jsPlumb.getAllConnections()
+      for (var i=0; i<allconn.length+1;i++) {
+        jsplumb.jsPlumb.deleteConnection(allconn[0])
+      }
     },
     dargNext() {
       let that = this;
