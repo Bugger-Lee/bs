@@ -212,15 +212,88 @@
                     height: 100%;
                     display: inline-block;
                     border-left: 1px solid #e7eaed;
-                    border-right: 1px solid #e7eaed;
                     }
                 }
                 .r-content-r{
                     width: 78%;
                     height: 100%;
                     background-color: #f4f6f9;
+                    border-left: 2px solid #e7eaed;
+                    .select-option{
+                        width: 90%;
+                        height: 80%;
+                        background-color: #fff;
+                        box-shadow: 1px 1px 3px rgba(0,0,0,.3) !important;
+                        margin: auto;
+                        margin-top: 4%;
+                        .select-option-classify{
+                            margin-top: 10%;
+                            margin-left: 1%;
+                        }
+                        .select-option-ipt{
+                            margin-top: 10%;
+                        }
+                    }
+                    .select-msg{
+                        width: 100%;
+                        height: 100%;
+                        .select-msg-search{
+                            margin: 10px;
+                            .select-msg-search-ipt{
+                                input{
+                                    width: 25%;
+                                    height: 37px;
+                                    line-height: 37px;
+                                }
+                            }
+                        }
+                        .select-msg-table{
+                            width: 100%;
+                            height: 65%;
+                            background: #fff;
+                            box-shadow: 1px 1px 3px rgba(0,0,0,.3) !important;
+                        }
+                        .select-msg-page{
+                            width: 100%;
+                            height: 60px;
+                            line-height: 60px;
+                            padding: 0px 10px;
+                            .select-msg-page-l{
+                                display: inline-block;
+                                .sizebig{
+                                    width: 7%;
+                                    input{
+                                        height: 20px;
+                                        line-height: 20px;
+                                    }
+                                    .el-input__icon{
+                                        line-height: 20px;
+                                    }
+                                }
+                            }
+                            .select-msg-page-r{
+                                display: inline-block;
+                                float: right;
+                                clear: left;
+                                margin-right: 20px;
+                                .r-ipt{
+                                    width: 17%;
+                                    height: 20px;
+                                    line-height: 20px;
+                                    border-radius: 5px;
+                                    border: none;
+                                    border: 1px solid #C0C4CC;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+    }
+}
+.openTime{
+    .el-dialog__body{
+        padding: 0px 20px;
     }
 }
