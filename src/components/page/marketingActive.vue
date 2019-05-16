@@ -223,7 +223,9 @@ export default {
     popupOpenTime
   },
   methods: {
+
     jsPlumb(ele1,ele2) {
+      let that = this
       jsplumb.jsPlumb.ready(function() {
         jsplumb.jsPlumb.connect({
           source: ele1,
@@ -300,6 +302,12 @@ export default {
           }
         }
       });
+    },
+    delConnect() {
+      let allconn = jsplumb.jsPlumb.getAllConnections()
+      for (var i=0; i<allconn.length+1;i++) {
+        jsplumb.jsPlumb.deleteConnection(allconn[0])
+      }
     },
     dargNext() {
       let that = this;
