@@ -86,13 +86,6 @@
                       <p>Wait By</p>
                       <p>Attribute</p>
                     </li>
-                    <li>
-                      <span class="ctl-style">
-                        <i class="icon-shouye"></i>
-                      </span>
-                      <p>Wait Until</p>
-                      <p>Date</p>
-                    </li>
                   </ul>
                 </el-menu-item-group>
               </el-submenu>
@@ -152,7 +145,11 @@
         <span slot="title" class="data-title">
           <span class="icon-shouye"></span>Wait By Duration
         </span>
-        <popupOpenTime></popupOpenTime>
+        <span slot="footer">
+          <el-button>Cancel</el-button>
+          <el-button type="primary">Done</el-button>
+        </span>
+        <popupOpenTime :timeType = "timeType"></popupOpenTime>
       </el-dialog>
     </div>
   </div>
@@ -174,6 +171,27 @@ export default {
       openDataContent:false,
       openSmsContent:false,
       openTime:false,
+      timeType:{
+        timeNum:1,
+        timeVal:'Days',
+        time:[
+          {
+            id:1,
+            value:"Days"
+          },
+          {
+            id:2,
+            value:"months"
+          },
+          {
+            id:3,
+            value:"weeks"
+          }
+        ],
+        timePicker:"",
+        timeWeek:"",
+        timeMonths:""
+      },
       popupDatasExten:{
         popupType:1,
         popupOneTitle1:"Data Extension Summary",

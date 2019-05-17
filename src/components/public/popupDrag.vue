@@ -104,7 +104,7 @@
                 </div>
                 <div class="ml10">
                   <span class="redStar">*</span>
-                  <span>选择周期</span>
+                  <span>注册渠道</span>
                   <el-select v-model="registerVal" clearable placeholder="请选择注册渠道" class="select-option-classify">
                     <el-option
                       v-for="item in registerList"
