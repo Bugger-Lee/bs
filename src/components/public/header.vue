@@ -47,11 +47,11 @@ export default {
         {
           id: 1,
           name: "Journeys"
-        },
-        {
-          id: 2,
-          name: "History"
         }
+        // {
+        //   id: 2,
+        //   name: "History"
+        // }
       ],
       changeTab: 1
     };
