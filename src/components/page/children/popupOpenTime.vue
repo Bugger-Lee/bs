@@ -18,7 +18,7 @@
           size="small"
           format="HH:mm"
           :picker-options="{
-            selectableRange: '18:30:00 - 23:59:00'
+            selectableRange: '18:16:00 - 23:59:00'
           }"
           v-model="timeType.timePicker"
           placeholder="任意时间点">
