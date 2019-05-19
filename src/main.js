@@ -3,10 +3,10 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import '@/assets/css/base.less'
 import '@/assets/iconfont/iconfont.css'
 import ElementUI from 'element-ui' 
 import 'element-ui/lib/theme-chalk/index.css'
+import '@/assets/css/base.less'
 import 'jquery-ui-dist/jquery-ui'
 
 Vue.config.productionTip = false

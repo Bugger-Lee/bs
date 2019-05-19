@@ -116,7 +116,7 @@
             </span>
           </div>
           <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
-            <span class="msg-style">
+            <span class="msg-style" @click="sms()">
               <i class="icon-shouye"></i>
             </span>
           </div>
@@ -264,7 +264,12 @@ export default {
         popupTable3:"地址"
       },
       popupDatasSms:{
-
+        popupType:2,
+        popupOneTitle1:"SMS Activity Summary",
+        popupOneTitle2:"Message Definition",
+        pupupImgTit1:"Let's get started!",
+        pupupImgTit2:"Select or create a message",
+        popupBtn:"Select Message",
       }
     };
   },
@@ -328,6 +333,9 @@ export default {
     },
     dataExtension() {
       this.openData = true
+    },
+    sms() {
+      this.openSms = true
     },
     selectTime() {
       this.openTime = true
