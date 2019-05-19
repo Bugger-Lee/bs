@@ -35,7 +35,7 @@
         <el-col :span="6" class="list-content-l">
           <p class="list-content-l-tit ml15">Folders</p>
           <div class="list-content-l-tree">
-            <el-tree :data="data" style="font-size:14px;">
+            <el-tree :data="modelClv" style="font-size:14px;" class="mt10">
               <span  slot-scope="{ node, data }">
                   <span>
                       <i :class="data.icon" class="mr05"></i>{{ node.label }}
@@ -49,29 +49,20 @@
             <el-table
               ref="multipleTable"
               :data="tableData3"
+              :height="tableHeight"
               tooltip-effect="dark"
               style="width: 100%"
-              @selection-change="handleSelectionChange"
+              v-loadmore="getMoreDate"
             >
-              <el-table-column type="selection" width="55"></el-table-column>
-              <el-table-column label="TITLE" show-overflow-tooltip>
+              <el-table-column prop="title" label="TITLE" show-overflow-tooltip>
                 <template slot-scope="scope">{{ scope.row.address }}</template>
               </el-table-column>
               <el-table-column prop="name" label="STATUS" show-overflow-tooltip></el-table-column>
               <el-table-column prop="date" label="TIME" show-overflow-tooltip></el-table-column>
               <el-table-column prop="address" label="CREATOR" show-overflow-tooltip></el-table-column>
+              <div style="text-align:center;" slot="append"><i class="el-icon-loading"></i></div>
             </el-table>
           </el-col>
-          <el-pagination
-            class="mt20"
-            style="display:inline-block;float:right;"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
-            :page-size="100"
-            layout="total, prev, pager, next"
-            :total="1000"
-          ></el-pagination>
         </div>
       </div>
     </div>
@@ -79,7 +70,6 @@
 </template>
 
 <script>
-import { log } from 'util';
 export default {
   name: "homeList",
   data() {
@@ -92,11 +82,7 @@ export default {
       ],
       JourneyVal: "",
       searchListVal: "",
-      data: [
-        {
-          label:"All Journeys",
-          icon:'icon-quanbu',
-        },
+      modelClv: [
         {
           label: "My  Journeys",
           icon: 'icon-wenjian',
@@ -143,17 +129,59 @@ export default {
           date: "2016-05-07",
           name: "已结束",
           address: "Journeys  Active"
+        },
+        {
+          date: "2016-05-07",
+          name: "已结束",
+          address: "Journeys  Active"
+        },
+        {
+          date: "2016-05-07",
+          name: "已结束",
+          address: "Journeys  Active"
+        },
+        {
+          date: "2016-05-07",
+          name: "已结束",
+          address: "Journeys  Active"
+        },
+        {
+          date: "2016-05-07",
+          name: "已结束",
+          address: "Journeys  Active"
+        },
+        {
+          date: "2016-05-07",
+          name: "已结束",
+          address: "Journeys  Active"
         }
-      ]
+      ],
+      tableHeight: window.innerHeight - 200
     };
   },
   methods: {
     handleSelectionChange() {},
-    handleSizeChange() {},
-    handleCurrentChange() {},
     handleNodeClick() {},
     newActive() {
       this.$router.push('/marketingActive')
+    },
+    getMoreDate() {
+      console.log(123)
+    }
+  },
+  directives: {
+    loadmore: {
+      // 指令的定义
+      bind(el, binding, vnode) {
+        const selectWrap = el.querySelector('.el-table__body-wrapper')
+        selectWrap.addEventListener('scroll', function() {
+          const sign = 20
+          const scrollDistance = this.scrollHeight - this.scrollTop - this.clientHeight
+          if (scrollDistance <= sign) {
+            binding.value()
+          }
+        })
+      }
     }
   }
 };
