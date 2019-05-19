@@ -18,18 +18,19 @@
           size="small"
           format="HH:mm"
           :picker-options="{
-            selectableRange: '18:16:00 - 23:59:00'
+            selectableRange: selectRange
           }"
           v-model="timeType.timePicker"
           placeholder="任意时间点">
         </el-time-picker>
-        <el-date-picker
-          v-if="this.ifShowTime == 'weeks'"
-          size="small"
-          v-model="timeType.timeWeek"
-          type="week"
-          placeholder="选择周">
-        </el-date-picker>
+        <el-select v-model="timeType.timeWeek" value="1" size="small" v-if="this.ifShowTime == 'weeks'" placeholder="选择周">
+          <el-option
+            v-for="item in propsTimeWeeks"
+            :key="item.id"
+            :disabled="item.disabled"
+            :value="item.value">
+          </el-option>
+        </el-select>
         <el-date-picker
           v-if="this.ifShowTime == 'months'"
           size="small"
@@ -53,8 +54,27 @@ export default {
           disabledDate(time) {
             return time.getTime() < Date.now();
           },
+        },
+        selectRange: new Date().getHours()+':'+new Date().getMinutes()+':00 - 23:59:00'
+      }
+  },
+  computed: {
+    propsTimeWeeks () {
+      let weeks = new Date().getDay()
+      if (weeks == 0) {
+        weeks = 7
+      }
+      // weeks = 1
+      let propsTimeWeeks = this.timeType.timeWeeks
+      for ( let i=0; i<propsTimeWeeks.length; i++) {
+        if (propsTimeWeeks[i].id <= weeks) {
+          propsTimeWeeks[i].disabled = true
+        } else {
+          propsTimeWeeks[i].disabled = false
         }
       }
+      return propsTimeWeeks
+    }
   },
   props:["timeType"],
   methods:{
