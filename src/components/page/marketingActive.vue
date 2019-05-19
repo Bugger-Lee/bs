@@ -94,10 +94,10 @@
         </el-col>
         <el-col :span="1" class="middle-style"></el-col>
         <el-col :span="18" class="marketing-drag">
-          <ul class="imaginary"  v-if="!ifDrag">
+          <ul class="imaginary"  v-if="!ifSmsDrag">
             <li class="imaginary-circle"></li>
             <li class="imaginary-wire">---------></li>
-            <li class="imaginary-square"></li>
+            <li class="imaginary-square imaginary-squares"></li>
             <li class="imaginary-wire">-------></li>
             <li class="imaginary-rhombus"></li>
             <li class="imaginary-wire">-------></li>
@@ -115,12 +115,17 @@
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <div class="window" id="return1" ref="refData2" v-if="ifDrag">
+          <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
             <span class="ctl-style" @click="selectTime()">
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <div class="window" id="return2" ref="refData3" v-if="ifDrag">
+          <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
+            <span class="ctl-style" @click="selectTime()">
+              <i class="icon-shouye"></i>
+            </span>
+          </div>
+          <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
             <span class="msg-style">
               <i class="icon-shouye"></i>
             </span>
@@ -166,6 +171,7 @@ export default {
   data() {
     return {
       ifDrag: false,
+      ifSmsDrag: false,
       openData:false,
       openSms:false,
       openDataContent:false,
@@ -292,22 +298,31 @@ export default {
         });
       });
     },
+    appendSms(left, top) {
+      this.ifSmsDrag = true
+      this.$nextTick(()=>{
+        this.$refs.refData2.style.position = 'fixed'
+        this.$refs.refData2.style.top = top+'px'
+        this.$refs.refData2.style.left = left+'px'
+
+        this.$refs.refData3.style.position = 'fixed'
+        this.$refs.refData3.style.top = top+'px'
+        this.$refs.refData3.style.left = left+200+'px'
+
+        this.$refs.refData4.style.position = 'fixed'
+        this.$refs.refData4.style.top = top+'px'
+        this.$refs.refData4.style.left = left+400+'px'
+        this.jsPlumb("data1","return1")
+        this.jsPlumb("return1","return2")
+        this.jsPlumb("return2","return3")
+      })
+    },
     appendDiv(left, top) {
       this.ifDrag = true
       this.$nextTick(()=>{
         this.$refs.refData1.style.position = 'fixed'
         this.$refs.refData1.style.top = top+'px'
         this.$refs.refData1.style.left = left+'px'
-
-        this.$refs.refData2.style.position = 'fixed'
-        this.$refs.refData2.style.top = top+'px'
-        this.$refs.refData2.style.left = left+200+'px'
-
-        this.$refs.refData3.style.position = 'fixed'
-        this.$refs.refData3.style.top = top+'px'
-        this.$refs.refData3.style.left = left+400+'px'
-        this.jsPlumb("data1","return1")
-        this.jsPlumb("return1","return2")
         this.dargNext()
       })
     },
@@ -358,6 +373,10 @@ export default {
       }
     },
     dargNext() {
+      let minleft = $(".imaginary-squares").offset().left;
+      let mintop = $(".imaginary-squares").offset().top;
+      let maxleft = $(".imaginary-squares").width();
+      let maxtop = $(".imaginary-squares").height();
       let that = this;
       $(".msg-style").draggable({
         zIndex: 999,
@@ -368,14 +387,14 @@ export default {
       $(".marketing-drag").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
-          // if (
-          //   minleft <= ui.offset.left &&
-          //   ui.offset.left <= minleft + maxleft &&
-          //   mintop <= ui.offset.top &&
-          //   ui.offset.top < mintop + maxtop
-          // ) {
-            that.appendDiv(ui.offset.left, ui.offset.top);
-          // }
+          if (
+            minleft <= ui.offset.left &&
+            ui.offset.left <= minleft + maxleft &&
+            mintop <= ui.offset.top &&
+            ui.offset.top < mintop + maxtop
+          ) {
+            that.appendSms(ui.offset.left, ui.offset.top);
+          }
         }
       });
     }
