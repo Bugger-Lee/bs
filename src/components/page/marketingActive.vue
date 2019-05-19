@@ -188,6 +188,36 @@ export default {
             value:"weeks"
           }
         ],
+        timeWeeks:[
+          {
+            id:1,
+            value:"周一",
+          },
+          {
+            id:2,
+            value:"周二"
+          },
+          {
+            id:3,
+            value:"周三"
+          },
+          {
+            id:4,
+            value:"周四"
+          },
+          {
+            id:5,
+            value:"周五"
+          },
+          {
+            id:6,
+            value:"周六"
+          },
+          {
+            id:7,
+            value:"周日"
+          },
+        ],
         timePicker:"",
         timeWeek:"",
         timeMonths:""
