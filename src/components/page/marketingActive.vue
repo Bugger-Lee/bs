@@ -116,7 +116,7 @@
             </span>
           </div>
           <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
-            <span class="ctl-style" @click="selectTime()">
+            <span class="msg-style">
               <i class="icon-shouye"></i>
             </span>
           </div>
@@ -126,7 +126,7 @@
             </span>
           </div>
           <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
-            <span class="msg-style">
+            <span class="crowd-style">
               <i class="icon-shouye"></i>
             </span>
           </div>
