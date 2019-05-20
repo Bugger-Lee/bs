@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Indicator, Toast } from 'mint-ui'
 // 设置域名
-let BASEURL = ''
+let BASEURL = 'http://10.150.33.126:8115/'
 
 // 配置域名、超时时间（10s）
 let $ = axios.create({

@@ -60,7 +60,7 @@
               <el-table-column prop="name" label="STATUS" show-overflow-tooltip></el-table-column>
               <el-table-column prop="date" label="TIME" show-overflow-tooltip></el-table-column>
               <el-table-column prop="address" label="CREATOR" show-overflow-tooltip></el-table-column>
-              <div style="text-align:center;" slot="append"><i class="el-icon-loading"></i></div>
+              <div style="text-align:center;" slot="append"><i class="el-icon-loading" style="color:#1589ee;font-size:25px;"></i></div>
             </el-table>
           </el-col>
         </div>

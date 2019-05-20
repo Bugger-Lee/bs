@@ -15,8 +15,11 @@
           </div>
         </el-col>
         <el-col :span="12" class="marketing-header-r">
-          <span>Save</span>
-          <span>Activate</span>
+          <el-button-group class="mr05">
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.ifColor == 1}">Save</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.ifColor == 2}">Test</el-button>
+          </el-button-group>
+          <el-button type="primary" class="pd-btn mr15">Activate</el-button>
         </el-col>
       </div>
       <div class="marketing-theme">
@@ -133,15 +136,13 @@
         </el-col>
       </div>
       <popupDrag :openData ="openData"
-        :popupDatas ="popupDatasExten" 
         :openDataContent ="openDataContent"
         @sltDataContent ="sltDataContent">
       </popupDrag>
-      <popupDrag :openData ="openSms"
-        :popupDatas ="popupDatasSms" 
+      <smsPopup :openData ="openSms"
         :openDataContent ="openSmsContent"
-        @sltDataContent ="sltDataContent">
-      </popupDrag>
+        @sltDataContent ="sltSmsContent">
+      </smsPopup>
       <el-dialog
         :visible.sync="openTime"
         :close-on-click-modal="false"
@@ -163,8 +164,8 @@
 import "@/assets/css/part.less";
 import jsplumb from "jsplumb";
 import $ from "jquery";
-import { log } from "util";
-import popupDrag from "../public/popupDrag.vue"
+import popupDrag from "./children/popupDrag.vue"
+import smsPopup from "./children/smsPopup.vue"
 import popupOpenTime from "./children/popupOpenTime.vue"
 export default {
   name: "marketingActive",
@@ -177,6 +178,7 @@ export default {
       openDataContent:false,
       openSmsContent:false,
       openTime:false,
+      ifColor:1,
       timeType:{
         timeNum:1,
         timeVal:'Days',
@@ -227,59 +229,16 @@ export default {
         timePicker:"",
         timeWeek:"",
         timeMonths:""
-      },
-      popupDatasExten:{
-        popupType:1,
-        popupOneTitle1:"Data Extension Summary",
-        popupOneTitle2:"Data Extension",
-        pupupImgTit1:"Let's get going!",
-        pupupImgTit2:"Select the data extension whose contacts should enter this journey",
-        popupBtn:"Select Data Extension",
-        tabSelect1:"Summary",
-        tabSelect2One:'Data',
-        tabSelect2Two:"Extension",
-        tabSelect3One:"Sales",
-        tabSelect3Two:"Promotion",
-        popupTwoTit1:"Data Extension",
-        popupTwoTit2:"Select your audience to enter the Journey",
-        dataExtensions: [
-          {
-            label: "Data Extensions",
-            con: "el-icon-arrow-right",
-            icon: "icon-wenjian"
-          }
-        ],
-        SalesPromotions:[
-          {
-            label: "Sales Promotion",
-            con: "el-icon-arrow-right",
-            icon: "icon-wenjian"
-          }
-        ],
-        salesTable:[{}],
-        popupthreeTit1:"Sales Promotion",
-        popupthreeTit2:"Select your audience to enter the Journey",
-        popupTable1:"日期",
-        popupTable2:"姓名",
-        popupTable3:"地址"
-      },
-      popupDatasSms:{
-        popupType:2,
-        popupOneTitle1:"SMS Activity Summary",
-        popupOneTitle2:"Message Definition",
-        pupupImgTit1:"Let's get started!",
-        pupupImgTit2:"Select or create a message",
-        popupBtn:"Select Message",
       }
-    };
+    }
   },
   mounted() {
     this.dragInit();
-    // this.jsPlumb();
   },
   components:{
     popupDrag,
-    popupOpenTime
+    popupOpenTime,
+    smsPopup
   },
   methods: {
 
@@ -346,6 +305,14 @@ export default {
         this.openDataContent = false
       } else if (val == 'openNext') {
         this.openDataContent = true
+      }
+    },
+    sltSmsContent(val) {
+      this.openSms = false      
+      if (val == 'close1') {
+        this.openSmsContent = false
+      } else if (val == 'openNext') {
+        this.openSmsContent = true
       }
     },
     dragInit() {
@@ -457,12 +424,18 @@ export default {
       }
       .marketing-header-r {
         text-align: right;
-        span {
-          padding: 4px 10px;
+        .pd-btn{
+          padding: 6px 12px;
           background-color: #0070d2;
-          border-radius: 5px;
-          color: #fff;
-          margin-right: 15px;
+          border: none;
+        }
+        .pd-back{
+          background: none;
+          border: 1px solid #ece2e1;
+          color: #e6e5e4;
+        }
+        .ifColor{
+          color:#409eff;
         }
       }
     }
@@ -481,7 +454,6 @@ export default {
         left: 17.2%;
       }
       .marketing-drag {
-        // margin-left: 17.5%;
         padding: 70px 0 0 50px;
         height: 100%;
       }
