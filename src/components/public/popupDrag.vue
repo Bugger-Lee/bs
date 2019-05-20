@@ -12,7 +12,8 @@
           <span class="redStar">*</span>{{popupDatas.popupOneTitle2}}
         </p>
         <div class="data-content-c">
-          <img src="@/assets/img/noneData.png">
+          <img src="@/assets/img/noneData.png" v-if="popupDatas.popupType == 1">
+          <img src="@/assets/img/noneData2.png" v-if="popupDatas.popupType == 2">
           <p class="c-explain-one">{{popupDatas.pupupImgTit1}}</p>
           <p>{{popupDatas.pupupImgTit2}}</p>
           <el-button
