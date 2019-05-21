@@ -81,52 +81,53 @@
                 <div class="ml10">
                   <span class="redStar">*</span>
                   <span>选择品牌</span>
-                  <el-select v-model="brandVal" clearable placeholder="请选择品牌" class="select-option-classify">
+                  <el-select v-model="propsData.brandVal" clearable placeholder="请选择品牌" class="select-option-classify">
                     <el-option
-                      v-for="item in brandList"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="item in propsData.brandList"
+                      :key="item.id"
+                      :label="item.brand_name"
+                      :value="item.id"
                     ></el-option>
                   </el-select>
                 </div>
                 <div class="ml10">
                   <span class="redStar">*</span>
                   <span>选择周期</span>
-                  <el-select v-model="periodVal" clearable placeholder="请选择周期" class="select-option-classify">
+                  <el-select v-model="propsData.periodVal"  clearable placeholder="请选择周期" class="select-option-classify">
                     <el-option
-                      v-for="item in periodList"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      @click.native="periodChange()"
+                      v-for="item in propsData.periodList"
+                      :key="item.id"
+                      :label="item.cycle_type"
+                      :value="item.id"
                     ></el-option>
                   </el-select>
                 </div>
                 <div class="ml10">
                   <span class="redStar">*</span>
                   <span>注册渠道</span>
-                  <el-select v-model="registerVal" clearable placeholder="请选择注册渠道" class="select-option-classify">
+                  <el-select v-model="propsData.registerVal" clearable placeholder="请选择注册渠道" class="select-option-classify">
                     <el-option
-                      v-for="item in registerList"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="item in propsData.registerList"
+                      :key="item.id"
+                      :label="item.channel_name"
+                      :value="item.channel_name"
                     ></el-option>
                   </el-select>
                 </div>
               </el-col>
               <el-col :span="12">
-                <div class="select-option-ipt">
+                <div class="select-option-ipt" v-if="ifNewPeriod">
                   <span class="mr15">是否为新进入周期:</span>
                   <el-radio v-model="newPeriod" label="1">是</el-radio>
                   <el-radio v-model="newPeriod" label="2">否</el-radio>
                 </div>
-                <div class="select-option-ipt">
+                <div class="select-option-ipt" v-if="ifNewBuy">
                   <span class="mr15">是否为首次购买:</span>
                   <el-radio v-model="newBuy" label="1">是</el-radio>
                   <el-radio v-model="newBuy" label="2">否</el-radio>
                 </div>
-                <div class="select-option-ipt">
+                <div class="select-option-ipt" v-if="ifNewMbmber">
                   <span class="mr15">是否为注册一周未购买会员:</span>
                   <el-radio v-model="newMbmber" label="1">是</el-radio>
                   <el-radio v-model="newMbmber" label="2">否</el-radio>
@@ -229,36 +230,6 @@ export default {
         }
       ],
       salesTable:[{}],
-      brandList: [{
-          value: '1',
-          label: '黄金糕'
-        }, {
-          value: '2',
-          label: '双皮奶'
-        }, {
-          value: '3',
-          label: '蚵仔煎'
-        }],
-        periodList: [{
-          value: '1',
-          label: '周期1'
-        }, {
-          value: '2',
-          label: '周期2'
-        }, {
-          value: '3',
-          label: '周期3'
-        }],
-        registerList: [{
-          value: '1',
-          label: '渠道1'
-        }, {
-          value: '2',
-          label: '渠道2'
-        }, {
-          value: '3',
-          label: '渠道3'
-        }],
         pageList: [{
           label: '10'
         }, {
@@ -267,14 +238,14 @@ export default {
           label: '30'
         }],
         pageVal:'',
-        brandVal: '',
-        periodVal:'',
-        registerVal:'',
         newPeriod:'',
         newBuy:'',
         newMbmber:'',
         SearchSales:'',
-        pageRightVal:''
+        pageRightVal:'',
+        ifNewPeriod:false,
+        ifNewBuy:false,
+        ifNewMbmber:false
     };
   },
   computed: {
@@ -295,13 +266,25 @@ export default {
       }
     }
   },
-  props: ["openData", "openDataContent"],
+  props: ["openData", "openDataContent","propsData"],
   methods: {
     clickPopup(value) {
       this.$emit("sltDataContent", value);
     },
     tabSelect(val) {
       this.dataSelected = val
+    },
+    periodChange() {
+      if(this.propsData.periodVal != '') {
+        this.ifNewPeriod = true
+      }
+      if(this.propsData.periodVal == 1) {
+        this.ifNewMbmber = true
+        this.ifNewBuy = false
+      }else{
+        this.ifNewBuy = true
+         this.ifNewMbmber = false
+      }
     }
   }
 };
