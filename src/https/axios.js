@@ -38,7 +38,7 @@ $.interceptors.response.use(
     return response
   },
   error => {
-    return false
+    return error
   }
 )
 

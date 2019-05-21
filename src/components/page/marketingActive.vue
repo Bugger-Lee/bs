@@ -136,6 +136,7 @@
         </el-col>
       </div>
       <popupDrag :openData ="openData"
+        :propsData="propsData"
         :openDataContent ="openDataContent"
         @sltDataContent ="sltDataContent">
       </popupDrag>
@@ -229,11 +230,24 @@ export default {
         timePicker:"",
         timeWeek:"",
         timeMonths:""
+      },
+      propsData:{
+        brandList: [],
+        periodList: [],
+        registerList: [],
+        brandVal: '',
+        periodVal:'',
+        registerVal:'',
       }
     }
   },
   mounted() {
     this.dragInit();
+  },
+  created() {
+    this.brandLists()
+    this.periodLists()
+    this.registerLists()
   },
   components:{
     popupDrag,
@@ -241,7 +255,27 @@ export default {
     smsPopup
   },
   methods: {
-
+    brandLists() {
+      this.$.get("brand/getList?brandName=").then(res=>{
+        if(res.data.code == 200) {
+          this.propsData.brandList = res.data.data
+        }
+      })
+    },
+    periodLists() {
+      this.$.get("lifeCycle/getList?cycleType=").then(res=>{
+        if(res.data.code == 200) {
+          this.propsData.periodList = res.data.data
+        }
+      })
+    },
+    registerLists() {
+      this.$.get("vipChannel/getList?channelName=").then(res=>{
+        if(res.data.code == 200) {
+          this.propsData.registerList = res.data.data
+        }
+      })
+    },
     jsPlumb(ele1,ele2) {
       let that = this
       jsplumb.jsPlumb.ready(function() {
