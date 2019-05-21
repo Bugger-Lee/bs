@@ -25,6 +25,7 @@ $.defaults.transformRequest = [
 // 请求拦截器
 $.interceptors.request.use(
   config => {
+    console.log(config)
     return config
   },
   error => {
