@@ -113,8 +113,8 @@
             <li class="imaginary-wire">-------></li>
             <li class="imaginary-square"></li>
           </ul>
-          <div class="window" id="data1" ref="refData1" v-if="ifDrag">
-            <span class="crowd-style" @click="dataExtension()">
+          <div class="window"  ref="refData1" v-if="ifDrag">
+            <span id="data1" class="crowd-style" @click="dataExtension()">
               <i class="icon-shouye"></i>
             </span>
           </div>
@@ -123,6 +123,7 @@
               <i class="icon-shouye"></i>
             </span>
           </div>
+          <div id="return1div" v-if="ifSmsDrag">123</div>
           <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
             <span class="ctl-style" @click="selectTime()">
               <i class="icon-shouye"></i>
@@ -173,6 +174,8 @@ export default {
     return {
       ifDrag: false,
       ifSmsDrag: false,
+      dragLeft: '',
+      dragTop: '',
       openData:false,
       openSms:false,
       openDataContent:false,
@@ -233,6 +236,7 @@ export default {
     }
   },
   mounted() {
+    this.getDate()
     this.dragInit();
   },
   components:{
@@ -241,7 +245,11 @@ export default {
     smsPopup
   },
   methods: {
-
+    getDate() {
+      this.$.get('/rule/getList?ruleName=',{}).then(res=>{
+        console.log(res)
+      })
+    },
     jsPlumb(ele1,ele2) {
       let that = this
       jsplumb.jsPlumb.ready(function() {
@@ -287,6 +295,8 @@ export default {
         this.$refs.refData1.style.position = 'fixed'
         this.$refs.refData1.style.top = top+'px'
         this.$refs.refData1.style.left = left+'px'
+        this.dragLeft = left
+        this.dragTop = top
         this.dargNext()
       })
     },
@@ -300,7 +310,7 @@ export default {
       this.openTime = true
     },
     sltDataContent(val) {
-      this.openData = false      
+      this.openData = false
       if (val == 'close1') {
         this.openDataContent = false
       } else if (val == 'openNext') {
@@ -308,7 +318,7 @@ export default {
       }
     },
     sltSmsContent(val) {
-      this.openSms = false      
+      this.openSms = false
       if (val == 'close1') {
         this.openSmsContent = false
       } else if (val == 'openNext') {
@@ -364,11 +374,11 @@ export default {
         drop: function(event, ui) {
           if (
             minleft <= ui.offset.left &&
-            ui.offset.left <= minleft + maxleft &&
+            ui.offset.left <= minleft + maxleft+20 &&
             mintop <= ui.offset.top &&
-            ui.offset.top < mintop + maxtop
+            ui.offset.top < mintop + maxtop+20
           ) {
-            that.appendSms(ui.offset.left, ui.offset.top);
+            that.appendSms(ui.offset.left, that.dragTop);
           }
         }
       });
