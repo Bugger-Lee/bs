@@ -118,22 +118,25 @@
               <i class="icon-shouye"></i>
             </span>
           </div>
+          <div ref="refData1div" v-if="ifDrag">data</div>
           <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
             <span class="msg-style" @click="sms()">
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <div id="return1div" v-if="ifSmsDrag">123</div>
+          <div ref="refData2div" v-if="ifSmsDrag">sms</div>
           <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
             <span class="ctl-style" @click="selectTime()">
               <i class="icon-shouye"></i>
             </span>
           </div>
+          <div ref="refData3div" v-if="ifSmsDrag">select</div>
           <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
             <span class="crowd-style">
               <i class="icon-shouye"></i>
             </span>
           </div>
+          <div ref="refData4div" v-if="ifSmsDrag">sms</div>
         </el-col>
       </div>
       <popupDrag :openData ="openData"
@@ -305,14 +308,23 @@ export default {
         this.$refs.refData2.style.position = 'fixed'
         this.$refs.refData2.style.top = top+'px'
         this.$refs.refData2.style.left = left+'px'
+        this.$refs.refData2div.style.position = 'fixed'
+        this.$refs.refData2div.style.top = top+50+'px'
+        this.$refs.refData2div.style.left = left+5+'px'
 
         this.$refs.refData3.style.position = 'fixed'
         this.$refs.refData3.style.top = top+'px'
         this.$refs.refData3.style.left = left+200+'px'
+        this.$refs.refData3div.style.position = 'fixed'
+        this.$refs.refData3div.style.top = top+50+'px'
+        this.$refs.refData3div.style.left = left+200+5+'px'
 
         this.$refs.refData4.style.position = 'fixed'
         this.$refs.refData4.style.top = top+'px'
         this.$refs.refData4.style.left = left+400+'px'
+        this.$refs.refData4div.style.position = 'fixed'
+        this.$refs.refData4div.style.top = top+50+'px'
+        this.$refs.refData4div.style.left = left+400+5+'px'
         this.jsPlumb("data1","return1")
         this.jsPlumb("return1","return2")
         this.jsPlumb("return2","return3")
@@ -324,6 +336,9 @@ export default {
         this.$refs.refData1.style.position = 'fixed'
         this.$refs.refData1.style.top = top+'px'
         this.$refs.refData1.style.left = left+'px'
+        this.$refs.refData1div.style.position = 'fixed'
+        this.$refs.refData1div.style.top = top+50+'px'
+        this.$refs.refData1div.style.left = left+5+'px'
         this.dragLeft = left
         this.dragTop = top
         this.dargNext()
@@ -402,9 +417,9 @@ export default {
         scope: "dragflag",
         drop: function(event, ui) {
           if (
-            minleft <= ui.offset.left &&
+            minleft-5 <= ui.offset.left &&
             ui.offset.left <= minleft + maxleft+20 &&
-            mintop <= ui.offset.top &&
+            mintop-5 <= ui.offset.top &&
             ui.offset.top < mintop + maxtop+20
           ) {
             that.appendSms(ui.offset.left, that.dragTop);
