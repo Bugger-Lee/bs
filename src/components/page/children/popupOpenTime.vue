@@ -14,7 +14,6 @@
           </el-option>
         </el-select>
         <el-time-picker
-          v-if="this.ifShowTime == 'Days'"
           size="small"
           format="HH:mm"
           :picker-options="{
@@ -67,7 +66,7 @@ export default {
       // weeks = 1
       let propsTimeWeeks = this.timeType.timeWeeks
       for ( let i=0; i<propsTimeWeeks.length; i++) {
-        if (propsTimeWeeks[i].id <= weeks) {
+        if (propsTimeWeeks[i].id < weeks) {
           propsTimeWeeks[i].disabled = true
         } else {
           propsTimeWeeks[i].disabled = false

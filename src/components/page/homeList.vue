@@ -13,6 +13,7 @@
             placeholder="Search Journeys"
             clearable
             prefix-icon="el-icon-search"
+            @keyup.enter.native="searchHomeList"
             v-model="searchListVal"
           ></el-input>
         </el-col>
@@ -29,7 +30,7 @@
         </el-col>
       </div>
       <div class="list-num ml15">
-        <el-col :span="24">217 Journeys</el-col>
+        <el-col :span="24">{{this.JourneyTotal}}  Journeys</el-col>
       </div>
       <div class="list-content mt20">
         <el-col :span="6" class="list-content-l">
@@ -48,18 +49,18 @@
           <el-col :span="17" style="width:100%;">
             <el-table
               ref="multipleTable"
-              :data="tableData3"
+              :data="tableData"
               :height="tableHeight"
               tooltip-effect="dark"
               style="width: 100%"
               v-loadmore="getMoreDate"
             >
-              <el-table-column prop="title" label="TITLE" show-overflow-tooltip>
-                <template slot-scope="scope">{{ scope.row.address }}</template>
+              <el-table-column prop="rule_name" label="TITLE" show-overflow-tooltip>
+                <template slot-scope="scope">{{ scope.row.rule_name}}</template>
               </el-table-column>
-              <el-table-column prop="name" label="STATUS" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="date" label="TIME" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="address" label="CREATOR" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="status_name" label="STATUS" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="cycle_type" label="SOURCES" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="command_code" label="TYPE" show-overflow-tooltip></el-table-column>
               <div style="text-align:center;" slot="append"><i class="el-icon-loading" style="color:#1589ee;font-size:25px;"></i></div>
             </el-table>
           </el-col>
@@ -94,70 +95,14 @@ export default {
           ]
         }
       ],
-      tableData3: [
-        {
-          date: "2016-05-03",
-          name: "等待开始",
-          address: "Journeys  Active"
-        },
-        {
-          date: "2016-05-02",
-          name: "进行中",
-          address: "Journeys  Active"
-        },
-        {
-          date: "2016-05-04",
-          name: "已结束",
-          address: "Journeys  Active"
-        },
-        {
-          date: "2016-05-01",
-          name: "等待开始",
-          address: "Journeys  Active"
-        },
-        {
-          date: "2016-05-08",
-          name: "已结束",
-          address: "Journeys  Active"
-        },
-        {
-          date: "2016-05-06",
-          name: "已结束",
-          address: "Journeys  Active"
-        },
-        {
-          date: "2016-05-07",
-          name: "已结束",
-          address: "Journeys  Active"
-        },
-        {
-          date: "2016-05-07",
-          name: "已结束",
-          address: "Journeys  Active"
-        },
-        {
-          date: "2016-05-07",
-          name: "已结束",
-          address: "Journeys  Active"
-        },
-        {
-          date: "2016-05-07",
-          name: "已结束",
-          address: "Journeys  Active"
-        },
-        {
-          date: "2016-05-07",
-          name: "已结束",
-          address: "Journeys  Active"
-        },
-        {
-          date: "2016-05-07",
-          name: "已结束",
-          address: "Journeys  Active"
-        }
-      ],
+      tableData: [],
+      JourneyTotal:'',
+      ruleName:'',
       tableHeight: window.innerHeight - 200
     };
+  },
+  created() {
+    this.homeLists()
   },
   methods: {
     handleSelectionChange() {},
@@ -166,7 +111,22 @@ export default {
       this.$router.push('/marketingActive')
     },
     getMoreDate() {
-      console.log(123)
+      // console.log(123)
+    },
+    homeLists() {
+      this.$.get("rule/getList",{params:{ruleName:this.ruleName}}).then(res=>{
+        if (res.data.code ==200) {
+        this.tableData = res.data.data
+        this.JourneyTotal = res.data.size
+        }
+      })
+    },
+    searchHomeList(e) {
+      var keyCode = window.event? e.keyCode:e.which;
+      if(keyCode == 13){
+        this.ruleName = this.searchListVal
+        this.homeLists()
+      }
     }
   },
   directives: {

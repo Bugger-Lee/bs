@@ -55,7 +55,7 @@
         <div class="r-header">
           <p class="r-header-t">
             <span>Data Extension</span>
-            <span class="el-icon-back"></span>
+            <span class="el-icon-back" @click="backlevel(1)"></span>
           </p>
           <p class="r-header-b">Select your audience to enter the Journey</p>
         </div>
@@ -141,7 +141,7 @@
         <div class="r-header">
           <p class="r-header-t">
             <span>Sales Promotion</span>
-            <span class="el-icon-back"></span>
+            <span class="el-icon-back" @click="backlevel(1)"></span>
           </p>
           <p class="r-header-b">Select your audience to enter the Journey</p>
         </div>
@@ -168,15 +168,20 @@
                   class="select-msg-search-ipt"
                   placeholder="Search"
                   prefix-icon="el-icon-search"
-                  v-model="SearchSales">
+                  @keyup.enter.native="searchDate"
+                  v-model="propsData.SearchSales">
                 </el-input>
               </div>
               <div class="select-msg-table">
-                <el-table :data="salesTable" style="width: 100%" height="220">
+                <el-table :data="propsData.salesTable" style="width: 100%" height="220">
                   <el-table-column type="selection" width="55"></el-table-column>
-                  <el-table-column prop="date" label="日期" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="name" label="姓名" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="address" label="地址" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="sal_id" label="劵编码" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="coupon_type" label="类型" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="brand" label="品牌" show-overflow-tooltip> </el-table-column>
+                  <el-table-column  label="有效期" show-overflow-tooltip>
+                     <template slot-scope="scope"> {{scope.row.start_date}} - ({{scope.row.end_date}}) </template>
+                  </el-table-column>
+                  <el-table-column prop="created_time" label="创建时间" show-overflow-tooltip> </el-table-column>
                 </el-table>
               </div>
               <div class="select-msg-page">
@@ -202,7 +207,7 @@
         </div>
       </el-col>
       <span slot="footer">
-        <el-button @click="openDataContentProps = false">Cancel</el-button>
+        <el-button @click="openDataContentProps = false" >Cancel</el-button>
         <el-button type="primary" @click="openDataContentProps = false">Summary</el-button>
       </span>
     </el-dialog>
@@ -229,7 +234,6 @@ export default {
           icon: "icon-wenjian"
         }
       ],
-      salesTable:[{}],
         pageList: [{
           label: '10'
         }, {
@@ -241,7 +245,6 @@ export default {
         newPeriod:'',
         newBuy:'',
         newMbmber:'',
-        SearchSales:'',
         pageRightVal:'',
         ifNewPeriod:false,
         ifNewBuy:false,
@@ -268,8 +271,14 @@ export default {
   },
   props: ["openData", "openDataContent","propsData"],
   methods: {
+    searchDate(e) {
+      this.$emit('searchDate', e)
+    },
     clickPopup(value) {
       this.$emit("sltDataContent", value);
+    },
+    backlevel(val) {
+      this.$emit("backlevel",val)
     },
     tabSelect(val) {
       this.dataSelected = val
