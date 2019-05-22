@@ -52,7 +52,7 @@
         <div class="r-header">
           <p class="r-header-t">
             <span>Select an SMS Message</span>
-            <span class="el-icon-back"></span>
+            <span class="el-icon-back"  @click="backlevelSms(1)"></span>
           </p>
           <p class="r-header-b">Select a text message template</p>
         </div>
@@ -79,15 +79,18 @@
                     class="select-msg-search-ipt"
                     placeholder="Search"
                     prefix-icon="el-icon-search"
-                    v-model="SearchSms">
+                    @keyup.enter.native="searchSmsList"
+                    v-model="propsSms.SearchSms">
                   </el-input>
                 </div>
                 <div class="select-msg-table">
-                  <el-table :data="smsTable" style="width: 100%" height="220">
+                  <el-table :data="propsSms.smsTable" style="width: 100%" height="220">
                     <el-table-column type="selection" width="55"></el-table-column>
-                    <el-table-column prop="date" label="标题" show-overflow-tooltip></el-table-column>
-                    <el-table-column prop="name" label="姓名" show-overflow-tooltip></el-table-column>
-                    <el-table-column prop="address" label="中心" show-overflow-tooltip> </el-table-column>
+                    <el-table-column prop="template_name" label="模板名称" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="cycle_type" label="人群类型" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="brand_name" label="品牌" show-overflow-tooltip> </el-table-column>
+                    <el-table-column prop="document_text" label="文案内容" show-overflow-tooltip> </el-table-column>
+                    <el-table-column prop="create_time" label="创建时间" show-overflow-tooltip> </el-table-column>
                   </el-table>
                 </div>
                 <div class="select-msg-page">
@@ -117,7 +120,7 @@
           <div class="r-header">
             <p class="r-header-t">
               <span>Create Message</span>
-              <span class="el-icon-close"></span>
+              <span class="el-icon-back" @click="backlevelSms(1)"></span>
             </p>
           </div>
           <div class="sms-edit">
@@ -166,7 +169,6 @@ export default {
           icon: "icon-wenjian"
         }
       ],
-      smsTable:[{}],
       pageList:[{}],
       pageVal:'',
       brandVal: '',
@@ -177,7 +179,6 @@ export default {
       newMbmber:'',
       SearchSales:'',
       pageRightVal:'',
-      SearchSms: '',
       editMsg:''
     }
   },
@@ -199,10 +200,16 @@ export default {
       }
     }
   },
-  props: ["openData", "openDataContent","popupDatas"],
+  props: ["openData", "openDataContent","propsSms"],
   methods: {
     clickPopup(value) {
       this.$emit("sltDataContent", value);
+    },
+    searchSmsList(e) {
+      this.$emit('searchSmsList',e)
+    },
+    backlevelSms() {
+      this.$emit('backlevelSms')
     },
     tabSelect(val) {
       this.dataSelected = val

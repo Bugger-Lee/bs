@@ -139,10 +139,15 @@
       <popupDrag :openData ="openData"
         :propsData="propsData"
         :openDataContent ="openDataContent"
+        @searchDate = "searchDate"
+        @backlevel ="backlevel"
         @sltDataContent ="sltDataContent">
       </popupDrag>
       <smsPopup :openData ="openSms"
+        :propsSms = "propsSms"
         :openDataContent ="openSmsContent"
+        @backlevelSms ="backlevelSms"
+        @searchSmsList ="searchSmsList"
         @sltDataContent ="sltSmsContent">
       </smsPopup>
       <el-dialog
@@ -154,7 +159,7 @@
           <span class="icon-shouye"></span>Wait By Duration
         </span>
         <span slot="footer">
-          <el-button>Cancel</el-button>
+          <el-button @click="openTime = false">Cancel</el-button>
           <el-button type="primary">Done</el-button>
         </span>
         <popupOpenTime :timeType = "timeType"></popupOpenTime>
@@ -169,6 +174,7 @@ import $ from "jquery";
 import popupDrag from "./children/popupDrag.vue"
 import smsPopup from "./children/smsPopup.vue"
 import popupOpenTime from "./children/popupOpenTime.vue"
+import { connect } from 'net';
 export default {
   name: "marketingActive",
   data() {
@@ -238,10 +244,18 @@ export default {
         brandList: [],
         periodList: [],
         registerList: [],
+        salesTable:[],
         brandVal: '',
         periodVal:'',
         registerVal:'',
-      }
+        SearchSales:''
+      },
+      propsSms:{
+        smsTable:[],
+        SearchSms: ''
+      },
+      couponName:'',
+      templateName:''
     }
   },
   mounted() {
@@ -251,6 +265,8 @@ export default {
     this.brandLists()
     this.periodLists()
     this.registerLists()
+    this.discountLists()
+    this.smsLists()
   },
   components:{
     popupDrag,
@@ -258,6 +274,14 @@ export default {
     smsPopup
   },
   methods: {
+    backlevel() {
+      this.openDataContent = false
+      this.openData = true
+    },
+    backlevelSms() {
+      this.openSmsContent = false
+      this.openSms = true
+    },
     brandLists() {
       this.$.get("brand/getList?brandName=").then(res=>{
         if(res.data.code == 200) {
@@ -278,6 +302,32 @@ export default {
           this.propsData.registerList = res.data.data
         }
       })
+    },
+    discountLists() {
+      this.$.get("coupon/getList",{params:{couponName:this.couponName}}).then(res=>{
+        if(res.data.code == 200) {
+          this.propsData.salesTable = res.data.data
+        }
+      })
+    },
+    searchDate(e) {
+      var keyCode = window.event? e.keyCode:e.which;
+      if(keyCode == 13){
+        this.couponName= this.propsData.SearchSales
+        this.discountLists()
+      }
+    },
+    smsLists() {
+      this.$.get("template/getList",{params:{templateName:this.templateName}}).then(res=>{
+        this.propsSms.smsTable = res.data.data
+      })
+    },
+    searchSmsList(e) {
+      var keyCode = window.event? e.keyCode:e.which;
+      if(keyCode == 13){
+        this.templateName = this.propsSms.SearchSms
+        this.smsLists()
+      }
     },
     jsPlumb(ele1,ele2) {
       let that = this
