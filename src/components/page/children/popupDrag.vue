@@ -42,7 +42,7 @@
         </div>
         <div class="data-content-summary" :class="{'data-Selected':dataSelected == 2}" @click="tabSelect(2)">
           <p>
-            <i class="redStar">*</i>Data 
+            <i class="redStar">*</i>Data
           </p>
           <p>Extension</p>
         </div>
@@ -265,7 +265,7 @@ export default {
         return this.openDataContent
       },
       set(v) {
-        this.$emit('sltDataContent', v);
+        this.$emit('sltDataContent', 'close1');
       }
     }
   },
