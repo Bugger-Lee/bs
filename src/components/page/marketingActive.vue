@@ -113,8 +113,8 @@
             <li class="imaginary-wire">-------></li>
             <li class="imaginary-square"></li>
           </ul>
-          <div class="window"  ref="refData1" v-if="ifDrag">
-            <span id="data1" class="crowd-style" @click="dataExtension()">
+          <div class="window" id="data1"  ref="refData1" v-if="ifDrag">
+            <span  class="crowd-style" @click="dataExtension()">
               <i class="icon-shouye"></i>
             </span>
           </div>
@@ -245,7 +245,6 @@ export default {
     }
   },
   mounted() {
-    this.getDate()
     this.dragInit();
   },
   created() {
