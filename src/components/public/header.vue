@@ -25,7 +25,7 @@
             :value="item.value"
           ></el-option>
         </el-select> -->
-        <span class="headers-right-r">
+        <!-- <span class="headers-right-r">
           <span class="login-icon ml15">
             <i class="icon-dengluyonghu"></i>
           </span>
@@ -33,7 +33,7 @@
             <i>hmy</i>
             <i class="el-icon-caret-bottom"></i>
           </span>
-        </span>
+        </span> -->
       </p>
     </div>
   </div>

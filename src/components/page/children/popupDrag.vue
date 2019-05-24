@@ -11,7 +11,7 @@
         <p>
           <span class="redStar">*</span>Data Extension
         </p>
-        <div class="data-content-c">
+        <div class="data-content-c" v-if="ifDataExtension == ''">
           <img src="@/assets/img/noneData.png">
           <p class="c-explain-one">Let's get going!</p>
           <p>Select the data extension whose contacts should enter this journey</p>
@@ -20,6 +20,16 @@
             class="c-explain-select"
             @click="clickPopup('openNext')"
           >Select Data Extension</el-button>
+        </div>
+        <div v-if="ifDataExtension != ''" class="data-content-apply">
+          <p class="data-content-apply-header">
+            <span style="font-size:16px;font-weight:600;">20180202-May_0192k</span>
+            <el-button class="bth">Edit</el-button>
+          </p>
+          <div class="data-content-apply-content">
+            <p>DATA EXTENSION PROPERTIES</p>
+            <P><span>brand : </span><span>only</span></P>
+          </div>
         </div>
       </div>
       <span slot="footer">
@@ -118,19 +128,19 @@
               </el-col>
               <el-col :span="12">
                 <div class="select-option-ipt" v-if="ifNewPeriod">
-                  <span class="mr15">是否为新进入周期:</span>
-                  <el-radio v-model="newPeriod" label="1">是</el-radio>
-                  <el-radio v-model="newPeriod" label="2">否</el-radio>
+                  <span class="mr15">是否新进入周期:</span>
+                  <el-radio v-model="propsData.newPeriod" label="y">是</el-radio>
+                  <el-radio v-model="propsData.newPeriod" label="n">否</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewBuy">
                   <span class="mr15">是否为首次购买:</span>
-                  <el-radio v-model="newBuy" label="1">是</el-radio>
-                  <el-radio v-model="newBuy" label="2">否</el-radio>
+                  <el-radio v-model="propsData.newBuy" label="y">是</el-radio>
+                  <el-radio v-model="propsData.newBuy" label="n">否</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewMbmber">
-                  <span class="mr15">是否为注册一周未购买会员:</span>
-                  <el-radio v-model="newMbmber" label="1">是</el-radio>
-                  <el-radio v-model="newMbmber" label="2">否</el-radio>
+                  <span class="mr15">注册一周未购买:</span>
+                  <el-radio v-model="propsData.newMbmber" label="y">是</el-radio>
+                  <el-radio v-model="propsData.newMbmber" label="n">否</el-radio>
                 </div>
               </el-col>
             </div>
@@ -166,41 +176,26 @@
               <div class="select-msg-search">
                 <el-input
                   class="select-msg-search-ipt"
-                  placeholder="Search"
+                  placeholder="请根据券编码搜索"
                   prefix-icon="el-icon-search"
                   @keyup.enter.native="searchDate"
                   v-model="propsData.SearchSales">
                 </el-input>
               </div>
               <div class="select-msg-table">
-                <el-table :data="propsData.salesTable" style="width: 100%" height="220">
+                <el-table :data="propsData.salesTable" style="width: 100%" height="220" @selection-change="ifChecked">
                   <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column prop="sal_id" label="劵编码" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="coupon_type" label="类型" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="brand" label="品牌" show-overflow-tooltip> </el-table-column>
-                  <el-table-column  label="有效期" show-overflow-tooltip>
+                  <el-table-column  label="详情" show-overflow-tooltip>
                      <template slot-scope="scope"> {{scope.row.start_date}} - ({{scope.row.end_date}}) </template>
                   </el-table-column>
-                  <el-table-column prop="created_time" label="创建时间" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="created_time" label="创建时间" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
                 </el-table>
               </div>
               <div class="select-msg-page">
-                <p class="select-msg-page-l">
-                  <span>1 to 25 of 268 items</span>
-                  <el-select v-model="pageVal" placeholder="25" class="sizebig">
-                    <el-option
-                      v-for="item in pageList"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </p>
-                <p class="select-msg-page-r">
-                  <span>page</span>
-                  <input type="text" value="1" v-model="pageRightVal" class="r-ipt"/>
-                  <span>of 11</span>
-                </p>
+
               </div>
             </div>
           </el-col>
@@ -208,7 +203,7 @@
       </el-col>
       <span slot="footer">
         <el-button @click="openDataContentProps = false" >Cancel</el-button>
-        <el-button type="primary" @click="openDataContentProps = false">Summary</el-button>
+        <el-button type="primary" @click="backlevel(2)">Summary</el-button>
       </span>
     </el-dialog>
   </div>
@@ -234,21 +229,10 @@ export default {
           icon: "icon-wenjian"
         }
       ],
-        pageList: [{
-          label: '10'
-        }, {
-          label: '20'
-        }, {
-          label: '30'
-        }],
-        pageVal:'',
-        newPeriod:'',
-        newBuy:'',
-        newMbmber:'',
-        pageRightVal:'',
-        ifNewPeriod:false,
-        ifNewBuy:false,
-        ifNewMbmber:false
+      ifNewPeriod:false,
+      ifNewBuy:false,
+      ifNewMbmber:false,
+      multipleSelection:[],
     };
   },
   computed: {
@@ -269,16 +253,47 @@ export default {
       }
     }
   },
-  props: ["openData", "openDataContent","propsData"],
+  props: ["openData", "openDataContent","propsData","ifDataExtension"],
   methods: {
+    formatDate(row, column, created_time ,index) {
+      if(created_time==null || created_time=="") return "";
+      let date = new Date(created_time);
+      let Y = date.getFullYear() + '-';
+      let M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) + '-' : date.getMonth() + 1 + '-';
+      let D = date.getDate() < 10 ? '0' + date.getDate() + ' ' : date.getDate() + ' ';
+      let h = date.getHours() < 10 ? '0' + date.getHours() + ':' : date.getHours() + ':';
+      let m = date.getMinutes()  < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':';
+      let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+      return Y + M + D ;
+    },
+    // 搜索框
     searchDate(e) {
       this.$emit('searchDate', e)
     },
+    // 监听
     clickPopup(value) {
       this.$emit("sltDataContent", value);
     },
+    // 取消  确定
     backlevel(val) {
       this.$emit("backlevel",val)
+    },
+    ifChecked(val) {
+      this.multipleSelection = val
+      let allTicket = {
+        active:[],
+        discounts:[]
+      }
+      for (var i = 0; i < this.multipleSelection.length; i++) {
+        let str = this.multipleSelection[i].sal_id
+        let ticketStr = this.multipleSelection[i].coupon_type
+        if(ticketStr == "活动券") {
+          allTicket.active.push(str)
+        }else if(ticketStr == "优惠券"){
+          allTicket.discounts.push(str)
+        }
+      }
+      this.$emit('ifCheckedVal', allTicket)
     },
     tabSelect(val) {
       this.dataSelected = val

@@ -10,7 +10,7 @@
         </el-col>
         <el-col :span="6">
           <el-input
-            placeholder="Search Journeys"
+            placeholder="请根据标题搜索"
             clearable
             prefix-icon="el-icon-search"
             @keyup.enter.native="searchHomeList"
@@ -55,12 +55,12 @@
               style="width: 100%"
               v-loadmore="getMoreDate"
             >
-              <el-table-column prop="rule_name" label="TITLE" show-overflow-tooltip>
+              <el-table-column prop="rule_name" label="标题" show-overflow-tooltip>
                 <template slot-scope="scope">{{ scope.row.rule_name}}</template>
               </el-table-column>
-              <el-table-column prop="status_name" label="STATUS" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="cycle_type" label="SOURCES" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="command_code" label="TYPE" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="status_name" label="状态" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="cycle_type" label="数据来源" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="command_code" label="人群类型" show-overflow-tooltip></el-table-column>
               <div style="text-align:center;" slot="append"><i class="el-icon-loading" style="color:#1589ee;font-size:25px;"></i></div>
             </el-table>
           </el-col>

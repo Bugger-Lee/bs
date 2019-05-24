@@ -118,32 +118,34 @@
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <div ref="refData1div" v-if="ifDrag">data</div>
+          <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none" />
           <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
             <span class="msg-style" @click="sms()">
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <div ref="refData2div" v-if="ifSmsDrag">sms</div>
+          <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none" />
           <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
             <span class="ctl-style" @click="selectTime()">
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <div ref="refData3div" v-if="ifSmsDrag">select</div>
+          <input ref="refData3div" v-if="ifSmsDrag" value="select"  style="border:none" />
           <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
             <span class="crowd-style">
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <div ref="refData4div" v-if="ifSmsDrag">sms</div>
+          <input ref="refData4div" v-if="ifSmsDrag" value="over"  style="border:none"/>
         </el-col>
       </div>
       <popupDrag :openData ="openData"
         :propsData="propsData"
         :openDataContent ="openDataContent"
+        :ifDataExtension ="ifDataExtension"
         @searchDate = "searchDate"
         @backlevel ="backlevel"
+        @ifCheckedVal = "ifCheckedVal"
         @sltDataContent ="sltDataContent">
       </popupDrag>
       <smsPopup :openData ="openSms"
@@ -251,14 +253,22 @@ export default {
         brandVal: '',
         periodVal:'',
         registerVal:'',
-        SearchSales:''
+        SearchSales:'',
+        newPeriod:'',
+        newBuy:'',
+        newMbmber:''
       },
       propsSms:{
         smsTable:[],
         SearchSms: ''
       },
       couponName:'',
-      templateName:''
+      templateName:'',
+      ifDataExtension:'aaa',
+      ifTableChecked:{
+        checkedActive:'',
+        checkedDiscounts:''
+      }
     }
   },
   mounted() {
@@ -277,9 +287,42 @@ export default {
     smsPopup
   },
   methods: {
-    backlevel() {
-      this.openDataContent = false
-      this.openData = true
+    backlevel(val) {
+      if(val == 1) {
+        this.openDataContent = false
+        this.openData = true
+      }else{
+        this.dataSummary()
+      }
+    },
+    ifCheckedVal(val) {
+      let active = []
+      let discounts = []
+      for(var i=0;i<val.active.length;i++) {
+        let str = val.active[i]
+        active.push(str)
+      }
+      for(var i=0;i<val.discounts.length;i++) {
+        let str = val.discounts[i]
+        discounts.push(str)
+      }
+      let activeData = [...new Set(active)].join(',')
+      let discountsData = [...new Set(discounts)].join(',')
+      this.ifTableChecked.checkedActive = activeData
+      this.ifTableChecked.checkedDiscounts = discountsData
+    },
+    dataSummary() {
+      let objData = {
+        brand:this.propsData.brandVal,
+        period:this.propsData.periodVal,
+        register:this.propsData.registerVal,
+        newPeriod:this.propsData.newPeriod,
+        newBuy:this.propsData.newBuy,
+        newMbmber:this.propsData.newMbmber,
+        camp_coupon_id:this.ifTableChecked.checkedActive,
+        coupon_id:this.ifTableChecked.checkedDiscounts
+      }
+      sessionStorage.setItem('dataMsg',JSON.stringify(objData))
     },
     backlevelSms() {
       this.openSmsContent = false
