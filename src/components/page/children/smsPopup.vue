@@ -77,7 +77,7 @@
                 <div class="select-msg-search">
                   <el-input
                     class="select-msg-search-ipt"
-                    placeholder="Search"
+                    placeholder="请根据文案内容搜索"
                     prefix-icon="el-icon-search"
                     @keyup.enter.native="searchSmsList"
                     v-model="propsSms.SearchSms">
@@ -94,22 +94,7 @@
                   </el-table>
                 </div>
                 <div class="select-msg-page">
-                  <p class="select-msg-page-l">
-                    <span>1 to 25 of 268 items</span>
-                    <el-select v-model="pageVal" placeholder="25" class="sizebig">
-                      <el-option
-                        v-for="item in pageList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </p>
-                  <p class="select-msg-page-r">
-                    <span>page</span>
-                    <input type="text" value="1" v-model="pageRightVal" class="r-ipt"/>
-                    <span>of 11</span>
-                  </p>
+                  
                 </div>
               </div>
           </el-col>
@@ -169,8 +154,6 @@ export default {
           icon: "icon-wenjian"
         }
       ],
-      pageList:[{}],
-      pageVal:'',
       brandVal: '',
       periodVal:'',
       registerVal:'',
@@ -178,7 +161,6 @@ export default {
       newBuy:'',
       newMbmber:'',
       SearchSales:'',
-      pageRightVal:'',
       editMsg:''
     }
   },
@@ -196,7 +178,7 @@ export default {
         return this.openDataContent
       },
       set(v) {
-        this.$emit('sltDataContent', v);
+        this.$emit('sltDataContent', 'close1');
       }
     }
   },
