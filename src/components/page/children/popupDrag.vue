@@ -23,12 +23,19 @@
         </div>
         <div v-if="ifDataExtension != ''" class="data-content-apply">
           <p class="data-content-apply-header">
-            <span style="font-size:16px;font-weight:600;">20180202-May_0192k</span>
+            <!-- <span style="font-size:16px;font-weight:600;">20180202-May_0192k</span> -->
+            <span style="font-size:16px;font-weight:600;">DATA EXTENSION PROPERTIES</span>
             <el-button class="bth">Edit</el-button>
           </p>
-          <div class="data-content-apply-content">
-            <p>DATA EXTENSION PROPERTIES</p>
-            <P><span>brand : </span><span>only</span></P>
+          <div class="data-content-apply-content mt10">
+            <P><span>品牌 : </span><span></span></P>
+            <P><span>周期 : </span><span></span></P>
+            <P><span>渠道 : </span><span></span></P>
+            <P><span>是否新进入周期 : </span><span></span></P>
+            <P><span>是否为首次购买 : </span><span></span></P>
+            <P><span>注册一周未购买 : </span><span></span></P>
+            <P><span>活动券 : </span><span></span></P>
+            <P><span>优惠券 : </span><span></span></P>
           </div>
         </div>
       </div>
@@ -116,7 +123,7 @@
                 <div class="ml10">
                   <span class="redStar">*</span>
                   <span>注册渠道</span>
-                  <el-select v-model="propsData.registerVal" clearable placeholder="请选择注册渠道" class="select-option-classify">
+                  <el-select v-model="propsData.registerVal" clearable multiple placeholder="请选择注册渠道" class="select-option-classify">
                     <el-option
                       v-for="item in propsData.registerList"
                       :key="item.id"
@@ -189,7 +196,7 @@
                   <el-table-column prop="coupon_type" label="类型" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="brand" label="品牌" show-overflow-tooltip> </el-table-column>
                   <el-table-column  label="详情" show-overflow-tooltip>
-                     <template slot-scope="scope"> {{scope.row.start_date}} - ({{scope.row.end_date}}) </template>
+                     <template slot-scope="scope">{{scope.row.act_desc}}</template>
                   </el-table-column>
                   <el-table-column prop="created_time" label="创建时间" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
                 </el-table>
@@ -296,7 +303,11 @@ export default {
       this.$emit('ifCheckedVal', allTicket)
     },
     tabSelect(val) {
-      this.dataSelected = val
+      if (val == '1') {
+        this.$emit("backlevel",val)
+      } else {
+        this.dataSelected = val
+      }
     },
     periodChange() {
       if(this.propsData.periodVal != '') {
