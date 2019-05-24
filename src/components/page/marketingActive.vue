@@ -180,6 +180,7 @@ import popupDrag from "./children/popupDrag.vue"
 import smsPopup from "./children/smsPopup.vue"
 import popupOpenTime from "./children/popupOpenTime.vue"
 import { connect } from 'net';
+import { constants } from 'fs';
 export default {
   name: "marketingActive",
   data() {
@@ -252,11 +253,15 @@ export default {
         salesTable:[],
         brandVal: '',
         periodVal:'',
+        periodShow: '',
+        brandShow:'',
         registerVal:'',
         SearchSales:'',
         newPeriod:'',
         newBuy:'',
-        newMbmber:''
+        newMbmber:'',
+        checkedActive:'',
+        checkedDiscounts:''
       },
       propsSms:{
         smsTable:[],
@@ -264,11 +269,7 @@ export default {
       },
       couponName:'',
       templateName:'',
-      ifDataExtension:'aaa',
-      ifTableChecked:{
-        checkedActive:'',
-        checkedDiscounts:''
-      }
+      ifDataExtension:'',
     }
   },
   mounted() {
@@ -308,21 +309,45 @@ export default {
       }
       let activeData = [...new Set(active)].join(',')
       let discountsData = [...new Set(discounts)].join(',')
-      this.ifTableChecked.checkedActive = activeData
-      this.ifTableChecked.checkedDiscounts = discountsData
+      this.checkedActive = activeData
+      this.checkedDiscounts = discountsData
     },
     dataSummary() {
+      if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0) {
+        this.$message({
+          showClose: true,
+          message: '请您选择必选项',
+          type: 'warning'
+        });
+        return false
+      }
+      this.propsData.registerVal = this.propsData.registerVal.join(',')
+      if(this.checkedActive == undefined || this.checkedDiscounts == undefined) {
+        this.$message({
+          showClose: true,
+          message: '请您选择优惠券或活动券',
+          type: 'warning'
+        });
+        return false
+      }
+      let item_data = this.propsData.brandList.filter(item => item.id == this.propsData.brandVal)
+      let item2_data = this.propsData.periodList.filter(item => item.id == this.propsData.periodVal)
       let objData = {
         brand:this.propsData.brandVal,
         period:this.propsData.periodVal,
         register:this.propsData.registerVal,
+        brandShow:item_data[0].brand_name,
+        periodShow:item2_data[0].cycle_type,
         newPeriod:this.propsData.newPeriod,
         newBuy:this.propsData.newBuy,
         newMbmber:this.propsData.newMbmber,
-        camp_coupon_id:this.ifTableChecked.checkedActive,
-        coupon_id:this.ifTableChecked.checkedDiscounts
+        camp_coupon_id:this.checkedActive,
+        coupon_id:this.checkedDiscounts
       }
       sessionStorage.setItem('dataMsg',JSON.stringify(objData))
+      this.ifDataExtension = "value"
+      this.openDataContent = false
+      this.openData = true
     },
     backlevelSms() {
       this.openSmsContent = false
@@ -332,6 +357,9 @@ export default {
       this.$.get("brand/getList?brandName=").then(res=>{
         if(res.data.code == 200) {
           this.propsData.brandList = res.data.data
+          for(var i=0;i< this.propsData.brandList.length;i++) {
+            this.brandShow = this.propsData.brandList[i].brand_name
+          }
         }
       })
     },
@@ -339,6 +367,9 @@ export default {
       this.$.get("lifeCycle/getList?cycleType=").then(res=>{
         if(res.data.code == 200) {
           this.propsData.periodList = res.data.data
+          for(var i=0;i< this.propsData.periodList.length;i++) {
+            this.periodShow = this.propsData.periodList[i].cycle_type
+          }
         }
       })
     },
