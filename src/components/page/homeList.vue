@@ -40,7 +40,7 @@
               <span  slot-scope="{ node, data }">
                   <span>
                       <i :class="data.icon" class="mr05"></i>{{ node.label }}
-                  </span>              
+                  </span>
               </span>
             </el-tree>
           </div>
@@ -61,7 +61,7 @@
               <el-table-column prop="status_name" label="状态" show-overflow-tooltip></el-table-column>
               <el-table-column prop="cycle_type" label="数据来源" show-overflow-tooltip></el-table-column>
               <el-table-column prop="command_code" label="人群类型" show-overflow-tooltip></el-table-column>
-              <div style="text-align:center;" slot="append"><i class="el-icon-loading" style="color:#1589ee;font-size:25px;"></i></div>
+              <div style="text-align:center; padding: 10px 0" slot="append" v-if="showLoading"><i class="el-icon-loading" style="color:#1589ee;font-size:35px;"></i></div>
             </el-table>
           </el-col>
         </div>
@@ -96,13 +96,18 @@ export default {
         }
       ],
       tableData: [],
+      totalDate: [], //总数据
+      page: 1,//当前页
+      total_page: '',//总页数
       JourneyTotal:'',
       ruleName:'',
-      tableHeight: window.innerHeight - 200
+      tableHeight: window.innerHeight - 200,
+      showLoading: false
     };
   },
   created() {
-    this.homeLists()
+    // this.homeLists()
+    this.splitDate()
   },
   methods: {
     handleSelectionChange() {},
@@ -111,13 +116,36 @@ export default {
       this.$router.push('/marketingActive')
     },
     getMoreDate() {
-      // console.log(123)
+      if (this.showLoading) {
+        return false
+      }
+      this.showLoading = true
+      if (this.total_page>this.page) {
+        setTimeout(() => {
+          this.showLoading = false
+          this.tableData = this.tableData.concat(this.totalDate[this.page])
+          this.page ++
+        }, 500);
+      } else {
+        this.showLoading = false
+      }
+    },
+    splitDate() {
+      let result = [];
+      for(var i=0;i<this.totalDate.length;i+=15){
+          result.push(this.totalDate.slice(i,i+15));
+      }
+      this.totalDate = result
+      this.total_page = result.length
+      this.page = 1
+      this.tableData = result[0]
     },
     homeLists() {
       this.$.get("rule/getList",{params:{ruleName:this.ruleName}}).then(res=>{
         if (res.data.code ==200) {
-        this.tableData = res.data.data
-        this.JourneyTotal = res.data.size
+          this.totalDate = res.data.data
+          this.JourneyTotal = res.data.size
+          this.splitDate()
         }
       })
     },
