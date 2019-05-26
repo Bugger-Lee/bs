@@ -84,8 +84,7 @@
                   </el-input>
                 </div>
                 <div class="select-msg-table">
-                  <el-table :data="propsSms.smsTable" style="width: 100%" height="220">
-                    <el-table-column type="selection" width="55"></el-table-column>
+                  <el-table :data="propsSms.smsTable" style="width: 100%" height="220" setCurrentRow>
                     <el-table-column prop="template_name" label="模板名称" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="cycle_type" label="人群类型" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="brand_name" label="品牌" show-overflow-tooltip> </el-table-column>
@@ -113,7 +112,7 @@
               <p class="sms-edit-l-tit">CONTENT</p>
               <div class="sms-edit-l-content">
                 <p><i class="el-icon-edit"></i>Edit message template</p>
-                <textarea rows="6" placeholder="请编辑短信模板" v-model="editMsg">
+                <textarea rows="6" placeholder="请编辑短信模板" v-model="propsSms.editMsg">
 
                 </textarea>
               </div>
@@ -126,7 +125,7 @@
                   <p style="font-size:13px;">[FROM NAME]</p>
                 </div>
                 <div class="content-tit-see ml15 mt20">
-                  <span>{{this.editMsg}}</span>
+                  <span>{{this.propsSms.editMsg}}</span>
                 </div>
               </div>
             </el-col>
@@ -135,7 +134,7 @@
       </el-col>
       <span slot="footer">
         <el-button @click="openDataContentProps = false">Cancel</el-button>
-        <el-button type="primary" @click="openDataContentProps = false">Save Meaasge</el-button>
+        <el-button type="primary" @click="clickPopup('saveMsg')">Save Meaasge</el-button>
       </span>
     </el-dialog>
   </div>
@@ -161,7 +160,6 @@ export default {
       newBuy:'',
       newMbmber:'',
       SearchSales:'',
-      editMsg:''
     }
   },
   computed: {

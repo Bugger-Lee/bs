@@ -25,23 +25,23 @@
           <p class="data-content-apply-header">
             <!-- <span style="font-size:16px;font-weight:600;">20180202-May_0192k</span> -->
             <span style="font-size:16px;font-weight:600;">DATA EXTENSION PROPERTIES</span>
-            <el-button class="bth">Edit</el-button>
+            <el-button class="bth" @click="backlevel('edit')">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P><span>品牌 : </span><span></span></P>
-            <P><span>周期 : </span><span></span></P>
-            <P><span>渠道 : </span><span></span></P>
-            <P><span>是否新进入周期 : </span><span></span></P>
-            <P><span>是否为首次购买 : </span><span></span></P>
-            <P><span>注册一周未购买 : </span><span></span></P>
-            <P><span>活动券 : </span><span></span></P>
-            <P><span>优惠券 : </span><span></span></P>
+            <P><span>品牌 : {{ifDataExtension.brandShow}}</span><span></span></P>
+            <P><span>周期 : {{ifDataExtension.periodShow}}</span><span></span></P>
+            <P><span>渠道 : {{ifDataExtension.register}}</span><span></span></P>
+            <P><span>是否新进入周期 : {{ifDataExtension.newPeriod}}</span><span></span></P>
+            <P><span>是否为首次购买 : {{ifDataExtension.newBuy}}</span><span></span></P>
+            <P><span>注册一周未购买 : {{ifDataExtension.newMbmber}}</span><span></span></P>
+            <P><span>活动券 : {{ifDataExtension.camp_coupon_id}}</span><span></span></P>
+            <P><span>优惠券 : {{ifDataExtension.coupon_id}}</span><span></span></P>
           </div>
         </div>
       </div>
       <span slot="footer">
         <el-button @click="openDataProps = false">Cancel</el-button>
-        <el-button type="primary">Done</el-button>
+        <el-button  @click="openDataProps = false" type="primary">Done</el-button>
       </span>
     </el-dialog>
     <el-dialog
@@ -136,18 +136,18 @@
               <el-col :span="12">
                 <div class="select-option-ipt" v-if="ifNewPeriod">
                   <span class="mr15">是否新进入周期:</span>
-                  <el-radio v-model="propsData.newPeriod" label="y">是</el-radio>
-                  <el-radio v-model="propsData.newPeriod" label="n">否</el-radio>
+                  <el-radio v-model="propsData.newPeriod" label="是">是</el-radio>
+                  <el-radio v-model="propsData.newPeriod" label="否">否</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewBuy">
                   <span class="mr15">是否为首次购买:</span>
-                  <el-radio v-model="propsData.newBuy" label="y">是</el-radio>
-                  <el-radio v-model="propsData.newBuy" label="n">否</el-radio>
+                  <el-radio v-model="propsData.newBuy" label="是">是</el-radio>
+                  <el-radio v-model="propsData.newBuy" label="否">否</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewMbmber">
                   <span class="mr15">注册一周未购买:</span>
-                  <el-radio v-model="propsData.newMbmber" label="y">是</el-radio>
-                  <el-radio v-model="propsData.newMbmber" label="n">否</el-radio>
+                  <el-radio v-model="propsData.newMbmber" label="是">是</el-radio>
+                  <el-radio v-model="propsData.newMbmber" label="否">否</el-radio>
                 </div>
               </el-col>
             </div>
