@@ -265,7 +265,9 @@ export default {
       },
       propsSms:{
         smsTable:[],
-        SearchSms: ''
+        SearchSms: '',
+        editMsg:'',
+        smsListsId:''
       },
       couponName:'',
       templateName:'',
@@ -280,7 +282,6 @@ export default {
     this.periodLists()
     this.registerLists()
     this.discountLists()
-    this.smsLists()
   },
   components:{
     popupDrag,
@@ -292,8 +293,11 @@ export default {
       if(val == 1) {
         this.openDataContent = false
         this.openData = true
-      }else{
+      }else if(val == 2){
         this.dataSummary()
+      }else if(val == 'edit') {
+        this.openDataContent = true
+        this.openData = false
       }
     },
     ifCheckedVal(val) {
@@ -345,7 +349,7 @@ export default {
         coupon_id:this.checkedDiscounts
       }
       sessionStorage.setItem('dataMsg',JSON.stringify(objData))
-      this.ifDataExtension = "value"
+      this.ifDataExtension = objData
       this.openDataContent = false
       this.openData = true
     },
@@ -357,9 +361,6 @@ export default {
       this.$.get("brand/getList?brandName=").then(res=>{
         if(res.data.code == 200) {
           this.propsData.brandList = res.data.data
-          for(var i=0;i< this.propsData.brandList.length;i++) {
-            this.brandShow = this.propsData.brandList[i].brand_name
-          }
         }
       })
     },
@@ -367,9 +368,6 @@ export default {
       this.$.get("lifeCycle/getList?cycleType=").then(res=>{
         if(res.data.code == 200) {
           this.propsData.periodList = res.data.data
-          for(var i=0;i< this.propsData.periodList.length;i++) {
-            this.periodShow = this.propsData.periodList[i].cycle_type
-          }
         }
       })
     },
@@ -395,8 +393,13 @@ export default {
       }
     },
     smsLists() {
-      this.$.get("template/getList",{params:{templateName:this.templateName}}).then(res=>{
-        this.propsSms.smsTable = res.data.data
+      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand,cycleId:this.ifDataExtension.period}}).then(res=>{
+        if(res.data.code == 200) {
+          this.propsSms.smsTable[0] = res.data.data
+          this.propsSms.smsListsId = this.propsSms.smsTable[0].id
+        }else{
+          this.propsSms.smsTable = []
+        }
       })
     },
     searchSmsList(e) {
@@ -472,7 +475,17 @@ export default {
       this.openData = true
     },
     sms() {
-      this.openSms = true
+      if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0 || this.checkedActive == undefined || this.checkedDiscounts == undefined) {
+        this.$message({
+          showClose: true,
+          message: '请您先将数据源里的必选内容选完',
+          type: 'warning'
+        });
+        return false
+      }else{
+        this.smsLists()
+        this.openSms = true
+      }
     },
     selectTime() {
       this.openTime = true
@@ -491,6 +504,46 @@ export default {
         this.openSmsContent = false
       } else if (val == 'openNext') {
         this.openSmsContent = true
+      }else if(val == 'saveMsg') {
+        this.saveMessage()
+      }
+    },
+    saveMessage() {
+      if(this.propsSms.smsTable != '') {
+        let upDate = {
+          cycle_id:this.ifDataExtension.period,
+          brand_id:this.ifDataExtension.brand,
+          document_text:this.propsSms.editMsg,
+          id:this.propsSms.smsListsId
+        }
+        this.$.post("template/update",upDate).then(res=>{
+          if(res.data.code == 200) {
+            this.smsLists()
+          }else{
+            this.$message({
+              showClose: true,
+              message: res.data.msg,
+              type: 'warning'
+            });
+          }
+        })
+      }else{
+        let insertData = {
+          cycle_id:this.ifDataExtension.period,
+          brand_id:this.ifDataExtension.brand,
+          document_text:this.propsSms.editMsg
+        }
+        this.$.post("template/insert",insertData).then(res=>{
+          if(res.data.code == 200) {
+            this.smsLists()
+          }else{
+            this.$message({
+              showClose: true,
+              message: res.data.msg,
+              type: 'warning'
+            });
+          }
+        })
       }
     },
     dragInit() {
