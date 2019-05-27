@@ -4,8 +4,8 @@
       <p>Select a duration to hold contacts within the Journey</p>
       <div class="time-content">
         <p class="mb10">Duration</p>
-        <el-input-number v-model="timeType.timeNum" controls-position="right" :min="1" :max="12" size="small"></el-input-number>
-        <el-select v-model="timeType.timeVal" value="1" size="small">
+        <el-input-number v-model="timeType.timeNum" style="width:18%;" controls-position="right" :min="1" :max="12" size="small"></el-input-number>
+        <el-select v-model="timeType.timeVal" value="1" size="small" style="width:26%;">
           <el-option
             v-for="item in timeType.time"
             :key="item.id"
@@ -13,16 +13,7 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-time-picker
-          size="small"
-          format="HH:mm"
-          :picker-options="{
-            selectableRange: selectRange
-          }"
-          v-model="timeType.timePicker"
-          placeholder="任意时间点">
-        </el-time-picker>
-        <el-select v-model="timeType.timeWeek" value="1" size="small" v-if="this.ifShowTime == 'weeks'" placeholder="选择周">
+        <el-select v-model="timeType.timeWeek" value="1" style="width:26%;" size="small" v-if="this.ifShowTime == 'weeks'" placeholder="选择周">
           <el-option
             v-for="item in propsTimeWeeks"
             :key="item.id"
@@ -33,11 +24,22 @@
         <el-date-picker
           v-if="this.ifShowTime == 'months'"
           size="small"
+          style="width:26%;"
           v-model="timeType.timeMonths"
           type="date"
           :picker-options="pickerOptions"
           placeholder="选择月">
         </el-date-picker>
+        <el-time-picker
+          size="small"
+          format="HH:mm"
+          style="width:26%;"
+          :picker-options="{
+            selectableRange: selectRange
+          }"
+          v-model="timeType.timePicker"
+          placeholder="任意时间点">
+        </el-time-picker>
       </div>
     </div>
   </div>
@@ -80,10 +82,14 @@ export default {
     timeChange(val) {
       if(val == "Days") {
         this.ifShowTime = "Days"
+        this.timeType.timeMonths = ''
+        this.timeType.timeWeek = ''
       }else if(val == "months") {
         this.ifShowTime = "months"
+        this.timeType.timeWeek = ''
       }else if(val == "weeks") {
         this.ifShowTime = "weeks"
+        this.timeType.timeMonths = ''
       }
     }
   }

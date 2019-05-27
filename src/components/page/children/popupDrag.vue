@@ -36,6 +36,9 @@
             <P><span>注册一周未购买 : {{ifDataExtension.newMbmber}}</span><span></span></P>
             <P><span>活动券 : {{ifDataExtension.camp_coupon_id}}</span><span></span></P>
             <P><span>优惠券 : {{ifDataExtension.coupon_id}}</span><span></span></P>
+            <P><span>短信通道 : {{ifDataExtension.sms_channel_id_show}}</span><span></span></P>
+            <P><span>调度命令 : {{ifDataExtension.command_code_show}}</span><span></span></P>
+            <P><span>定时发送时间 : {{ifDataExtension.schulder_time}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -132,8 +135,42 @@
                     ></el-option>
                   </el-select>
                 </div>
+                <div class="ml10">
+                  <span class="redStar">*</span>
+                  <span>短信通道</span>
+                  <el-select v-model="propsData.sendSmsVal" clearable placeholder="请选择短信通道" class="select-option-classify">
+                    <el-option
+                      v-for="item in propsData.sendSmsList"
+                      :key="item.id"
+                      :label="item.channel_content"
+                      :value="item.id"
+                    ></el-option>
+                  </el-select>
+                </div>
               </el-col>
               <el-col :span="12">
+                <div class="ml10">
+                  <span class="redStar">*</span>
+                  <span>调度命令</span>
+                  <el-select v-model="propsData.orderVal" clearable placeholder="请选择调度命令" class="select-option-classify">
+                    <el-option
+                      v-for="item in propsData.orderList"
+                      :key="item.id"
+                      :label="item.command_name"
+                      :value="item.id"
+                    ></el-option>
+                  </el-select>
+                </div>
+                <div class="ml10 mt20">
+                  <span class="redStar">*</span>
+                  <span>定时发送时间</span>
+                  <el-date-picker
+                    v-model="propsData.dateTimeVal"
+                    type="datetime"
+                    format="yyyy-MM-dd HH:mm"
+                    placeholder="选择日期时间">
+                  </el-date-picker>
+                </div>
                 <div class="select-option-ipt" v-if="ifNewPeriod">
                   <span class="mr15">是否新进入周期:</span>
                   <el-radio v-model="propsData.newPeriod" label="是">是</el-radio>

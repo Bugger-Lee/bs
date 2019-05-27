@@ -11,7 +11,7 @@
         <p>
           <span class="redStar">*</span>Message Definition
         </p>
-        <div class="data-content-c">
+        <div class="data-content-c" v-if="propsSms.ifSms == ''">
           <img src="@/assets/img/noneData2.png" style="height:240px;">
           <p class="c-explain-one">Let's get started!</p>
           <p>Select or create a message</p>
@@ -21,10 +21,19 @@
             @click="clickPopup({name:'openNext'})"
           >Select Message</el-button>
         </div>
+        <div v-if="propsSms.ifSms != ''" class="data-content-apply">
+          <p class="data-content-apply-header">
+            <span style="font-size:16px;font-weight:600;">Message Definition</span>
+            <el-button class="bth" @click="clickPopup({name:'openNext'})">Edit</el-button>
+          </p>
+          <div class="data-content-apply-content mt10">
+            <P><span>文案内容 : {{propsSms.ifSms.contentMag}}</span><span></span></P>
+          </div>
+        </div>
       </div>
       <span slot="footer">
         <el-button @click="openDataProps = false">Cancel</el-button>
-        <el-button type="primary">Done</el-button>
+        <el-button type="primary" @click="openDataProps = false">Done</el-button>
       </span>
     </el-dialog>
     <el-dialog
@@ -34,21 +43,21 @@
       :show-close="false"
       width="98%">
       <el-col :span="3" class="data-content-l">
-        <div class="data-content-summary" :class="{'data-Selected':dataSelected == 1}" @click="tabSelect(1)">
+        <div class="data-content-summary" :class="{'data-Selected':propsSms.dataSelected == 1}" @click="tabSelect(1)">
           <p class="summary-title mt10">Summary</p>
         </div>
-        <div class="data-content-summary" :class="{'data-Selected':dataSelected == 2}" @click="tabSelect(2)">
+        <div class="data-content-summary" :class="{'data-Selected':propsSms.dataSelected == 2}" @click="tabSelect(2)">
           <p>
             <i class="redStar">*</i>Message
           </p>
           <p>Definition</p>
         </div>
-        <div class="data-content-summary" :class="{'data-Selected':dataSelected == 3}" @click="tabSelect(3)">
+        <div class="data-content-summary" :class="{'data-Selected':propsSms.dataSelected == 3}" @click="tabSelect(3)">
           <p><i class="redStar">*</i>Create</p>
           <p>Message</p>
         </div>
       </el-col>
-      <el-col :span="21" v-if="this.dataSelected == 2" class="data-content-r">
+      <el-col :span="21" v-if="propsSms.dataSelected == 2" class="data-content-r">
         <div class="r-header">
           <p class="r-header-t">
             <span>Select an SMS Message</span>
@@ -84,7 +93,7 @@
                   </el-input>
                 </div>
                 <div class="select-msg-table">
-                  <el-table :data="smsTable" style="width: 100%" height="220" setCurrentRow>
+                  <el-table :data="propsSms.smsTable" style="width: 100%" height="220" setCurrentRow>
                     <el-table-column prop="template_name" label="模板名称" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="cycle_type" label="人群类型" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="brand_name" label="品牌" show-overflow-tooltip> </el-table-column>
@@ -112,7 +121,7 @@
           </el-col>
         </div>
       </el-col>
-       <el-col :span="21" v-if="this.dataSelected == 3" class="data-content-r">
+       <el-col :span="21" v-if="propsSms.dataSelected == 3" class="data-content-r">
         <div class="r-sms-content">
           <div class="r-header">
             <p class="r-header-t">
@@ -158,7 +167,6 @@ export default {
   name: "popupDrag",
   data() {
     return {
-      dataSelected: 2,
       dataExtensions: [
         {
           label: "SMS Content",
@@ -225,7 +233,7 @@ export default {
       this.$emit('backlevelSms')
     },
     tabSelect(val) {
-      this.dataSelected = val
+      this.propsSms.dataSelected = val
     },
     // 分页
     handleSizeChange(val) {

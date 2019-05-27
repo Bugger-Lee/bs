@@ -8,18 +8,27 @@
           </span>
           <div class="l-tit">
             <p class="l-tit-t">
-              <a href>Journeys Dashboard</a>
-              <i>> Journey</i>
+              <span>
+                <a href>Journeys Dashboard</a>
+                <i>> Journey</i>
+              </span>
+              <span>
+                <!-- <input type="text" :value="'New Journey -- May  '+  this.currentTimeName" /> -->
+                <el-input
+                  style="width:40%;height:30px;line-height:30px;"
+                  :value="'New Journey -- May  '+  this.currentTimeName"
+                  suffix-icon="el-icon-edit">
+                </el-input>
+              </span>
             </p>
-            <!-- <p class="l-tit-b">New Journey - April 2019</p> -->
           </div>
         </el-col>
         <el-col :span="12" class="marketing-header-r">
           <el-button-group class="mr05">
-            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.ifColor == 1}">Save</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.ifColor == 1}" @click="saveJourney()">Save</el-button>
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.ifColor == 2}">Test</el-button>
           </el-button-group>
-          <el-button type="primary" class="pd-btn mr15">Activate</el-button>
+          <el-button type="primary" class="pd-btn mr15" disabled>runing</el-button>
         </el-col>
       </div>
       <div class="marketing-theme">
@@ -39,12 +48,6 @@
                     <p>Data</p>
                     <p>Extension</p>
                   </li>
-                  <li>
-                    <span class="crowd-style">
-                      <i class="icon-shouye"></i>
-                    </span>
-                    <p>DMP</p>
-                  </li>
                 </ul>
               </el-menu-item-group>
             </el-submenu>
@@ -62,12 +65,6 @@
                       </span>
                       <p>SMS</p>
                     </li>
-                    <li>
-                      <span class="msg-style">
-                        <i class="icon-shouye"></i>
-                      </span>
-                      <p>Email</p>
-                    </li>
                   </ul>
                 </el-menu-item-group>
               </el-submenu>
@@ -81,13 +78,6 @@
                       </span>
                       <p>Wait By</p>
                       <p>Duration</p>
-                    </li>
-                    <li>
-                      <span class="ctl-style">
-                        <i class="icon-shouye"></i>
-                      </span>
-                      <p>Wait By</p>
-                      <p>Attribute</p>
                     </li>
                   </ul>
                 </el-menu-item-group>
@@ -130,7 +120,7 @@
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <input ref="refData3div" v-if="ifSmsDrag" value="select"  style="border:none" />
+          <input ref="refData3div" v-if="ifSmsDrag" value="Time"  style="border:none" />
           <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
             <span class="crowd-style">
               <i class="icon-shouye"></i>
@@ -165,7 +155,7 @@
         </span>
         <span slot="footer">
           <el-button @click="openTime = false">Cancel</el-button>
-          <el-button type="primary">Done</el-button>
+          <el-button type="primary" @click="doneTime()">Done</el-button>
         </span>
         <popupOpenTime :timeType = "timeType"></popupOpenTime>
       </el-dialog>
@@ -195,6 +185,7 @@ export default {
       openSmsContent:false,
       openTime:false,
       ifColor:1,
+      currentTimeName:new Date(),
       timeType:{
         timeNum:1,
         timeVal:'Days',
@@ -251,6 +242,10 @@ export default {
         periodList: [],
         registerList: [],
         salesTable:[],
+        sendSmsList:[],
+        orderList:[],
+        orderVal:'',
+        sendSmsVal:'',
         brandVal: '',
         periodVal:'',
         periodShow: '',
@@ -261,13 +256,17 @@ export default {
         newBuy:'',
         newMbmber:'',
         checkedActive:'',
-        checkedDiscounts:''
+        checkedDiscounts:'',
+        dateTimeVal:''
       },
       propsSms:{
         smsTable:[],
         SearchSms: '',
         editMsg:'',
-        ifShowInput:false
+        ifShowInput:false,
+        tableSelectVal:'',
+        dataSelected: 2,
+        ifSms:''
       },
       couponName:'',
       templateName:'',
@@ -282,6 +281,9 @@ export default {
     this.periodLists()
     this.registerLists()
     this.discountLists()
+    this.sendSmsLists()
+    this.orderLists()
+    this.currentTimeName = this.currentTimeName.getFullYear() + '-' + (this.currentTimeName.getMonth() + 1) + '-' + this.currentTimeName.getDate();
   },
   components:{
     popupDrag,
@@ -289,6 +291,68 @@ export default {
     smsPopup
   },
   methods: {
+    doneTime() {
+      if(this.timeType.timeVal == 'Days') {
+        if(this.timeType.timeNum == '' || this.timeType.timePicker == '') {
+          this.$message({
+            showClose: true,
+            message: '请您完善时间信息',
+            type: 'warning'
+          });
+        return false
+        }
+      }
+      if(this.timeType.timeVal == 'months') {
+         if(this.timeType.timeNum == '' || this.timeType.timePicker == '' || this.timeType.timeMonths == '') {
+          this.$message({
+            showClose: true,
+            message: '请您完善时间信息',
+            type: 'warning'
+          });
+        return false
+        }
+      }
+      if(this.timeType.timeVal == 'weeks') {
+         if(this.timeType.timeNum == '' || this.timeType.timePicker == '' || this.timeType.timeWeek == '') {
+          this.$message({
+            showClose: true,
+            message: '请您完善时间信息',
+            type: 'warning'
+          });
+        return false
+        }
+      }
+      let timeObj = {
+        num:this.timeType.timeNum,
+        timeClassify:this.timeType.timeVal,
+        time:this.timeType.timePicker,
+        timeMonths:this.timeType.timeMonths,
+        timeWeeks:this.timeType.timeWeek
+      }
+      sessionStorage.setItem('timeMsg',JSON.stringify(timeObj))
+      this.openTime = false
+    },
+    saveJourney() {
+      let data = {
+        rule_name:this.currentTimeVal,
+        sms_channel_id:this.ifDataExtension.sms_channel_id,
+        // template_id:,
+        brand_id:this.ifDataExtension.brand,
+        cycle_id:this.ifDataExtension.period,
+        vip_channel_name:this.ifDataExtension.register,
+        schulder_time:this.ifDataExtension.timestamp,
+        camp_coupon_id:this.ifDataExtension.camp_coupon_id,
+        coupon_id:this.ifDataExtension.coupon_id,
+        enter_first:this.ifDataExtension.newPeriod,
+        purchase_week:this.ifDataExtension.newMbmber,
+        purchase_first:this.propsData.newBuy,
+        // cron_express:,
+        command_code:this.ifDataExtension.command_code,
+      }
+      this.$.post("rule/insert",data).then(res=>{
+
+      })
+    },
     backlevel(val) {
       if(val == 1) {
         this.openDataContent = false
@@ -317,7 +381,12 @@ export default {
       this.checkedDiscounts = discountsData
     },
     dataSummary() {
-      if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0) {
+      if(this.propsData.brandVal == "" || 
+      this.propsData.periodVal === "" || 
+      this.propsData.registerVal.length === 0 || 
+      this.propsData.sendSmsVal == '' || 
+      this.propsData.orderVal == '' ||
+      this.propsData.dateTimeVal == '') {
         this.$message({
           showClose: true,
           message: '请您选择必选项',
@@ -336,6 +405,9 @@ export default {
       }
       let item_data = this.propsData.brandList.filter(item => item.id == this.propsData.brandVal)
       let item2_data = this.propsData.periodList.filter(item => item.id == this.propsData.periodVal)
+      let sms_data = this.propsData.sendSmsList.filter(item => item.id == this.propsData.sendSmsVal)
+      let command_data = this.propsData.orderList.filter(item => item.id == this.propsData.orderVal)
+      let timestamp = this.propsData.dateTimeVal
       let objData = {
         brand:this.propsData.brandVal,
         period:this.propsData.periodVal,
@@ -346,7 +418,13 @@ export default {
         newBuy:this.propsData.newBuy,
         newMbmber:this.propsData.newMbmber,
         camp_coupon_id:this.checkedActive,
-        coupon_id:this.checkedDiscounts
+        coupon_id:this.checkedDiscounts,
+        sms_channel_id: this.propsData.sendSmsVal,
+        command_code:this.propsData.orderVal,
+        sms_channel_id_show:sms_data[0].channel_content,
+        command_code_show:command_data[0].command_name,
+        schulder_time:this.propsData.dateTimeVal,
+        timestamp:new Date(timestamp).getTime()
       }
       sessionStorage.setItem('dataMsg',JSON.stringify(objData))
       this.ifDataExtension = objData
@@ -356,6 +434,16 @@ export default {
     backlevelSms() {
       this.openSmsContent = false
       this.openSms = true
+    },
+    sendSmsLists() {
+      this.$.get('smsChannel/getList?channelName=').then(res=>{
+        this.propsData.sendSmsList = res.data.data
+      })
+    },
+    orderLists() {
+      this.$.get('command/getList?commandName=').then(res=>{
+        this.propsData.orderList = res.data.data
+      })
     },
     brandLists() {
       this.$.get("brand/getList?brandName=").then(res=>{
@@ -396,6 +484,7 @@ export default {
       this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand,cycleId:this.ifDataExtension.period}}).then(res=>{
         if(res.data.code == 200) {
           this.propsSms.smsTable[0] = res.data.data
+          this.propsSms.editMsg = res.data.data.document_text
         }else{
           this.propsSms.smsTable = []
         }
@@ -457,7 +546,6 @@ export default {
       })
     },
     appendDiv(left, top) {
-      console.log(left,top)
       this.ifDrag = true
       this.$nextTick(()=>{
         this.$refs.refData1.style.position = 'fixed'
@@ -530,6 +618,23 @@ export default {
         })
     },
     saveMessage() {
+      let objData = {
+        contentMag:this.propsSms.editMsg
+      }
+      if(this.propsSms.editMsg == '') {
+        this.$message({
+            showClose: true,
+            message: '请您新建文案内容',
+            type: 'warning'
+          });
+        return false
+        }
+      if(this.propsSms.dataSelected == 2) {
+        sessionStorage.setItem('smsMsg',JSON.stringify(objData))
+        this.propsSms.ifSms = objData
+        this.openSmsContent = false
+        this.openSms = true
+      }else if(this.propsSms.dataSelected == 3){
         let insertData = {
           cycle_id:this.ifDataExtension.period,
           brand_id:this.ifDataExtension.brand,
@@ -538,6 +643,12 @@ export default {
         this.$.post("template/insert",insertData).then(res=>{
           if(res.data.code == 200) {
             this.smsLists()
+            let objData = {
+              contentMag:this.propsSms.editMsg
+            }
+            this.propsSms.ifSms = objData
+            this.openSmsContent = false
+            this.openSms = true
           }else{
             this.$message({
               showClose: true,
@@ -546,6 +657,7 @@ export default {
             });
           }
         })
+      }
     },
     dragInit() {
       let minleft = $(".imaginary-circle").offset().left;
@@ -621,7 +733,7 @@ export default {
     .marketing-header {
       width: 100%;
       height: 60px;
-      line-height: 60px;
+      // line-height: 60px;
       background-color: #f3f2f2;
       border-radius: 10px 10px 0 0;
       .marketing-header-l {
@@ -656,6 +768,7 @@ export default {
       }
       .marketing-header-r {
         text-align: right;
+        line-height: 60px;
         .pd-btn{
           padding: 6px 12px;
           background-color: #0070d2;
