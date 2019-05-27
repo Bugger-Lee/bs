@@ -98,37 +98,7 @@ export default {
         }
       ],
       tableData: [],
-      totalDate: [
-        {
-            "brand_code":"2",
-            "schulder_time":"2019-05-09T06:23:03.000+0000",
-            "commit_time":"2019-05-21T07:13:30.000+0000",
-            "camp_coupon_id":"3CR11903931,3CR11903935",
-            "cycle_type":"注册期",
-            "purchase_first":"Y",
-            "coupon_id":null,
-            "template_text":null,
-            "sms_channel_code":"1400155320",
-            "enter_first":"Y",
-            "id":1,
-            "brand_aliasname":"JJ",
-            "vip_channel_name":"1",
-            "cycle_id":1,
-            "rule_name":"001",
-            "brand_name":"JACK & JONES",
-            "cron_express":null,
-            "purchase_week":"Y",
-            "brand_id":3,
-            "template_name":null,
-            "command_code":null,
-            "job_id":null,
-            "sms_channel_name":"nameit",
-            "template_id":123123,
-            "sms_channel_id":1,
-            "sms_channel_content":"腾讯营销-Nameit",
-            "status":"3"
-        },
-      ], //总数据
+      totalDate: [], //总数据
       page: 1,//当前页
       total_page: '',//总页数
       JourneyTotal:'',
@@ -138,9 +108,7 @@ export default {
     };
   },
   created() {
-
-    // this.homeLists()
-    this.splitDate()
+    this.homeLists()
   },
   methods: {
     newActive() {

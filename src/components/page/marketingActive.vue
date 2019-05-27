@@ -264,44 +264,7 @@ export default {
         checkedDiscounts:''
       },
       propsSms:{
-        smsTable:[
-          {
-            "document_text":"首次购买，点击XXX 查看使用详情。TD退订",
-            "brand_code":"2",
-            "template_name":"首次购买",
-            "cycle_id":1,
-            "create_time":"2019-05-14 16:46:43.0",
-            "brand_name":"JACK & JONES",
-            "id":4,
-            "cycle_type":"注册期",
-            "brand_aliasname":"JJ",
-            "brand_id":3
-        },
-{
-            "document_text":"首次购买，点击XXX 查看使用详情。TD退订",
-            "brand_code":"2",
-            "template_name":"首次购买",
-            "cycle_id":1,
-            "create_time":"2019-05-14 16:46:43.0",
-            "brand_name":"JACK & JONES",
-            "id":4,
-            "cycle_type":"注册期",
-            "brand_aliasname":"JJ",
-            "brand_id":3
-        },
-{
-            "document_text":"首次购买，点击XXX 查看使用详情。TD退订",
-            "brand_code":"2",
-            "template_name":"首次购买",
-            "cycle_id":1,
-            "create_time":"2019-05-14 16:46:43.0",
-            "brand_name":"JACK & JONES",
-            "id":4,
-            "cycle_type":"注册期",
-            "brand_aliasname":"JJ",
-            "brand_id":3
-        }
-        ],
+        smsTable:[],
         SearchSms: '',
         editMsg:'',
         ifShowInput:false
@@ -512,17 +475,17 @@ export default {
       this.openData = true
     },
     sms() {
-      // if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0 || this.checkedActive == undefined || this.checkedDiscounts == undefined) {
-      //   this.$message({
-      //     showClose: true,
-      //     message: '请您先将数据源里的必选内容选完',
-      //     type: 'warning'
-      //   });
-      //   return false
-      // }else{
+      if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0 || this.checkedActive == undefined || this.checkedDiscounts == undefined) {
+        this.$message({
+          showClose: true,
+          message: '请您先将数据源里的必选内容选完',
+          type: 'warning'
+        });
+        return false
+      }else{
         this.smsLists()
         this.openSms = true
-      // }
+      }
     },
     selectTime() {
       this.openTime = true
