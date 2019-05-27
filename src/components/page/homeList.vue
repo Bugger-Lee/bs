@@ -138,12 +138,11 @@ export default {
     };
   },
   created() {
+
     // this.homeLists()
     this.splitDate()
   },
   methods: {
-    handleSelectionChange() {},
-    handleNodeClick() {},
     newActive() {
       this.$router.push('/marketingActive')
     },
