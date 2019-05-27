@@ -153,7 +153,7 @@
         :openDataContent ="openSmsContent"
         @backlevelSms ="backlevelSms"
         @searchSmsList ="searchSmsList"
-        @sltDataContent ="sltSmsContent">
+        @sltSmsContent ="sltSmsContent">
       </smsPopup>
       <el-dialog
         :visible.sync="openTime"
@@ -267,7 +267,7 @@ export default {
         smsTable:[],
         SearchSms: '',
         editMsg:'',
-        smsListsId:''
+        ifShowInput:false
       },
       couponName:'',
       templateName:'',
@@ -396,7 +396,6 @@ export default {
       this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand,cycleId:this.ifDataExtension.period}}).then(res=>{
         if(res.data.code == 200) {
           this.propsSms.smsTable[0] = res.data.data
-          this.propsSms.smsListsId = this.propsSms.smsTable[0].id
         }else{
           this.propsSms.smsTable = []
         }
@@ -458,6 +457,7 @@ export default {
       })
     },
     appendDiv(left, top) {
+      console.log(left,top)
       this.ifDrag = true
       this.$nextTick(()=>{
         this.$refs.refData1.style.position = 'fixed'
@@ -500,21 +500,22 @@ export default {
     },
     sltSmsContent(val) {
       this.openSms = false
-      if (val == 'close1') {
+      if (val.name == 'close1') {
         this.openSmsContent = false
-      } else if (val == 'openNext') {
+      } else if (val.name == 'openNext') {
         this.openSmsContent = true
-      }else if(val == 'saveMsg') {
+      }else if(val.name == 'saveMsg') {
         this.saveMessage()
+      }else if(val.name == 'inputBlur') {
+        this.inputBlur(val.value,val.id)
       }
     },
-    saveMessage() {
-      if(this.propsSms.smsTable != '') {
+    inputBlur(val,id) {
         let upDate = {
           cycle_id:this.ifDataExtension.period,
           brand_id:this.ifDataExtension.brand,
-          document_text:this.propsSms.editMsg,
-          id:this.propsSms.smsListsId
+          document_text:val,
+          id:id
         }
         this.$.post("template/update",upDate).then(res=>{
           if(res.data.code == 200) {
@@ -527,7 +528,8 @@ export default {
             });
           }
         })
-      }else{
+    },
+    saveMessage() {
         let insertData = {
           cycle_id:this.ifDataExtension.period,
           brand_id:this.ifDataExtension.brand,
@@ -544,7 +546,6 @@ export default {
             });
           }
         })
-      }
     },
     dragInit() {
       let minleft = $(".imaginary-circle").offset().left;

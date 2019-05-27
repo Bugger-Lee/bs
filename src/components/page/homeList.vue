@@ -56,7 +56,9 @@
               v-loadmore="getMoreDate"
             >
               <el-table-column prop="rule_name" label="标题" show-overflow-tooltip>
-                <template slot-scope="scope">{{ scope.row.rule_name}}</template>
+                <template slot-scope="scope">
+                  <span @click="goToDetail(scope.row.id)">{{ scope.row.rule_name}}</span>
+                </template>
               </el-table-column>
               <el-table-column prop="status_name" label="状态" show-overflow-tooltip></el-table-column>
               <el-table-column prop="cycle_type" label="数据来源" show-overflow-tooltip></el-table-column>
@@ -152,6 +154,9 @@ export default {
         this.ruleName = this.searchListVal
         this.homeLists()
       }
+    },
+    goToDetail(id) {
+      this.$router.push({path:'/activeDetail',query:{id:id}})
     }
   },
   directives: {
