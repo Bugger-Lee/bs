@@ -153,7 +153,7 @@
         :openDataContent ="openSmsContent"
         @backlevelSms ="backlevelSms"
         @searchSmsList ="searchSmsList"
-        @sltDataContent ="sltSmsContent">
+        @sltSmsContent ="sltSmsContent">
       </smsPopup>
       <el-dialog
         :visible.sync="openTime"
@@ -264,10 +264,47 @@ export default {
         checkedDiscounts:''
       },
       propsSms:{
-        smsTable:[],
+        smsTable:[
+          {
+            "document_text":"首次购买，点击XXX 查看使用详情。TD退订",
+            "brand_code":"2",
+            "template_name":"首次购买",
+            "cycle_id":1,
+            "create_time":"2019-05-14 16:46:43.0",
+            "brand_name":"JACK & JONES",
+            "id":4,
+            "cycle_type":"注册期",
+            "brand_aliasname":"JJ",
+            "brand_id":3
+        },
+{
+            "document_text":"首次购买，点击XXX 查看使用详情。TD退订",
+            "brand_code":"2",
+            "template_name":"首次购买",
+            "cycle_id":1,
+            "create_time":"2019-05-14 16:46:43.0",
+            "brand_name":"JACK & JONES",
+            "id":4,
+            "cycle_type":"注册期",
+            "brand_aliasname":"JJ",
+            "brand_id":3
+        },
+{
+            "document_text":"首次购买，点击XXX 查看使用详情。TD退订",
+            "brand_code":"2",
+            "template_name":"首次购买",
+            "cycle_id":1,
+            "create_time":"2019-05-14 16:46:43.0",
+            "brand_name":"JACK & JONES",
+            "id":4,
+            "cycle_type":"注册期",
+            "brand_aliasname":"JJ",
+            "brand_id":3
+        }
+        ],
         SearchSms: '',
         editMsg:'',
-        smsListsId:''
+        ifShowInput:false
       },
       couponName:'',
       templateName:'',
@@ -396,7 +433,6 @@ export default {
       this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand,cycleId:this.ifDataExtension.period}}).then(res=>{
         if(res.data.code == 200) {
           this.propsSms.smsTable[0] = res.data.data
-          this.propsSms.smsListsId = this.propsSms.smsTable[0].id
         }else{
           this.propsSms.smsTable = []
         }
@@ -458,6 +494,7 @@ export default {
       })
     },
     appendDiv(left, top) {
+      console.log(left,top)
       this.ifDrag = true
       this.$nextTick(()=>{
         this.$refs.refData1.style.position = 'fixed'
@@ -475,17 +512,17 @@ export default {
       this.openData = true
     },
     sms() {
-      if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0 || this.checkedActive == undefined || this.checkedDiscounts == undefined) {
-        this.$message({
-          showClose: true,
-          message: '请您先将数据源里的必选内容选完',
-          type: 'warning'
-        });
-        return false
-      }else{
+      // if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0 || this.checkedActive == undefined || this.checkedDiscounts == undefined) {
+      //   this.$message({
+      //     showClose: true,
+      //     message: '请您先将数据源里的必选内容选完',
+      //     type: 'warning'
+      //   });
+      //   return false
+      // }else{
         this.smsLists()
         this.openSms = true
-      }
+      // }
     },
     selectTime() {
       this.openTime = true
@@ -500,21 +537,22 @@ export default {
     },
     sltSmsContent(val) {
       this.openSms = false
-      if (val == 'close1') {
+      if (val.name == 'close1') {
         this.openSmsContent = false
-      } else if (val == 'openNext') {
+      } else if (val.name == 'openNext') {
         this.openSmsContent = true
-      }else if(val == 'saveMsg') {
+      }else if(val.name == 'saveMsg') {
         this.saveMessage()
+      }else if(val.name == 'inputBlur') {
+        this.inputBlur(val.value,val.id)
       }
     },
-    saveMessage() {
-      if(this.propsSms.smsTable != '') {
+    inputBlur(val,id) {
         let upDate = {
           cycle_id:this.ifDataExtension.period,
           brand_id:this.ifDataExtension.brand,
-          document_text:this.propsSms.editMsg,
-          id:this.propsSms.smsListsId
+          document_text:val,
+          id:id
         }
         this.$.post("template/update",upDate).then(res=>{
           if(res.data.code == 200) {
@@ -527,7 +565,8 @@ export default {
             });
           }
         })
-      }else{
+    },
+    saveMessage() {
         let insertData = {
           cycle_id:this.ifDataExtension.period,
           brand_id:this.ifDataExtension.brand,
@@ -544,7 +583,6 @@ export default {
             });
           }
         })
-      }
     },
     dragInit() {
       let minleft = $(".imaginary-circle").offset().left;
