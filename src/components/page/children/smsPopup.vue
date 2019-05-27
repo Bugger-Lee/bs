@@ -18,7 +18,7 @@
           <el-button
             type="primary"
             class="c-explain-select"
-            @click="clickPopup('openNext')"
+            @click="clickPopup({name:'openNext'})"
           >Select Message</el-button>
         </div>
       </div>
@@ -84,16 +84,29 @@
                   </el-input>
                 </div>
                 <div class="select-msg-table">
-                  <el-table :data="propsSms.smsTable" style="width: 100%" height="220" setCurrentRow>
+                  <el-table :data="smsTable" style="width: 100%" height="220" setCurrentRow>
                     <el-table-column prop="template_name" label="模板名称" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="cycle_type" label="人群类型" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="brand_name" label="品牌" show-overflow-tooltip> </el-table-column>
-                    <el-table-column prop="document_text" label="文案内容" show-overflow-tooltip> </el-table-column>
+                    <el-table-column prop="document_text" label="文案内容" show-overflow-tooltip>
+                      <template slot-scope="scope">
+                        <span v-if="scope.$index != change_index" @click="clickText(scope.$index)">{{scope.row.document_text}}</span>
+                        <el-input v-else :placeholder="scope.row.document_text" v-model="input_text" @blur="clickPopup({name:'inputBlur',value:input_text,id:scope.row.id})"></el-input>
+                      </template>  
+                    </el-table-column>
                     <el-table-column prop="create_time" label="创建时间" show-overflow-tooltip> </el-table-column>
                   </el-table>
                 </div>
                 <div class="select-msg-page">
-                  
+                  <el-pagination
+                  @size-change="handleSizeChange"
+                  :current-page.sync="currentPage"
+                  :page-size="10"
+                  class="page-el-pagination"
+                  background
+                  layout="total, prev, pager, next"
+                  :total="propsSms.smsTable.length">
+                </el-pagination>
                 </div>
               </div>
           </el-col>
@@ -134,7 +147,7 @@
       </el-col>
       <span slot="footer">
         <el-button @click="openDataContentProps = false">Cancel</el-button>
-        <el-button type="primary" @click="clickPopup('saveMsg')">Save Meaasge</el-button>
+        <el-button type="primary" @click="clickPopup({name:'saveMsg'})">Save Meaasge</el-button>
       </span>
     </el-dialog>
   </div>
@@ -160,6 +173,9 @@ export default {
       newBuy:'',
       newMbmber:'',
       SearchSales:'',
+      currentPage:1,
+      change_index: -1, //点击的index
+      input_text: ''
     }
   },
   computed: {
@@ -168,7 +184,7 @@ export default {
         return this.openData
       },
       set(v) {
-        this.$emit('sltDataContent', 'close');
+        this.$emit('sltSmsContent', {name:'close'});
       }
     },
     openDataContentProps:{
@@ -176,14 +192,31 @@ export default {
         return this.openDataContent
       },
       set(v) {
-        this.$emit('sltDataContent', 'close1');
+        this.$emit('sltSmsContent', {name:'close1'});
       }
+    },
+    smsTable() {
+      let result = [];
+      for(var j=0;j<this.propsSms.smsTable.length;j++){
+          this.propsSms.smsTable[j].ifChange = true
+      }
+      for(var i=0;i<this.propsSms.smsTable.length;i+=10){
+          result.push(this.propsSms.smsTable.slice(i,i+10));
+      }
+      return result[this.currentPage-1]
     }
   },
   props: ["openData", "openDataContent","propsSms"],
   methods: {
     clickPopup(value) {
-      this.$emit("sltDataContent", value);
+      this.$emit("sltSmsContent", value);
+      if(value.name=='inputBlur') {
+        this.change_index = -1
+        this.input_text = ''
+      }
+    },
+    clickText(index) {
+      this.change_index = index
     },
     searchSmsList(e) {
       this.$emit('searchSmsList',e)
@@ -193,6 +226,10 @@ export default {
     },
     tabSelect(val) {
       this.dataSelected = val
+    },
+    // 分页
+    handleSizeChange(val) {
+      this.currentPage = val
     }
   }
 };

@@ -190,7 +190,7 @@
                 </el-input>
               </div>
               <div class="select-msg-table">
-                <el-table :data="propsData.salesTable" style="width: 100%" height="220" @selection-change="ifChecked">
+                <el-table :data="salesTable" style="width: 100%" height="220" @selection-change="ifChecked">
                   <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column prop="sal_id" label="劵编码" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="coupon_type" label="类型" show-overflow-tooltip></el-table-column>
@@ -202,7 +202,15 @@
                 </el-table>
               </div>
               <div class="select-msg-page">
-
+                <el-pagination
+                  @size-change="handleSizeChange"
+                  :current-page.sync="currentPage"
+                  :page-size="10"
+                  class="page-el-pagination"
+                  background
+                  layout="total, prev, pager, next"
+                  :total="propsData.salesTable.length">
+                </el-pagination>
               </div>
             </div>
           </el-col>
@@ -240,6 +248,8 @@ export default {
       ifNewBuy:false,
       ifNewMbmber:false,
       multipleSelection:[],
+      // 分页
+      currentPage: 1
     };
   },
   computed: {
@@ -258,6 +268,13 @@ export default {
       set(v) {
         this.$emit('sltDataContent', 'close1');
       }
+    },
+    salesTable() {
+      let result = [];
+      for(var i=0;i<this.propsData.salesTable.length;i+=10){
+          result.push(this.propsData.salesTable.slice(i,i+10));
+      }
+      return result[this.currentPage-1]
     }
   },
   props: ["openData", "openDataContent","propsData","ifDataExtension"],
@@ -320,6 +337,10 @@ export default {
         this.ifNewBuy = true
          this.ifNewMbmber = false
       }
+    },
+    // 翻页
+    handleSizeChange(val) {
+      this.currentPage = val
     }
   }
 };
