@@ -13,10 +13,8 @@
                 <i>> Journey</i>
               </span>
               <span>
-                <!-- <input type="text" :value="'New Journey -- May  '+  this.currentTimeName" /> -->
                 <el-input
                   style="width:40%;height:30px;line-height:30px;"
-                  :value="'New Journey -- May  '+  this.currentTimeName"
                   v-model="currentTimeVal"
                   suffix-icon="el-icon-edit">
                 </el-input>
@@ -27,9 +25,9 @@
         <el-col :span="12" class="marketing-header-r">
           <el-button-group class="mr05">
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.ifColor == 1}" @click="saveJourney()">Save</el-button>
-            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.ifColor == 2}">Test</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :disabled=disabledBtn :class="{'ifColor':this.ifColor == 2}">Test</el-button>
           </el-button-group>
-          <!-- <el-button type="primary" class="pd-btn mr15" disabled>runing</el-button> -->
+          <el-button type="primary" class="pd-btn mr15" disabled>runing</el-button>
         </el-col>
       </div>
       <div class="marketing-theme">
@@ -186,9 +184,10 @@ export default {
       openSmsContent:false,
       openTime:false,
       ifColor:1,
+      disabledBtn:true,
       currentTimeName:new Date(),
       timeType:{
-        timeNum:1,
+        routerType:1,
         timeVal:'Days',
         time:[
           {
@@ -289,46 +288,41 @@ export default {
     this.sendSmsLists()
     this.orderLists()
     this.currentTimeName = this.currentTimeName.getFullYear() + '-' + (this.currentTimeName.getMonth() + 1) + '-' + this.currentTimeName.getDate();
+    this.currentTimeVal = 'New Journey -- May  '+  this.currentTimeName
   },
   components:{
     popupDrag,
     popupOpenTime,
     smsPopup
   },
+  destroyed() {
+    let allconn = jsplumb.jsPlumb.getAllConnections()
+    for (var i = 0; i < allconn.length + 1; i++) {
+    jsplumb.jsPlumb.deleteConnection(allconn[0])
+    }
+    jsplumb.jsPlumb.deleteConnection(allconn[0])
+  },
   methods: {
     doneTime() {
       if(this.timeType.timeVal == 'Days') {
-        if(this.timeType.timeNum == '' || this.timeType.timePicker == '') {
-          this.$message({
-            showClose: true,
-            message: '请您完善时间信息',
-            type: 'warning'
-          });
-        return false
+        if(this.timeType.timePicker == '') {
+          this.$message('请您完善时间信息');
+          return false
         }
       }
       if(this.timeType.timeVal == 'months') {
-         if(this.timeType.timeNum == '' || this.timeType.timePicker == '' || this.timeType.timeMonths == '') {
-          this.$message({
-            showClose: true,
-            message: '请您完善时间信息',
-            type: 'warning'
-          });
-        return false
+         if(this.timeType.timePicker == '' || this.timeType.timeMonths == '') {
+          this.$message('请您完善时间信息');
+          return false
         }
       }
       if(this.timeType.timeVal == 'weeks') {
-         if(this.timeType.timeNum == '' || this.timeType.timePicker == '' || this.timeType.timeWeek == '') {
-          this.$message({
-            showClose: true,
-            message: '请您完善时间信息',
-            type: 'warning'
-          });
-        return false
+         if(this.timeType.timePicker == '' || this.timeType.timeWeek == '') {
+          this.$message('请您完善时间信息');
+          return false
         }
       }
       let timeObj = {
-        num:this.timeType.timeNum,
         timeClassify:this.timeType.timeVal,
         time:this.timeType.timePicker,
         timeMonths:this.timeType.timeMonths,
@@ -339,14 +333,12 @@ export default {
         loopType: this.timeType.timeVal,
         wloopValue: this.timeType.timeWeek,
         mloopValue: this.timeType.timeMonths,
-        effectTime: this.timeType.timePicker,
-        nums:this.timeType.timeNum
+        effectTime: this.timeType.timePicker
       }
       this.dateChangeCron(datas)
       this.openTime = false
     },
     dateChangeCron (dates) { //dates 为传进来的整个日期类型的对象 effectTime:yyyy-MM-d:h为执行时间点
-        // let num = dates.nums
         let m = ''
         let s = ''
         let h = ''
@@ -363,10 +355,6 @@ export default {
           m = dates.effectTime.getMinutes()
         }
         let loopType = dates.loopType
-         //loopType :[{value: 'ONE_TIME', label: '单次执行'},
-	//  {value: 'DAILY', label: '按天循环'},
-	 // {value: 'WEEKLY', label: '按周循环'},
-	 // {value: 'MONTHLY', label: '按月循环'}]
         var cron = ''
         if (loopType === 'Days') {
           cron = s + ' ' + m + ' ' + h + ' * * ? *'
@@ -375,7 +363,6 @@ export default {
         } else if (loopType === 'months') { // 1-31
           cron = s + ' ' + m + ' ' + h + ' ' + mo.join(',') + ' * ? *'
         }
-        console.log(cron)
         this.cron_express = cron
         return cron 
     },
@@ -394,10 +381,15 @@ export default {
         purchase_week:this.ifDataExtension.newMbmber,
         purchase_first:this.propsData.newBuy,
         cron_express:this.cron_express,
-        command_code:this.ifDataExtension.command_code,
+        command_code:'xxl-job-executor-sample',
       }
       this.$.post("rule/insert",data).then(res=>{
-
+        if(res.data.code == 200) {
+          this.ifColor = 2
+          this.disabledBtn = false
+        }else{
+          this.$message(res.data.msg)
+        }
       })
     },
     backlevel(val) {
@@ -471,7 +463,7 @@ export default {
         sms_channel_id_show:sms_data[0].channel_content,
         command_code_show:command_data[0].command_name,
         schulder_time:this.propsData.dateTimeVal,
-        timestamp:new Date(timestamp).getTime()
+        timestamp:timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       }
       sessionStorage.setItem('dataMsg',JSON.stringify(objData))
       this.ifDataExtension = objData

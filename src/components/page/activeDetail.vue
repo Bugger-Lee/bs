@@ -46,12 +46,6 @@
                     <p>Data</p>
                     <p>Extension</p>
                   </li>
-                  <li>
-                    <span class="crowd-style">
-                      <i class="icon-shouye"></i>
-                    </span>
-                    <p>DMP</p>
-                  </li>
                 </ul>
               </el-menu-item-group>
             </el-submenu>
@@ -69,12 +63,6 @@
                       </span>
                       <p>SMS</p>
                     </li>
-                    <li>
-                      <span class="msg-style">
-                        <i class="icon-shouye"></i>
-                      </span>
-                      <p>Email</p>
-                    </li>
                   </ul>
                 </el-menu-item-group>
               </el-submenu>
@@ -88,13 +76,6 @@
                       </span>
                       <p>Wait By</p>
                       <p>Duration</p>
-                    </li>
-                    <li>
-                      <span class="ctl-style">
-                        <i class="icon-shouye"></i>
-                      </span>
-                      <p>Wait By</p>
-                      <p>Attribute</p>
                     </li>
                   </ul>
                 </el-menu-item-group>
@@ -146,6 +127,20 @@
         @searchSmsList ="searchSmsList"
         @sltSmsContent ="sltSmsContent">
     </smsPopup>
+    <el-dialog
+      :visible.sync="openTime"
+      :close-on-click-modal="false"
+      class="openTime"
+      width="45%">
+      <span slot="title" class="data-title">
+        <span class="icon-shouye"></span>Wait By Duration
+      </span>
+      <span slot="footer">
+        <el-button @click="openTime = false">Cancel</el-button>
+        <el-button type="primary" @click="doneTime()">Done</el-button>
+      </span>
+      <popupOpenTime :timeType = "timeType"></popupOpenTime>
+    </el-dialog>
   </div>
 </template>
 
@@ -164,6 +159,7 @@ export default {
       openSms:false,
       openDataContent:false,
       openSmsContent:false,
+      openTime:false,
       propsData:{
           routerType:2,
           brandList: [],
@@ -197,9 +193,59 @@ export default {
         dataSelected: 2,
         ifSms:''
       },
+      timeType:{
+        routerType:2,
+        timeVal:'Days',
+        time:[
+          {
+            id:1,
+            value:"Days"
+          },
+          {
+            id:2,
+            value:"months"
+          },
+          {
+            id:3,
+            value:"weeks"
+          }
+        ],
+        timeWeeks:[
+          {
+            id:1,
+            value:"周一",
+          },
+          {
+            id:2,
+            value:"周二"
+          },
+          {
+            id:3,
+            value:"周三"
+          },
+          {
+            id:4,
+            value:"周四"
+          },
+          {
+            id:5,
+            value:"周五"
+          },
+          {
+            id:6,
+            value:"周六"
+          },
+          {
+            id:7,
+            value:"周日"
+          },
+        ],
+        timePicker:"",
+        timeWeek:"",
+        timeMonths:""
+      },
       ifDataExtension:'',
       ifColor:1,
-      activeMsg:''
     };
   },
   components: {
@@ -210,9 +256,54 @@ export default {
   created() {
     this.dragInit(200, 320);
     this.activeMessage()
-    this.activeStatus()
+    this.brandLists()
+    this.periodLists()
+    this.registerLists()
+    // this.activeStatus()
+  },
+  destroyed() {
+    let allconn = jsplumb.jsPlumb.getAllConnections()
+    for (var i = 0; i < allconn.length + 1; i++) {
+    jsplumb.jsPlumb.deleteConnection(allconn[0])
+    }
+    jsplumb.jsPlumb.deleteConnection(allconn[0])
   },
   methods: {
+    doneTime() {
+      if(this.timeType.timeVal == 'Days') {
+        if(this.timeType.timePicker == '') {
+          this.$message('请您完善时间信息');
+          return false
+        }
+      }
+      if(this.timeType.timeVal == 'months') {
+         if(this.timeType.timePicker == '' || this.timeType.timeMonths == '') {
+          this.$message('请您完善时间信息');
+          return false
+        }
+      }
+      if(this.timeType.timeVal == 'weeks') {
+         if(this.timeType.timePicker == '' || this.timeType.timeWeek == '') {
+          this.$message('请您完善时间信息');
+          return false
+        }
+      }
+      let timeObj = {
+        timeClassify:this.timeType.timeVal,
+        time:this.timeType.timePicker,
+        timeMonths:this.timeType.timeMonths,
+        timeWeeks:this.timeType.timeWeek
+      }
+      sessionStorage.setItem('timeMsg',JSON.stringify(timeObj))
+      let datas = {
+        loopType: this.timeType.timeVal,
+        wloopValue: this.timeType.timeWeek,
+        mloopValue: this.timeType.timeMonths,
+        effectTime: this.timeType.timePicker
+      }
+      this.dateChangeCron(datas)
+      this.openTime = false
+    },
     dragInit(top, left) {
       this.$nextTick(() => {
         this.$refs.refData1.style.position = "fixed";
@@ -273,19 +364,45 @@ export default {
     activeMessage() {
       this.$.get('rule/getDetail?id='+this.$route.query.id).then(res=>{
         if(res.data.code == 200) {
-          this.activeMsg = res.data.data
+          this.ifDataExtension = res.data.data
+          this.propsData.brandVal = this.ifDataExtension.brand_name
+          this.propsData.periodVal = this.ifDataExtension.cycle_type
         }else{
           this.$message(res.data.msg)
         }
       })
     },
-    activeStatus() {
-      this.$.get('updateStatus',{params:{id:this.$route.query.id,status:''}}).then(res=>{
-        if(res.data.msg == 200) {
-          console.log(res)
+    // 品牌
+    brandLists() {
+      this.$.get("brand/getList?brandName=").then(res=>{
+        if(res.data.code == 200) {
+          this.propsData.brandList = res.data.data
         }
       })
     },
+    // 周期
+    periodLists() {
+      this.$.get("lifeCycle/getList?cycleType=").then(res=>{
+        if(res.data.code == 200) {
+          this.propsData.periodList = res.data.data
+        }
+      })
+    },
+    // 注册渠道
+    registerLists() {
+      this.$.get("vipChannel/getList?channelName=").then(res=>{
+        if(res.data.code == 200) {
+          this.propsData.registerList = res.data.data
+        }
+      })
+    },
+    // activeStatus() {
+    //   this.$.get('updateStatus',{params:{id:this.$route.query.id,status:''}}).then(res=>{
+    //     if(res.data.msg == 200) {
+    //       console.log(res)
+    //     }
+    //   })
+    // },
     searchDate(e) {
       var keyCode = window.event? e.keyCode:e.which;
       if(keyCode == 13){
@@ -421,7 +538,7 @@ export default {
       this.openSms = true
     },
     selectTime() {
-      // this.openTime = true
+      this.openTime = true
     }
   }
 };
