@@ -366,8 +366,7 @@
                       <el-option
                         v-for="item in propsData.brandList"
                         :key="item.id"
-                        :label="item.brand_name"
-                        :value="item.id"
+                        :value="item.brand_name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -379,8 +378,7 @@
                         @click.native="periodChange()"
                         v-for="item in propsData.periodList"
                         :key="item.id"
-                        :label="item.cycle_type"
-                        :value="item.id"
+                        :value="item.cycle_type"
                       ></el-option>
                     </el-select>
                   </div>
@@ -391,7 +389,6 @@
                       <el-option
                         v-for="item in propsData.registerList"
                         :key="item.id"
-                        :label="item.channel_name"
                         :value="item.channel_name"
                       ></el-option>
                     </el-select>
@@ -403,8 +400,7 @@
                       <el-option
                         v-for="item in propsData.sendSmsList"
                         :key="item.id"
-                        :label="item.channel_content"
-                        :value="item.id"
+                        :value="item.channel_content"
                       ></el-option>
                     </el-select>
                   </div>
@@ -417,8 +413,7 @@
                       <el-option
                         v-for="item in propsData.orderList"
                         :key="item.id"
-                        :label="item.command_name"
-                        :value="item.id"
+                        :value="item.command_name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -576,18 +571,6 @@ export default {
       return result[this.currentPage-1]
     }
   },
-  // created() {
-  //   if(this.propsData.periodVal != '') {
-  //       this.ifNewPeriod = true
-  //     }
-  //     if(this.propsData.periodVal == 1) {
-  //       this.ifNewMbmber = true
-  //       this.ifNewBuy = false
-  //     }else{
-  //       this.ifNewBuy = true
-  //       this.ifNewMbmber = false
-  //   }
-  // },
   props: ["openData", "openDataContent","propsData","ifDataExtension"],
   methods: {
     formatDate(row, column, created_time ,index) {

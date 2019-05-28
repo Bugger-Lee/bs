@@ -171,10 +171,11 @@ export default {
           orderVal:'',
           sendSmsVal:'',
           brandVal: '',
+          brandId: '',
           periodVal:'',
           periodShow: '',
           brandShow:'', 
-          registerVal:'',
+          registerVal:[],
           SearchSales:'',
           newPeriod:'',
           newBuy:'',
@@ -259,6 +260,8 @@ export default {
     this.brandLists()
     this.periodLists()
     this.registerLists()
+    this.sendSmsLists()
+    this.orderLists()
     // this.activeStatus()
   },
   destroyed() {
@@ -367,9 +370,22 @@ export default {
           this.ifDataExtension = res.data.data
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
+          this.propsData.sendSmsVal = this.ifDataExtension.sms_channel_content
+          this.propsData.orderVal = this.ifDataExtension.command_code
+          this.propsData.orderVal = this.ifDataExtension.command_code
+          this.propsData.dateTimeVal = this.ifDataExtension.schulder_time
+          if(this.ifDataExtension.vip_channel_name.length > 0) {
+            this.propsData.registerVal = this.ifDataExtension.vip_channel_name.split(',')
+          }
         }else{
           this.$message(res.data.msg)
         }
+      })
+    },
+    // 调度命令
+    orderLists() {
+      this.$.get('command/getList?commandName=').then(res=>{
+        this.propsData.orderList = res.data.data
       })
     },
     // 品牌
@@ -394,6 +410,12 @@ export default {
         if(res.data.code == 200) {
           this.propsData.registerList = res.data.data
         }
+      })
+    },
+    // 短信通道
+    sendSmsLists() {
+      this.$.get('smsChannel/getList?channelName=').then(res=>{
+        this.propsData.sendSmsList = res.data.data
       })
     },
     // activeStatus() {
