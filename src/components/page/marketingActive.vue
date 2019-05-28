@@ -17,6 +17,7 @@
                 <el-input
                   style="width:40%;height:30px;line-height:30px;"
                   :value="'New Journey -- May  '+  this.currentTimeName"
+                  v-model="currentTimeVal"
                   suffix-icon="el-icon-edit">
                 </el-input>
               </span>
@@ -28,7 +29,7 @@
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.ifColor == 1}" @click="saveJourney()">Save</el-button>
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.ifColor == 2}">Test</el-button>
           </el-button-group>
-          <el-button type="primary" class="pd-btn mr15" disabled>runing</el-button>
+          <!-- <el-button type="primary" class="pd-btn mr15" disabled>runing</el-button> -->
         </el-col>
       </div>
       <div class="marketing-theme">
@@ -238,6 +239,7 @@ export default {
         timeMonths:""
       },
       propsData:{
+        routerType:1,
         brandList: [],
         periodList: [],
         registerList: [],
@@ -260,6 +262,7 @@ export default {
         dateTimeVal:''
       },
       propsSms:{
+        routerType:1,
         smsTable:[],
         SearchSms: '',
         editMsg:'',
@@ -271,6 +274,8 @@ export default {
       couponName:'',
       templateName:'',
       ifDataExtension:'',
+      cron_express: '',
+      currentTimeVal:''
     }
   },
   mounted() {
@@ -330,13 +335,55 @@ export default {
         timeWeeks:this.timeType.timeWeek
       }
       sessionStorage.setItem('timeMsg',JSON.stringify(timeObj))
+      let datas = {
+        loopType: this.timeType.timeVal,
+        wloopValue: this.timeType.timeWeek,
+        mloopValue: this.timeType.timeMonths,
+        effectTime: this.timeType.timePicker,
+        nums:this.timeType.timeNum
+      }
+      this.dateChangeCron(datas)
       this.openTime = false
+    },
+    dateChangeCron (dates) { //dates 为传进来的整个日期类型的对象 effectTime:yyyy-MM-d:h为执行时间点
+        // let num = dates.nums
+        let m = ''
+        let s = ''
+        let h = ''
+        let w = []
+        if(dates.wloopValue) {
+          w[0] = dates.wloopValue+1>7 ? 1 : dates.wloopValue+1
+        }
+        let mo = []
+        if(dates.mloopValue) {
+           mo[0] = dates.mloopValue.getDate()
+        }
+        if (dates.effectTime) {
+          h = dates.effectTime.getHours()
+          m = dates.effectTime.getMinutes()
+        }
+        let loopType = dates.loopType
+         //loopType :[{value: 'ONE_TIME', label: '单次执行'},
+	//  {value: 'DAILY', label: '按天循环'},
+	 // {value: 'WEEKLY', label: '按周循环'},
+	 // {value: 'MONTHLY', label: '按月循环'}]
+        var cron = ''
+        if (loopType === 'Days') {
+          cron = s + ' ' + m + ' ' + h + ' * * ? *'
+        } else if (loopType === 'weeks') { // 星期天为1，星期6为7
+          cron = s + ' ' + m + ' ' + h + ' * * ' + w.join(',') + ' *'
+        } else if (loopType === 'months') { // 1-31
+          cron = s + ' ' + m + ' ' + h + ' ' + mo.join(',') + ' * ? *'
+        }
+        console.log(cron)
+        this.cron_express = cron
+        return cron 
     },
     saveJourney() {
       let data = {
         rule_name:this.currentTimeVal,
         sms_channel_id:this.ifDataExtension.sms_channel_id,
-        // template_id:,
+        template_id: this.propsSms.smsTable[0].id,
         brand_id:this.ifDataExtension.brand,
         cycle_id:this.ifDataExtension.period,
         vip_channel_name:this.ifDataExtension.register,
@@ -346,7 +393,7 @@ export default {
         enter_first:this.ifDataExtension.newPeriod,
         purchase_week:this.ifDataExtension.newMbmber,
         purchase_first:this.propsData.newBuy,
-        // cron_express:,
+        cron_express:this.cron_express,
         command_code:this.ifDataExtension.command_code,
       }
       this.$.post("rule/insert",data).then(res=>{

@@ -11,7 +11,6 @@
               <a href>Journeys Dashboard</a>
               <i>> Journey</i>
             </p>
-            <!-- <p class="l-tit-b">New Journey - April 2019</p> -->
           </div>
         </el-col>
         <el-col :span="12" class="marketing-header-r">
@@ -132,21 +131,86 @@
         </el-col>
       </div>
     </div>
+    <popupDrag :openData ="openData"
+        :propsData="propsData"
+        :openDataContent ="openDataContent"
+        :ifDataExtension ="ifDataExtension"
+        @searchDate = "searchDate"
+        @backlevel ="backlevel"
+        @sltDataContent ="sltDataContent">
+    </popupDrag>
+    <smsPopup :openData ="openSms"
+        :propsSms = "propsSms"
+        :openDataContent ="openSmsContent"
+        @backlevelSms ="backlevelSms"
+        @searchSmsList ="searchSmsList"
+        @sltSmsContent ="sltSmsContent">
+    </smsPopup>
   </div>
 </template>
 
 <script>
 import jsplumb from "jsplumb";
+import "@/assets/css/part.less";
+import smsPopup from "./children/smsPopup.vue"
+import popupOpenTime from "./children/popupOpenTime.vue"
+import popupDrag from "./children/popupDrag.vue"
 export default {
   data() {
     return {
       ifDrag: true,
       ifSmsDrag: true,
+      openData:false,
+      openSms:false,
+      openDataContent:false,
+      openSmsContent:false,
+      propsData:{
+          routerType:2,
+          brandList: [],
+          periodList: [],
+          registerList: [],
+          salesTable:[],
+          sendSmsList:[],
+          orderList:[],
+          orderVal:'',
+          sendSmsVal:'',
+          brandVal: '',
+          periodVal:'',
+          periodShow: '',
+          brandShow:'', 
+          registerVal:'',
+          SearchSales:'',
+          newPeriod:'',
+          newBuy:'',
+          newMbmber:'',
+          checkedActive:'',
+          checkedDiscounts:'',
+          dateTimeVal:''
+      },
+      propsSms:{
+        routerType:2,
+        smsTable:[],
+        SearchSms: '',
+        editMsg:'',
+        ifShowInput:false,
+        tableSelectVal:'',
+        dataSelected: 2,
+        ifSms:''
+      },
+      ifDataExtension:'',
       ifColor:1,
+      activeMsg:''
     };
+  },
+  components: {
+    popupDrag,
+    smsPopup,
+    popupOpenTime
   },
   created() {
     this.dragInit(200, 320);
+    this.activeMessage()
+    this.activeStatus()
   },
   methods: {
     dragInit(top, left) {
@@ -206,9 +270,159 @@ export default {
         });
       });
     },
-    dataExtension() {},
-    sms() {},
-    selectTime() {}
+    activeMessage() {
+      this.$.get('rule/getDetail?id='+this.$route.query.id).then(res=>{
+        if(res.data.code == 200) {
+          this.activeMsg = res.data.data
+        }else{
+          this.$message(res.data.msg)
+        }
+      })
+    },
+    activeStatus() {
+      this.$.get('updateStatus',{params:{id:this.$route.query.id,status:''}}).then(res=>{
+        if(res.data.msg == 200) {
+          console.log(res)
+        }
+      })
+    },
+    searchDate(e) {
+      var keyCode = window.event? e.keyCode:e.which;
+      if(keyCode == 13){
+        this.couponName= this.propsData.SearchSales
+        this.discountLists()
+      }
+    },
+    discountLists() {
+      this.$.get("coupon/getList",{params:{couponName:this.couponName}}).then(res=>{
+        if(res.data.code == 200) {
+          this.propsData.salesTable = res.data.data
+        }
+      })
+    },
+    sltDataContent(val) {
+      this.openData = false
+      if (val == 'close1') {
+        this.openDataContent = false
+      } else if (val == 'openNext') {
+        this.openDataContent = true
+      }
+    },
+    backlevel(val) {
+      if(val == 1) {
+        this.openDataContent = false
+        this.openData = true
+      }else if(val == 2){
+        this.dataSummary()
+      }else if(val == 'edit') {
+        this.openDataContent = true
+        this.openData = false
+      }
+    },
+    backlevelSms() {
+      this.openSmsContent = false
+      this.openSms = true
+    },
+    smsLists() {
+      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand,cycleId:this.ifDataExtension.period}}).then(res=>{
+        if(res.data.code == 200) {
+          this.propsSms.smsTable[0] = res.data.data
+          this.propsSms.editMsg = res.data.data.document_text
+        }else{
+          this.propsSms.smsTable = []
+        }
+      })
+    },
+    searchSmsList(e) {
+      var keyCode = window.event? e.keyCode:e.which;
+      if(keyCode == 13){
+        this.templateName = this.propsSms.SearchSms
+        this.smsLists()
+      }
+    },
+    sltSmsContent(val) {
+      this.openSms = false
+      if (val.name == 'close1') {
+        this.openSmsContent = false
+      } else if (val.name == 'openNext') {
+        this.openSmsContent = true
+      }else if(val.name == 'saveMsg') {
+        this.saveMessage()
+      }else if(val.name == 'inputBlur') {
+        this.inputBlur(val.value,val.id)
+      }
+    },
+    inputBlur(val,id) {
+        let upDate = {
+          cycle_id:this.ifDataExtension.period,
+          brand_id:this.ifDataExtension.brand,
+          document_text:val,
+          id:id
+        }
+        this.$.post("template/update",upDate).then(res=>{
+          if(res.data.code == 200) {
+            this.smsLists()
+          }else{
+            this.$message({
+              showClose: true,
+              message: res.data.msg,
+              type: 'warning'
+            });
+          }
+        })
+    },
+    saveMessage() {
+      let objData = {
+        contentMag:this.propsSms.editMsg
+      }
+      if(this.propsSms.editMsg == '') {
+        this.$message({
+            showClose: true,
+            message: '请您新建文案内容',
+            type: 'warning'
+          });
+        return false
+        }
+      if(this.propsSms.dataSelected == 2) {
+        sessionStorage.setItem('smsMsg',JSON.stringify(objData))
+        this.propsSms.ifSms = objData
+        this.openSmsContent = false
+        this.openSms = true
+      }else if(this.propsSms.dataSelected == 3){
+        let insertData = {
+          cycle_id:this.ifDataExtension.period,
+          brand_id:this.ifDataExtension.brand,
+          document_text:this.propsSms.editMsg
+        }
+        this.$.post("template/insert",insertData).then(res=>{
+          if(res.data.code == 200) {
+            this.smsLists()
+            let objData = {
+              contentMag:this.propsSms.editMsg
+            }
+            this.propsSms.ifSms = objData
+            this.openSmsContent = false
+            this.openSms = true
+          }else{
+            this.$message({
+              showClose: true,
+              message: res.data.msg,
+              type: 'warning'
+            });
+          }
+        })
+      }
+    },
+    dataExtension() {
+      console.log(111)
+      this.openData = true
+    },
+    sms() {
+      this.openSms = true
+    },
+    selectTime() {
+      // this.openTime = true
+    }
   }
 };
 </script>

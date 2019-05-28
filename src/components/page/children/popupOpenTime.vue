@@ -17,8 +17,9 @@
           <el-option
             v-for="item in propsTimeWeeks"
             :key="item.id"
+            :label="item.value"
             :disabled="item.disabled"
-            :value="item.value">
+            :value="item.id">
           </el-option>
         </el-select>
         <el-date-picker
