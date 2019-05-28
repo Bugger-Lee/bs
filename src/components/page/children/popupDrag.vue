@@ -289,16 +289,16 @@
               <el-button class="bth" @click="backlevel('edit')">Edit</el-button>
             </p>
             <div class="data-content-apply-content mt10">
-              <P><span>品牌 : {{ifDataExtension.brandShow}}</span><span></span></P>
-              <P><span>周期 : {{ifDataExtension.periodShow}}</span><span></span></P>
-              <P><span>渠道 : {{ifDataExtension.register}}</span><span></span></P>
-              <P><span>是否新进入周期 : {{ifDataExtension.newPeriod}}</span><span></span></P>
-              <P><span>是否为首次购买 : {{ifDataExtension.newBuy}}</span><span></span></P>
-              <P><span>注册一周未购买 : {{ifDataExtension.newMbmber}}</span><span></span></P>
+              <P><span>品牌 : {{ifDataExtension.brand_name}}</span><span></span></P>
+              <P><span>周期 : {{ifDataExtension.cycle_type}}</span><span></span></P>
+              <P><span>渠道 : {{ifDataExtension.vip_channel_name}}</span><span></span></P>
+              <P><span>是否新进入周期 : {{ifDataExtension.enter_first}}</span><span></span></P>
+              <P><span>是否为首次购买 : {{ifDataExtension.purchase_first}}</span><span></span></P>
+              <P><span>注册一周未购买 : {{ifDataExtension.purchase_week}}</span><span></span></P>
               <P><span>活动券 : {{ifDataExtension.camp_coupon_id}}</span><span></span></P>
               <P><span>优惠券 : {{ifDataExtension.coupon_id}}</span><span></span></P>
-              <P><span>短信通道 : {{ifDataExtension.sms_channel_id_show}}</span><span></span></P>
-              <P><span>调度命令 : {{ifDataExtension.command_code_show}}</span><span></span></P>
+              <P><span>短信通道 : {{ifDataExtension.sms_channel_content}}</span><span></span></P>
+              <P><span>调度命令 : {{ifDataExtension.command_code}}</span><span></span></P>
               <P><span>定时发送时间 : {{ifDataExtension.schulder_time}}</span><span></span></P>
             </div>
           </div>
@@ -576,6 +576,18 @@ export default {
       return result[this.currentPage-1]
     }
   },
+  // created() {
+  //   if(this.propsData.periodVal != '') {
+  //       this.ifNewPeriod = true
+  //     }
+  //     if(this.propsData.periodVal == 1) {
+  //       this.ifNewMbmber = true
+  //       this.ifNewBuy = false
+  //     }else{
+  //       this.ifNewBuy = true
+  //       this.ifNewMbmber = false
+  //   }
+  // },
   props: ["openData", "openDataContent","propsData","ifDataExtension"],
   methods: {
     formatDate(row, column, created_time ,index) {
