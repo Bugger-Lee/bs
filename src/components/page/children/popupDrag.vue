@@ -366,8 +366,7 @@
                       <el-option
                         v-for="item in propsData.brandList"
                         :key="item.id"
-                        :label="item.brand_name"
-                        :value="item.id"
+                        :value="item.brand_name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -379,8 +378,7 @@
                         @click.native="periodChange()"
                         v-for="item in propsData.periodList"
                         :key="item.id"
-                        :label="item.cycle_type"
-                        :value="item.id"
+                        :value="item.cycle_type"
                       ></el-option>
                     </el-select>
                   </div>
@@ -391,7 +389,6 @@
                       <el-option
                         v-for="item in propsData.registerList"
                         :key="item.id"
-                        :label="item.channel_name"
                         :value="item.channel_name"
                       ></el-option>
                     </el-select>
@@ -403,8 +400,7 @@
                       <el-option
                         v-for="item in propsData.sendSmsList"
                         :key="item.id"
-                        :label="item.channel_content"
-                        :value="item.id"
+                        :value="item.channel_content"
                       ></el-option>
                     </el-select>
                   </div>
@@ -417,8 +413,7 @@
                       <el-option
                         v-for="item in propsData.orderList"
                         :key="item.id"
-                        :label="item.command_name"
-                        :value="item.id"
+                        :value="item.command_name"
                       ></el-option>
                     </el-select>
                   </div>
@@ -488,7 +483,7 @@
                   </el-input>
                 </div>
                 <div class="select-msg-table">
-                  <el-table :data="salesTable" style="width: 100%" height="220" @selection-change="ifChecked">
+                  <el-table :data="salesTable" style="width: 100%" height="220" @selection-change="ifChecked" ref="multipleTable">
                     <el-table-column type="selection" width="55"></el-table-column>
                     <el-table-column prop="sal_id" label="劵编码" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="coupon_type" label="类型" show-overflow-tooltip></el-table-column>
@@ -576,18 +571,28 @@ export default {
       return result[this.currentPage-1]
     }
   },
-  // created() {
-  //   if(this.propsData.periodVal != '') {
-  //       this.ifNewPeriod = true
-  //     }
-  //     if(this.propsData.periodVal == 1) {
-  //       this.ifNewMbmber = true
-  //       this.ifNewBuy = false
-  //     }else{
-  //       this.ifNewBuy = true
-  //       this.ifNewMbmber = false
-  //   }
-  // },
+  watch: {
+    'ifDataExtension.camp_coupon_id' () {
+      if(this.propsData.routerType == 2) {
+        // 优惠券
+        let arr = this.ifDataExtension.camp_coupon_id.split(',')
+        let result_arr = []
+        for(var i=0;i<arr.length;i++) {
+          for(var j=0;j<this.propsData.salesTable.length;j++) {
+            if(arr[i] == this.propsData.salesTable[j].sal_id) {
+              console.log(this.propsData.salesTable[j].sal_id)
+              this.$refs.multipleTable.toggleRowSelection(this.salesTable[j],true);
+              result_arr.push(this.propsData.salesTable[j])
+            }
+          }
+        }
+        console.log(arr)
+      }
+    }
+  },
+  created() {
+    this.datecompute()
+  },
   props: ["openData", "openDataContent","propsData","ifDataExtension"],
   methods: {
     formatDate(row, column, created_time ,index) {
@@ -600,6 +605,23 @@ export default {
       let m = date.getMinutes()  < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':';
       let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
       return Y + M + D ;
+    },
+    // 回显
+    datecompute() {
+      if(this.propsData.routerType == 1) {return false}
+      // 优惠券
+      let arr = this.ifDataExtension.camp_coupon_id.split(',')
+      let result_arr = []
+      for(var i=0;i<arr.length;i++) {
+        console.log(arr[i])
+        for(var j=0;j<this.propsData.salesTable.length;j++) {
+          if(arr[i] == this.propsData.salesTable[j].sal_id) {
+            this.$refs.multipleTable.toggleRowSelection(this.salesTable[j],true);
+            result_arr.push(this.propsData.salesTable[j])
+          }
+        }
+      }
+      console.log(result_arr)
     },
     // 搜索框
     searchDate(e) {
@@ -644,9 +666,11 @@ export default {
       if(this.propsData.periodVal == 1) {
         this.ifNewMbmber = true
         this.ifNewBuy = false
+        this.propsData.newBuy = ''
       }else{
         this.ifNewBuy = true
-         this.ifNewMbmber = false
+        this.ifNewMbmber = false
+        this.propsData.newMbmber = ''
       }
     },
     // 翻页

@@ -171,10 +171,11 @@ export default {
           orderVal:'',
           sendSmsVal:'',
           brandVal: '',
+          brandId: '',
           periodVal:'',
           periodShow: '',
           brandShow:'', 
-          registerVal:'',
+          registerVal:[],
           SearchSales:'',
           newPeriod:'',
           newBuy:'',
@@ -246,6 +247,7 @@ export default {
       },
       ifDataExtension:'',
       ifColor:1,
+      couponName:''
     };
   },
   components: {
@@ -259,6 +261,9 @@ export default {
     this.brandLists()
     this.periodLists()
     this.registerLists()
+    this.sendSmsLists()
+    this.orderLists()
+    this.discountLists()
     // this.activeStatus()
   },
   destroyed() {
@@ -365,11 +370,25 @@ export default {
       this.$.get('rule/getDetail?id='+this.$route.query.id).then(res=>{
         if(res.data.code == 200) {
           this.ifDataExtension = res.data.data
+          this.propsSms.ifSms = res.data.data
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
+          this.propsData.sendSmsVal = this.ifDataExtension.sms_channel_content
+          this.propsData.orderVal = this.ifDataExtension.command_code
+          this.propsData.orderVal = this.ifDataExtension.command_code
+          this.propsData.dateTimeVal = this.ifDataExtension.schulder_time
+          if(this.ifDataExtension.vip_channel_name.length > 0) {
+            this.propsData.registerVal = this.ifDataExtension.vip_channel_name.split(',')
+          }
         }else{
           this.$message(res.data.msg)
         }
+      })
+    },
+    // 调度命令
+    orderLists() {
+      this.$.get('command/getList?commandName=').then(res=>{
+        this.propsData.orderList = res.data.data
       })
     },
     // 品牌
@@ -396,6 +415,12 @@ export default {
         }
       })
     },
+    // 短信通道
+    sendSmsLists() {
+      this.$.get('smsChannel/getList?channelName=').then(res=>{
+        this.propsData.sendSmsList = res.data.data
+      })
+    },
     // activeStatus() {
     //   this.$.get('updateStatus',{params:{id:this.$route.query.id,status:''}}).then(res=>{
     //     if(res.data.msg == 200) {
@@ -414,6 +439,7 @@ export default {
       this.$.get("coupon/getList",{params:{couponName:this.couponName}}).then(res=>{
         if(res.data.code == 200) {
           this.propsData.salesTable = res.data.data
+          
         }
       })
     },
@@ -531,7 +557,6 @@ export default {
       }
     },
     dataExtension() {
-      console.log(111)
       this.openData = true
     },
     sms() {

@@ -189,7 +189,7 @@
               <el-button class="bth" @click="clickPopup({name:'openNext'})">Edit</el-button>
             </p>
             <div class="data-content-apply-content mt10">
-              <P><span>文案内容 : {{propsSms.ifSms.contentMag}}</span><span></span></P>
+              <P><span>文案内容 : {{propsSms.ifSms.template_text}}</span><span></span></P>
             </div>
           </div>
         </div>
