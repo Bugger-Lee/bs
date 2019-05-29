@@ -13,19 +13,7 @@
         >{{i.name}}</span>
       </p>
       <p class="headers-right">
-        <!-- <el-select
-          v-model="value"
-          placeholder="Bestseller  Fashion  Grounp"
-          class="select-ipt-border"
-        >
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select> -->
-        <!-- <span class="headers-right-r">
+        <span class="headers-right-r">
           <span class="login-icon ml15">
             <i class="icon-dengluyonghu"></i>
           </span>
@@ -33,7 +21,7 @@
             <i>hmy</i>
             <i class="el-icon-caret-bottom"></i>
           </span>
-        </span> -->
+        </span>
       </p>
     </div>
   </div>
@@ -48,10 +36,6 @@ export default {
           id: 1,
           name: "Journeys"
         }
-        // {
-        //   id: 2,
-        //   name: "History"
-        // }
       ],
       changeTab: 1
     };

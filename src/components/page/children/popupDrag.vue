@@ -483,8 +483,8 @@
                   </el-input>
                 </div>
                 <div class="select-msg-table">
-                  <el-table :data="salesTable" style="width: 100%" height="220" @selection-change="ifChecked" ref="multipleTable">
-                    <el-table-column type="selection" width="55"></el-table-column>
+                  <el-table :data="salesTable" style="width: 100%" height="220" ref="multipleTable" @selection-change="ifChecked">
+                    <el-table-column type="selection"  width="55"></el-table-column>
                     <el-table-column prop="sal_id" label="劵编码" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="coupon_type" label="类型" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="brand" label="品牌" show-overflow-tooltip> </el-table-column>
@@ -546,6 +546,7 @@ export default {
       currentPage: 1
     };
   },
+  props: ["openData", "openDataContent","propsData","ifDataExtension"],
   computed: {
     openDataProps: {
       get() {
@@ -569,32 +570,64 @@ export default {
           result.push(this.propsData.salesTable.slice(i,i+10));
       }
       return result[this.currentPage-1]
-    }
+    },
   },
   watch: {
-    ifDataExtension () {
-      if(this.propsData.routerType == 2 && this.ifDataExtension) {
-        // 优惠券
-        let arr = this.ifDataExtension.camp_coupon_id.split(',')
-        let result_arr = []
-        for(var i=0;i<arr.length;i++) {
-          for(var j=0;j<this.propsData.salesTable.length;j++) {
-            if(arr[i] == this.propsData.salesTable[j].sal_id) {
-              console.log(this.propsData.salesTable[j].sal_id)
-              this.$refs.multipleTable.toggleRowSelection(this.salesTable[j],true);
-              result_arr.push(this.propsData.salesTable[j])
-            }
-          }
-        }
-        console.log(arr)
+    // 'propsData.salesTable'(n,o) {
+      // console.log(n,o)
+      // console.log(1111)
+      // if(this.propsData.routerType == 2 && this.propsData.salesTable.length>0) {
+       
+
+      // this.$nextTick (() => {
+      //    console.log(this.salesTable)
+      //     this.$refs.multipleTable.toggleRowSelection(this.salesTable[0]);
+      //   })
+
+        // let arr = this.ifDataExtension.camp_coupon_id.split(',')
+        // let result_arr = []
+        // for(var i=0;i<arr.length;i++) {
+        //   console.log(this.propsData.salesTable)
+        //   for(var j=0;j<this.propsData.salesTable.length;j++) {
+        //     console.log(arr[i],this.propsData.salesTable[j],i,j)
+        //     if(arr[i] == this.propsData.salesTable[j].sal_id) {
+        //       this.$refs.multipleTable.toggleRowSelection(this.salesTable[j],true);
+        //       result_arr.push(this.propsData.salesTable[j])
+        //     }
+        //   }
+        // }
+      // }
+    // },
+     'multipleTable'(n,o){
+       console.log(n,o)
+        this.$nextTick( ()=> {
+            this.$refs.multipleTable.toggleRowSelection(this.salesTable[0],true);
+        })
+      },
+  },
+  created() {
+    if(this.propsData.routerType == 2) {
+      if(this.propsData.periodVal != '') {
+        this.ifNewPeriod = true
+      }
+      if(this.propsData.periodVal == 1 || this.propsData.periodVal == '注册期') {
+        this.ifNewMbmber = true
+        this.ifNewBuy = false
+        this.propsData.newBuy = ''
+      }else{
+        this.ifNewBuy = true
+        this.ifNewMbmber = false
+        this.propsData.newMbmber = ''
       }
     }
   },
-  created() {
-    // this.datecompute()
+  mounted() {
+    // this.checked()
   },
-  props: ["openData", "openDataContent","propsData","ifDataExtension"],
   methods: {
+    checked() {
+      this.$refs.multipleTable.toggleRowSelection(this.salesTable[0],true)
+    },
     formatDate(row, column, created_time ,index) {
       if(created_time==null || created_time=="") return "";
       let date = new Date(created_time);
@@ -605,23 +638,6 @@ export default {
       let m = date.getMinutes()  < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':';
       let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
       return Y + M + D ;
-    },
-    // 回显
-    datecompute() {
-      if(this.propsData.routerType == 1) {return false}
-      // 优惠券
-      let arr = this.ifDataExtension.camp_coupon_id.split(',')
-      let result_arr = []
-      for(var i=0;i<arr.length;i++) {
-        console.log(arr[i])
-        for(var j=0;j<this.propsData.salesTable.length;j++) {
-          if(arr[i] == this.propsData.salesTable[j].sal_id) {
-            this.$refs.multipleTable.toggleRowSelection(this.salesTable[j],true);
-            result_arr.push(this.propsData.salesTable[j])
-          }
-        }
-      }
-      console.log(result_arr)
     },
     // 搜索框
     searchDate(e) {
@@ -663,7 +679,7 @@ export default {
       if(this.propsData.periodVal != '') {
         this.ifNewPeriod = true
       }
-      if(this.propsData.periodVal == 1) {
+      if(this.propsData.periodVal == 1 || this.propsData.periodVal == '注册期') {
         this.ifNewMbmber = true
         this.ifNewBuy = false
         this.propsData.newBuy = ''

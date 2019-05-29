@@ -14,19 +14,10 @@
           </div>
         </el-col>
         <el-col :span="12" class="marketing-header-r">
-          <el-button-group class="mr05">
-            <el-button
-              type="primary"
-              class="pd-btn pd-back"
-              :class="{'ifColor':this.ifColor == 1}"
-            >Save</el-button>
-            <el-button
-              type="primary"
-              class="pd-btn pd-back"
-              :class="{'ifColor':this.ifColor == 2}"
-            >Test</el-button>
-          </el-button-group>
-          <el-button type="primary" class="pd-btn mr15">Activate</el-button>
+          <el-button type="primary" class="pd-btn mr15" v-if="this.statusVal  == 0">Save</el-button>
+          <el-button type="primary" class="pd-btn mr15" v-if="this.statusVal  == 1">Test</el-button>
+          <el-button type="primary" class="pd-btn mr15" v-if="this.statusVal  == 2">running</el-button>
+          <el-button type="primary" class="pd-btn mr15" v-if="this.statusVal  == 3">stop</el-button>
         </el-col>
       </div>
       <div class="marketing-theme">
@@ -115,6 +106,7 @@
     <popupDrag :openData ="openData"
         :propsData="propsData"
         :openDataContent ="openDataContent"
+        v-if="this.propsData.periodVal != ''"
         :ifDataExtension ="ifDataExtension"
         @searchDate = "searchDate"
         @backlevel ="backlevel"
@@ -160,6 +152,7 @@ export default {
       openDataContent:false,
       openSmsContent:false,
       openTime:false,
+      statusVal:'',
       propsData:{
           routerType:2,
           brandList: [],
@@ -246,7 +239,6 @@ export default {
         timeMonths:""
       },
       ifDataExtension:'',
-      ifColor:1,
       couponName:''
     };
   },
@@ -261,9 +253,9 @@ export default {
     this.brandLists()
     this.periodLists()
     this.registerLists()
+    this.discountLists()
     this.sendSmsLists()
     this.orderLists()
-    this.discountLists()
     // this.activeStatus()
   },
   destroyed() {
@@ -377,6 +369,7 @@ export default {
           this.propsData.orderVal = this.ifDataExtension.command_code
           this.propsData.orderVal = this.ifDataExtension.command_code
           this.propsData.dateTimeVal = this.ifDataExtension.schulder_time
+          this.statusVal = this.ifDataExtension.status
           if(this.ifDataExtension.vip_channel_name.length > 0) {
             this.propsData.registerVal = this.ifDataExtension.vip_channel_name.split(',')
           }
@@ -439,7 +432,6 @@ export default {
       this.$.get("coupon/getList",{params:{couponName:this.couponName}}).then(res=>{
         if(res.data.code == 200) {
           this.propsData.salesTable = res.data.data
-          
         }
       })
     },
@@ -461,6 +453,36 @@ export default {
         this.openDataContent = true
         this.openData = false
       }
+    },
+    dataSummary() {
+      this.propsData.registerVal = this.propsData.registerVal.join(',')
+      let item_data = this.propsData.brandList.filter(item => item.id == this.propsData.brandVal)
+      let item2_data = this.propsData.periodList.filter(item => item.id == this.propsData.periodVal)
+      let sms_data = this.propsData.sendSmsList.filter(item => item.id == this.propsData.sendSmsVal)
+      let command_data = this.propsData.orderList.filter(item => item.id == this.propsData.orderVal)
+      let timestamp = this.propsData.dateTimeVal
+      let objData = {
+        brand:this.propsData.brandVal,
+        period:this.propsData.periodVal,
+        register:this.propsData.registerVal,
+        brandShow:item_data[0].brand_name,
+        periodShow:item2_data[0].cycle_type,
+        newPeriod:this.propsData.newPeriod,
+        newBuy:this.propsData.newBuy,
+        newMbmber:this.propsData.newMbmber,
+        camp_coupon_id:this.checkedActive,
+        coupon_id:this.checkedDiscounts,
+        sms_channel_id: this.propsData.sendSmsVal,
+        command_code:this.propsData.orderVal,
+        sms_channel_id_show:sms_data[0].channel_content,
+        command_code_show:command_data[0].command_name,
+        schulder_time:this.propsData.dateTimeVal,
+        timestamp:timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
+      }
+      sessionStorage.setItem('dataMsg',JSON.stringify(objData))
+      this.ifDataExtension = objData
+      this.openDataContent = false
+      this.openData = true
     },
     backlevelSms() {
       this.openSmsContent = false
@@ -625,9 +647,6 @@ export default {
           background: none;
           border: 1px solid #ece2e1;
           color: #e6e5e4;
-        }
-        .ifColor {
-          color: #409eff;
         }
       }
     }
