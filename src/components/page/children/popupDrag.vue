@@ -572,8 +572,8 @@ export default {
     }
   },
   watch: {
-    'ifDataExtension.camp_coupon_id' () {
-      if(this.propsData.routerType == 2) {
+    ifDataExtension () {
+      if(this.propsData.routerType == 2 && this.ifDataExtension) {
         // 优惠券
         let arr = this.ifDataExtension.camp_coupon_id.split(',')
         let result_arr = []
@@ -591,7 +591,7 @@ export default {
     }
   },
   created() {
-    this.datecompute()
+    // this.datecompute()
   },
   props: ["openData", "openDataContent","propsData","ifDataExtension"],
   methods: {
