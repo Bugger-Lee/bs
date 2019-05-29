@@ -353,6 +353,7 @@ export default {
         if (dates.effectTime) {
           h = dates.effectTime.getHours()
           m = dates.effectTime.getMinutes()
+          s = dates.effectTime.getSeconds()
         }
         let loopType = dates.loopType
         var cron = ''
@@ -364,6 +365,7 @@ export default {
           cron = s + ' ' + m + ' ' + h + ' ' + mo.join(',') + ' * ? *'
         }
         this.cron_express = cron
+        console.log(cron)
         return cron 
     },
     saveJourney() {
