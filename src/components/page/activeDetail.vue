@@ -247,6 +247,7 @@ export default {
       },
       ifDataExtension:'',
       ifColor:1,
+      couponName:''
     };
   },
   components: {
@@ -262,6 +263,7 @@ export default {
     this.registerLists()
     this.sendSmsLists()
     this.orderLists()
+    this.discountLists()
     // this.activeStatus()
   },
   destroyed() {
@@ -368,6 +370,7 @@ export default {
       this.$.get('rule/getDetail?id='+this.$route.query.id).then(res=>{
         if(res.data.code == 200) {
           this.ifDataExtension = res.data.data
+          this.propsSms.ifSms = res.data.data
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
           this.propsData.sendSmsVal = this.ifDataExtension.sms_channel_content
@@ -436,6 +439,7 @@ export default {
       this.$.get("coupon/getList",{params:{couponName:this.couponName}}).then(res=>{
         if(res.data.code == 200) {
           this.propsData.salesTable = res.data.data
+          
         }
       })
     },
@@ -553,7 +557,6 @@ export default {
       }
     },
     dataExtension() {
-      console.log(111)
       this.openData = true
     },
     sms() {

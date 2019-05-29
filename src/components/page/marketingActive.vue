@@ -353,7 +353,7 @@ export default {
         if (dates.effectTime) {
           h = dates.effectTime.getHours()
           m = dates.effectTime.getMinutes()
-          s = dates.effectTime.getSeconds()
+          // s = dates.effectTime.getSeconds()
         }
         let loopType = dates.loopType
         var cron = ''
