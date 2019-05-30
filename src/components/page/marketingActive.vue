@@ -24,10 +24,10 @@
         </el-col>
         <el-col :span="12" class="marketing-header-r">
           <el-button-group class="mr05">
-            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.ifColor == 1}" @click="saveJourney()">Save</el-button>
-            <el-button type="primary" class="pd-btn pd-back" :disabled=disabledBtn :class="{'ifColor':this.ifColor == 2}">Test</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :disabled=disabledBtnSave :class="{'ifColor':this.ifColor == 1}" @click="saveJourney()">Save</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :disabled=disabledBtnTest :class="{'ifColor':this.ifColor == 2}" @click="testRunJourney('test')">Test</el-button>
           </el-button-group>
-          <el-button type="primary" class="pd-btn mr15" disabled>runing</el-button>
+          <el-button type="primary" class="pd-btn mr15" :disabled=disabledBtnRun @click="testRunJourney('runing')">runing</el-button>
         </el-col>
       </div>
       <div class="marketing-theme">
@@ -169,7 +169,7 @@ import popupDrag from "./children/popupDrag.vue"
 import smsPopup from "./children/smsPopup.vue"
 import popupOpenTime from "./children/popupOpenTime.vue"
 import { connect } from 'net';
-import { constants } from 'fs';
+import { constants, truncate } from 'fs';
 export default {
   name: "marketingActive",
   data() {
@@ -184,7 +184,9 @@ export default {
       openSmsContent:false,
       openTime:false,
       ifColor:1,
-      disabledBtn:true,
+      disabledBtnRun:true,
+      disabledBtnSave:false,
+      disabledBtnTest:true,
       currentTimeName:new Date(),
       timeType:{
         routerType:1,
@@ -274,7 +276,8 @@ export default {
       templateName:'',
       ifDataExtension:'',
       cron_express: '',
-      currentTimeVal:''
+      currentTimeVal:'',
+      statusTestRunVal:''
     }
   },
   mounted() {
@@ -344,7 +347,7 @@ export default {
         let h = ''
         let w = []
         if(dates.wloopValue) {
-          w[0] = dates.wloopValue+1>7 ? 1 : dates.wloopValue+1
+          w[0] = dates.wloopValue+1>7 ? 1 : dates.wloopValue
         }
         let mo = []
         if(dates.mloopValue) {
@@ -358,11 +361,11 @@ export default {
         let loopType = dates.loopType
         var cron = ''
         if (loopType === 'Days') {
-          cron = s + ' ' + m + ' ' + h + ' * * ? *'
+          cron = 0 + '' + s + ' ' + m + ' ' + h + ' * * ?'
         } else if (loopType === 'weeks') { // 星期天为1，星期6为7
-          cron = s + ' ' + m + ' ' + h + ' * * ' + w.join(',') + ' *'
+          cron = 0 + '' + s + ' ' + m + ' ' + h + ' * * ' + w.join(',')
         } else if (loopType === 'months') { // 1-31
-          cron = s + ' ' + m + ' ' + h + ' ' + mo.join(',') + ' * ? *'
+          cron = 0 + '' + s + ' ' + m + ' ' + h + ' ' + mo.join(',') + ' * ?'
         }
         this.cron_express = cron
         console.log(cron)
@@ -387,12 +390,28 @@ export default {
       }
       this.$.post("rule/insert",data).then(res=>{
         if(res.data.code == 200) {
+          this.$message(res.data.msg)
           this.ifColor = 2
-          this.disabledBtn = false
+          this.disabledBtnSave = true
+          this.disabledBtnRun = false
+          this.disabledBtnTest = false
         }else{
           this.$message(res.data.msg)
+          this.disabledBtnSave = false
+          this.disabledBtnRun = true
+          this.disabledBtnTest = true
         }
       })
+    },
+    testRunJourney(val) {
+      if(val == 'test') {
+        this.statusTestRunVal = 1
+      }else if(val == 'runing'){
+        this.statusTestRunVal = 2
+      }
+      // this.$.get("updateStatus",{params:{id:,status:this.statusTestRunVal}}).then(res=>{
+
+      // })
     },
     backlevel(val) {
       if(val == 1) {
@@ -640,6 +659,10 @@ export default {
       }
     },
     inputBlur(val,id) {
+      if(val == '') {
+        this.$message('请您输入文案内容')
+        return false
+      }
         let upDate = {
           cycle_id:this.ifDataExtension.period,
           brand_id:this.ifDataExtension.brand,

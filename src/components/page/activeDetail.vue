@@ -14,19 +14,10 @@
           </div>
         </el-col>
         <el-col :span="12" class="marketing-header-r">
-          <el-button-group class="mr05">
-            <el-button
-              type="primary"
-              class="pd-btn pd-back"
-              :class="{'ifColor':this.ifColor == 1}"
-            >Save</el-button>
-            <el-button
-              type="primary"
-              class="pd-btn pd-back"
-              :class="{'ifColor':this.ifColor == 2}"
-            >Test</el-button>
-          </el-button-group>
-          <el-button type="primary" class="pd-btn mr15">Activate</el-button>
+          <el-button type="primary" class="pd-btn mr15" v-if="this.statusVal  == 0">Save</el-button>
+          <el-button type="primary" class="pd-btn mr15" v-if="this.statusVal  == 1">Test</el-button>
+          <el-button type="primary" class="pd-btn mr15" v-if="this.statusVal  == 2">running</el-button>
+          <el-button type="primary" class="pd-btn mr15" v-if="this.statusVal  == 3">stop</el-button>
         </el-col>
       </div>
       <div class="marketing-theme">
@@ -115,9 +106,12 @@
     <popupDrag :openData ="openData"
         :propsData="propsData"
         :openDataContent ="openDataContent"
+        v-if="this.propsData.periodVal != ''"
         :ifDataExtension ="ifDataExtension"
+        ref="popopenref"
         @searchDate = "searchDate"
         @backlevel ="backlevel"
+        @ifCheckedVal = "ifCheckedVal"
         @sltDataContent ="sltDataContent">
     </popupDrag>
     <smsPopup :openData ="openSms"
@@ -150,6 +144,7 @@ import "@/assets/css/part.less";
 import smsPopup from "./children/smsPopup.vue"
 import popupOpenTime from "./children/popupOpenTime.vue"
 import popupDrag from "./children/popupDrag.vue"
+import { connect } from 'net';
 export default {
   data() {
     return {
@@ -160,6 +155,9 @@ export default {
       openDataContent:false,
       openSmsContent:false,
       openTime:false,
+      statusVal:'',
+      checkedActive:'',
+      checkedDiscounts:'',
       propsData:{
           routerType:2,
           brandList: [],
@@ -246,7 +244,6 @@ export default {
         timeMonths:""
       },
       ifDataExtension:'',
-      ifColor:1,
       couponName:''
     };
   },
@@ -261,10 +258,9 @@ export default {
     this.brandLists()
     this.periodLists()
     this.registerLists()
+    this.discountLists()
     this.sendSmsLists()
     this.orderLists()
-    this.discountLists()
-    // this.activeStatus()
   },
   destroyed() {
     let allconn = jsplumb.jsPlumb.getAllConnections()
@@ -377,9 +373,26 @@ export default {
           this.propsData.orderVal = this.ifDataExtension.command_code
           this.propsData.orderVal = this.ifDataExtension.command_code
           this.propsData.dateTimeVal = this.ifDataExtension.schulder_time
+          this.statusVal = this.ifDataExtension.status
           if(this.ifDataExtension.vip_channel_name.length > 0) {
             this.propsData.registerVal = this.ifDataExtension.vip_channel_name.split(',')
           }
+          if(this.ifDataExtension.purchase_first == 'Y') {
+            this.propsData.newBuy = '是'
+          }else{
+            this.propsData.newBuy = '否'
+          }
+          if(this.ifDataExtension.enter_first == 'Y') {
+            this.propsData.newPeriod = '是'
+          }else{
+            this.propsData.newPeriod = '否'
+          }
+          if(this.ifDataExtension.purchase_week == 'Y') {
+            this.propsData.newMbmber = '是'
+          }else{
+            this.propsData.newMbmber = '否'
+          }
+          
         }else{
           this.$message(res.data.msg)
         }
@@ -421,13 +434,6 @@ export default {
         this.propsData.sendSmsList = res.data.data
       })
     },
-    // activeStatus() {
-    //   this.$.get('updateStatus',{params:{id:this.$route.query.id,status:''}}).then(res=>{
-    //     if(res.data.msg == 200) {
-    //       console.log(res)
-    //     }
-    //   })
-    // },
     searchDate(e) {
       var keyCode = window.event? e.keyCode:e.which;
       if(keyCode == 13){
@@ -439,7 +445,6 @@ export default {
       this.$.get("coupon/getList",{params:{couponName:this.couponName}}).then(res=>{
         if(res.data.code == 200) {
           this.propsData.salesTable = res.data.data
-          
         }
       })
     },
@@ -461,6 +466,53 @@ export default {
         this.openDataContent = true
         this.openData = false
       }
+    },
+    ifCheckedVal(val) {
+      let active = []
+      let discounts = []
+      for(var i=0;i<val.active.length;i++) {
+        let str = val.active[i]
+        active.push(str)
+      }
+      for(var i=0;i<val.discounts.length;i++) {
+        let str = val.discounts[i]
+        discounts.push(str)
+      }
+      let activeData = [...new Set(active)].join(',')
+      let discountsData = [...new Set(discounts)].join(',')
+      this.checkedActive = activeData
+      this.checkedDiscounts = discountsData
+    },
+    dataSummary() {
+      this.propsData.registerVal = this.propsData.registerVal.join(',')
+      console.log(this.propsData,this.checkedActive,this.checkedDiscounts)
+      let item_data = this.propsData.brandList.filter(item => item.brand_name == this.propsData.brandVal)
+      let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
+      let sms_data = this.propsData.sendSmsList.filter(item => item.channel_content == this.propsData.sendSmsVal)
+      let command_data = this.propsData.orderList.filter(item => item.command_name == this.propsData.orderVal)
+      let timestamp = new Date(this.propsData.dateTimeVal)
+      let objData = {
+        brand:item_data[0].id,
+        period:item2_data[0].id,
+        vip_channel_name:this.propsData.registerVal,
+        brand_name:this.propsData.brandVal,
+        cycle_type:this.propsData.periodVal,
+        enter_first:this.propsData.newPeriod,
+        purchase_first:this.propsData.newBuy,
+        purchase_week:this.propsData.newMbmber,
+        camp_coupon_id:this.checkedActive,
+        coupon_id:this.checkedDiscounts,
+        sms_channel_id: sms_data[0].id,
+        sms_channel_content:this.propsData.sendSmsVal,
+        command_code:this.propsData.orderVal,
+        schulder_time:this.propsData.dateTimeVal,
+        timestamp:timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
+      }
+      console.log(objData)
+      sessionStorage.setItem('dataMsg',JSON.stringify(objData))
+      this.ifDataExtension = objData
+      this.openDataContent = false
+      this.openData = true
     },
     backlevelSms() {
       this.openSmsContent = false
@@ -558,6 +610,8 @@ export default {
     },
     dataExtension() {
       this.openData = true
+      console.log(this.$refs.popopenref)
+          this.$refs.popopenref.defaultdate()
     },
     sms() {
       this.openSms = true
@@ -625,9 +679,6 @@ export default {
           background: none;
           border: 1px solid #ece2e1;
           color: #e6e5e4;
-        }
-        .ifColor {
-          color: #409eff;
         }
       }
     }
