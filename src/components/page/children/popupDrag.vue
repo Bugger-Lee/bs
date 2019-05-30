@@ -131,7 +131,6 @@
                       <el-option
                         v-for="item in propsData.registerList"
                         :key="item.id"
-                        :label="item.channel_name"
                         :value="item.channel_name"
                       ></el-option>
                     </el-select>
@@ -605,6 +604,7 @@ export default {
     },
     checked() {
       // 活动券
+      if(this.propsData.routerType == 1) {return false}
       let arr = this.ifDataExtension.camp_coupon_id.split(',')
       let arr2 = this.ifDataExtension.coupon_id.split(',')
       arr = arr.concat(arr2)
@@ -616,7 +616,6 @@ export default {
           }
         }
         // 优惠券
-
       result_arr.forEach(row => {
         this.$refs.multipleTable.toggleRowSelection(row,true)
       });
