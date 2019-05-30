@@ -587,12 +587,6 @@ export default {
       }
     }
   },
-  mounted() {
-    // this.$nextTick(()=>{
-    // this.defaultdate()
-
-    // })
-  },
   methods: {
     defaultdate() {
       // 活动券
@@ -607,7 +601,6 @@ export default {
           }
         }
       }
-      console.log(result_arr)
       this.ifChecked(result_arr)
     },
     checked() {
@@ -667,7 +660,6 @@ export default {
           allTicket.discounts.push(str)
         }
       }
-      console.log(allTicket)
       this.$emit('ifCheckedVal', allTicket)
     },
     tabSelect(val) {
