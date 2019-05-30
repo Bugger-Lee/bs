@@ -168,6 +168,7 @@ import $ from "jquery";
 import popupDrag from "./children/popupDrag.vue"
 import smsPopup from "./children/smsPopup.vue"
 import popupOpenTime from "./children/popupOpenTime.vue"
+import "@/components/need.js"
 import { connect } from 'net';
 import { constants, truncate } from 'fs';
 export default {
@@ -277,7 +278,8 @@ export default {
       ifDataExtension:'',
       cron_express: '',
       currentTimeVal:'',
-      statusTestRunVal:''
+      statusTestRunVal:'',
+      systemId:''
     }
   },
   mounted() {
@@ -339,37 +341,9 @@ export default {
         effectTime: this.timeType.timePicker
       }
       this.dateChangeCron(datas)
+      this.cron_express = this.dateChangeCron(datas)
+      console.log(this.cron_express)
       this.openTime = false
-    },
-    dateChangeCron (dates) { //dates 为传进来的整个日期类型的对象 effectTime:yyyy-MM-d:h为执行时间点
-        let m = ''
-        let s = ''
-        let h = ''
-        let w = []
-        if(dates.wloopValue) {
-          w[0] = dates.wloopValue+1>7 ? 1 : dates.wloopValue
-        }
-        let mo = []
-        if(dates.mloopValue) {
-           mo[0] = dates.mloopValue.getDate()
-        }
-        if (dates.effectTime) {
-          h = dates.effectTime.getHours()
-          m = dates.effectTime.getMinutes()
-          // s = dates.effectTime.getSeconds()
-        }
-        let loopType = dates.loopType
-        var cron = ''
-        if (loopType === 'Days') {
-          cron = 0 + '' + s + ' ' + m + ' ' + h + ' * * ?'
-        } else if (loopType === 'weeks') { // 星期天为1，星期6为7
-          cron = 0 + '' + s + ' ' + m + ' ' + h + ' * * ' + w.join(',')
-        } else if (loopType === 'months') { // 1-31
-          cron = 0 + '' + s + ' ' + m + ' ' + h + ' ' + mo.join(',') + ' * ?'
-        }
-        this.cron_express = cron
-        console.log(cron)
-        return cron 
     },
     saveJourney() {
       let data = {
@@ -395,6 +369,7 @@ export default {
           this.disabledBtnSave = true
           this.disabledBtnRun = false
           this.disabledBtnTest = false
+          this.systemId = res.data.data
         }else{
           this.$message(res.data.msg)
           this.disabledBtnSave = false
@@ -409,9 +384,20 @@ export default {
       }else if(val == 'runing'){
         this.statusTestRunVal = 2
       }
-      // this.$.get("updateStatus",{params:{id:,status:this.statusTestRunVal}}).then(res=>{
-
-      // })
+      this.$.get("updateStatus",{params:{id:this.systemId,status:this.statusTestRunVal}}).then(res=>{
+        if(res.data.code == 200) {
+          this.$confirm('您已经成功执行此操作,是否跳转到首页?', '提示', {
+            confirmButtonText: '是',
+            cancelButtonText: '否',
+          }).then(() => {
+            this.$router.push('./homeList')
+          }).catch(() => {
+                    
+          });
+        }else{
+          this.$message(res.data.msg)
+        }
+      })
     },
     backlevel(val) {
       if(val == 1) {

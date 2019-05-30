@@ -144,6 +144,7 @@ import "@/assets/css/part.less";
 import smsPopup from "./children/smsPopup.vue"
 import popupOpenTime from "./children/popupOpenTime.vue"
 import popupDrag from "./children/popupDrag.vue"
+import "@/components/need.js"
 import { connect } from 'net';
 export default {
   data() {
@@ -239,12 +240,14 @@ export default {
             value:"周日"
           },
         ],
-        timePicker:"",
+        timePicker:'',
         timeWeek:"",
         timeMonths:""
       },
       ifDataExtension:'',
-      couponName:''
+      defaultSet:'',
+      couponName:'',
+      cron_express:''
     };
   },
   components: {
@@ -271,24 +274,6 @@ export default {
   },
   methods: {
     doneTime() {
-      if(this.timeType.timeVal == 'Days') {
-        if(this.timeType.timePicker == '') {
-          this.$message('请您完善时间信息');
-          return false
-        }
-      }
-      if(this.timeType.timeVal == 'months') {
-         if(this.timeType.timePicker == '' || this.timeType.timeMonths == '') {
-          this.$message('请您完善时间信息');
-          return false
-        }
-      }
-      if(this.timeType.timeVal == 'weeks') {
-         if(this.timeType.timePicker == '' || this.timeType.timeWeek == '') {
-          this.$message('请您完善时间信息');
-          return false
-        }
-      }
       let timeObj = {
         timeClassify:this.timeType.timeVal,
         time:this.timeType.timePicker,
@@ -303,6 +288,7 @@ export default {
         effectTime: this.timeType.timePicker
       }
       this.dateChangeCron(datas)
+      this.cron_express = this.dateChangeCron(datas)
       this.openTime = false
     },
     dragInit(top, left) {
@@ -365,12 +351,12 @@ export default {
     activeMessage() {
       this.$.get('rule/getDetail?id='+this.$route.query.id).then(res=>{
         if(res.data.code == 200) {
+          this.defaultSet = res.data.data
           this.ifDataExtension = res.data.data
           this.propsSms.ifSms = res.data.data
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
           this.propsData.sendSmsVal = this.ifDataExtension.sms_channel_content
-          this.propsData.orderVal = this.ifDataExtension.command_code
           this.propsData.orderVal = this.ifDataExtension.command_code
           this.propsData.dateTimeVal = this.ifDataExtension.schulder_time
           this.statusVal = this.ifDataExtension.status
@@ -392,7 +378,11 @@ export default {
           }else{
             this.propsData.newMbmber = '否'
           }
-          
+          this.cronChangeDate('0 33 16 31 * ?')
+          console.log(this.cronChangeDate('0 33 16 31 * ?'))
+          this.timeType.timeVal = this.cronChangeDate('0 33 16 31 * ?').loopType
+
+          // this.timeType.timePicker = new Date(this.cronChangeDate("0 33 16 31 * ?").loopTime)
         }else{
           this.$message(res.data.msg)
         }
@@ -485,7 +475,6 @@ export default {
     },
     dataSummary() {
       this.propsData.registerVal = this.propsData.registerVal.join(',')
-      console.log(this.propsData,this.checkedActive,this.checkedDiscounts)
       let item_data = this.propsData.brandList.filter(item => item.brand_name == this.propsData.brandVal)
       let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
       let sms_data = this.propsData.sendSmsList.filter(item => item.channel_content == this.propsData.sendSmsVal)
@@ -508,7 +497,6 @@ export default {
         schulder_time:this.propsData.dateTimeVal,
         timestamp:timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       }
-      console.log(objData)
       sessionStorage.setItem('dataMsg',JSON.stringify(objData))
       this.ifDataExtension = objData
       this.openDataContent = false
@@ -568,16 +556,8 @@ export default {
     },
     saveMessage() {
       let objData = {
-        contentMag:this.propsSms.editMsg
+        template_text:this.propsSms.editMsg
       }
-      if(this.propsSms.editMsg == '') {
-        this.$message({
-            showClose: true,
-            message: '请您新建文案内容',
-            type: 'warning'
-          });
-        return false
-        }
       if(this.propsSms.dataSelected == 2) {
         sessionStorage.setItem('smsMsg',JSON.stringify(objData))
         this.propsSms.ifSms = objData
@@ -610,8 +590,7 @@ export default {
     },
     dataExtension() {
       this.openData = true
-      console.log(this.$refs.popopenref)
-          this.$refs.popopenref.defaultdate()
+      this.$refs.popopenref.defaultdate()
     },
     sms() {
       this.openSms = true

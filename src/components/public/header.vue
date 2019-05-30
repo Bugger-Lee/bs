@@ -12,17 +12,14 @@
           @click="changes(i.id)"
         >{{i.name}}</span>
       </p>
-      <p class="headers-right">
-        <span class="headers-right-r">
-          <span class="login-icon ml15">
+      <div class="headers-right">
+        <div class="headers-right-r">
+          <p class="login-icon ml15">
             <i class="icon-dengluyonghu"></i>
-          </span>
-          <span>
-            <i>hmy</i>
-            <i class="el-icon-caret-bottom"></i>
-          </span>
-        </span>
-      </p>
+          </p>
+          <p class="login-icon-id">hmhahhaha</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -93,22 +90,27 @@ export default {
   }
   .headers-right {
     float: right;
-    width: 25%;
-    text-align: right;
+    width: 10%;
+    text-align: center;
     .headers-right-r {
-      line-height: 40px;
       margin-right: 20px;
+      line-height: 0px;
       .login-icon {
-        width: 38px;
-        height: 38px;
+        width: 35px;
+        height: 35px;
         background-color: #409eff;
         display: inline-block;
         border-radius: 50%;
         text-align: center;
         i {
           color: #fff;
-          font-size: 23px;
+          font-size: 20px;
+          line-height: 35px;
         }
+      }
+      .login-icon-id{
+        line-height: 0px;
+        margin-top: 5px;
       }
     }
   }
