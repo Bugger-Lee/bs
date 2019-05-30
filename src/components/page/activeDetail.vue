@@ -108,8 +108,10 @@
         :openDataContent ="openDataContent"
         v-if="this.propsData.periodVal != ''"
         :ifDataExtension ="ifDataExtension"
+        ref="popopenref"
         @searchDate = "searchDate"
         @backlevel ="backlevel"
+        @ifCheckedVal = "ifCheckedVal"
         @sltDataContent ="sltDataContent">
     </popupDrag>
     <smsPopup :openData ="openSms"
@@ -142,6 +144,7 @@ import "@/assets/css/part.less";
 import smsPopup from "./children/smsPopup.vue"
 import popupOpenTime from "./children/popupOpenTime.vue"
 import popupDrag from "./children/popupDrag.vue"
+import { connect } from 'net';
 export default {
   data() {
     return {
@@ -153,6 +156,8 @@ export default {
       openSmsContent:false,
       openTime:false,
       statusVal:'',
+      checkedActive:'',
+      checkedDiscounts:'',
       propsData:{
           routerType:2,
           brandList: [],
@@ -256,7 +261,6 @@ export default {
     this.discountLists()
     this.sendSmsLists()
     this.orderLists()
-    // this.activeStatus()
   },
   destroyed() {
     let allconn = jsplumb.jsPlumb.getAllConnections()
@@ -373,6 +377,22 @@ export default {
           if(this.ifDataExtension.vip_channel_name.length > 0) {
             this.propsData.registerVal = this.ifDataExtension.vip_channel_name.split(',')
           }
+          if(this.ifDataExtension.purchase_first == 'Y') {
+            this.propsData.newBuy = '是'
+          }else{
+            this.propsData.newBuy = '否'
+          }
+          if(this.ifDataExtension.enter_first == 'Y') {
+            this.propsData.newPeriod = '是'
+          }else{
+            this.propsData.newPeriod = '否'
+          }
+          if(this.ifDataExtension.purchase_week == 'Y') {
+            this.propsData.newMbmber = '是'
+          }else{
+            this.propsData.newMbmber = '否'
+          }
+          
         }else{
           this.$message(res.data.msg)
         }
@@ -414,13 +434,6 @@ export default {
         this.propsData.sendSmsList = res.data.data
       })
     },
-    // activeStatus() {
-    //   this.$.get('updateStatus',{params:{id:this.$route.query.id,status:''}}).then(res=>{
-    //     if(res.data.msg == 200) {
-    //       console.log(res)
-    //     }
-    //   })
-    // },
     searchDate(e) {
       var keyCode = window.event? e.keyCode:e.which;
       if(keyCode == 13){
@@ -454,31 +467,48 @@ export default {
         this.openData = false
       }
     },
+    ifCheckedVal(val) {
+      let active = []
+      let discounts = []
+      for(var i=0;i<val.active.length;i++) {
+        let str = val.active[i]
+        active.push(str)
+      }
+      for(var i=0;i<val.discounts.length;i++) {
+        let str = val.discounts[i]
+        discounts.push(str)
+      }
+      let activeData = [...new Set(active)].join(',')
+      let discountsData = [...new Set(discounts)].join(',')
+      this.checkedActive = activeData
+      this.checkedDiscounts = discountsData
+    },
     dataSummary() {
       this.propsData.registerVal = this.propsData.registerVal.join(',')
-      let item_data = this.propsData.brandList.filter(item => item.id == this.propsData.brandVal)
-      let item2_data = this.propsData.periodList.filter(item => item.id == this.propsData.periodVal)
-      let sms_data = this.propsData.sendSmsList.filter(item => item.id == this.propsData.sendSmsVal)
-      let command_data = this.propsData.orderList.filter(item => item.id == this.propsData.orderVal)
-      let timestamp = this.propsData.dateTimeVal
+      console.log(this.propsData,this.checkedActive,this.checkedDiscounts)
+      let item_data = this.propsData.brandList.filter(item => item.brand_name == this.propsData.brandVal)
+      let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
+      let sms_data = this.propsData.sendSmsList.filter(item => item.channel_content == this.propsData.sendSmsVal)
+      let command_data = this.propsData.orderList.filter(item => item.command_name == this.propsData.orderVal)
+      let timestamp = new Date(this.propsData.dateTimeVal)
       let objData = {
-        brand:this.propsData.brandVal,
-        period:this.propsData.periodVal,
-        register:this.propsData.registerVal,
-        brandShow:item_data[0].brand_name,
-        periodShow:item2_data[0].cycle_type,
-        newPeriod:this.propsData.newPeriod,
-        newBuy:this.propsData.newBuy,
-        newMbmber:this.propsData.newMbmber,
+        brand:item_data[0].id,
+        period:item2_data[0].id,
+        vip_channel_name:this.propsData.registerVal,
+        brand_name:this.propsData.brandVal,
+        cycle_type:this.propsData.periodVal,
+        enter_first:this.propsData.newPeriod,
+        purchase_first:this.propsData.newBuy,
+        purchase_week:this.propsData.newMbmber,
         camp_coupon_id:this.checkedActive,
         coupon_id:this.checkedDiscounts,
-        sms_channel_id: this.propsData.sendSmsVal,
+        sms_channel_id: sms_data[0].id,
+        sms_channel_content:this.propsData.sendSmsVal,
         command_code:this.propsData.orderVal,
-        sms_channel_id_show:sms_data[0].channel_content,
-        command_code_show:command_data[0].command_name,
         schulder_time:this.propsData.dateTimeVal,
         timestamp:timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       }
+      console.log(objData)
       sessionStorage.setItem('dataMsg',JSON.stringify(objData))
       this.ifDataExtension = objData
       this.openDataContent = false
@@ -580,6 +610,8 @@ export default {
     },
     dataExtension() {
       this.openData = true
+      console.log(this.$refs.popopenref)
+          this.$refs.popopenref.defaultdate()
     },
     sms() {
       this.openSms = true

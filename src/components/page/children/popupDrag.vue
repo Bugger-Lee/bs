@@ -241,7 +241,7 @@
                 </div>
                 <div class="select-msg-page">
                   <el-pagination
-                    @size-change="handleSizeChange"
+                    @current-change="handleSizeChange"
                     :current-page.sync="currentPage"
                     :page-size="10"
                     class="page-el-pagination"
@@ -496,7 +496,7 @@
                 </div>
                 <div class="select-msg-page">
                   <el-pagination
-                    @size-change="handleSizeChange"
+                    @current-change="handleSizeChange"
                     :current-page.sync="currentPage"
                     :page-size="10"
                     class="page-el-pagination"
@@ -519,6 +519,7 @@
 </template>
 <script>
 import "@/assets/css/part.less";
+import { setInterval } from 'timers';
 export default {
   name: "popupDrag",
   data() {
@@ -572,39 +573,6 @@ export default {
       return result[this.currentPage-1]
     },
   },
-  watch: {
-    // 'propsData.salesTable'(n,o) {
-      // console.log(n,o)
-      // console.log(1111)
-      // if(this.propsData.routerType == 2 && this.propsData.salesTable.length>0) {
-       
-
-      // this.$nextTick (() => {
-      //    console.log(this.salesTable)
-      //     this.$refs.multipleTable.toggleRowSelection(this.salesTable[0]);
-      //   })
-
-        // let arr = this.ifDataExtension.camp_coupon_id.split(',')
-        // let result_arr = []
-        // for(var i=0;i<arr.length;i++) {
-        //   console.log(this.propsData.salesTable)
-        //   for(var j=0;j<this.propsData.salesTable.length;j++) {
-        //     console.log(arr[i],this.propsData.salesTable[j],i,j)
-        //     if(arr[i] == this.propsData.salesTable[j].sal_id) {
-        //       this.$refs.multipleTable.toggleRowSelection(this.salesTable[j],true);
-        //       result_arr.push(this.propsData.salesTable[j])
-        //     }
-        //   }
-        // }
-      // }
-    // },
-     'multipleTable'(n,o){
-       console.log(n,o)
-        this.$nextTick( ()=> {
-            this.$refs.multipleTable.toggleRowSelection(this.salesTable[0],true);
-        })
-      },
-  },
   created() {
     if(this.propsData.routerType == 2) {
       if(this.propsData.periodVal != '') {
@@ -613,20 +581,53 @@ export default {
       if(this.propsData.periodVal == 1 || this.propsData.periodVal == '注册期') {
         this.ifNewMbmber = true
         this.ifNewBuy = false
-        this.propsData.newBuy = ''
       }else{
         this.ifNewBuy = true
         this.ifNewMbmber = false
-        this.propsData.newMbmber = ''
       }
     }
   },
   mounted() {
-    // this.checked()
+    // this.$nextTick(()=>{
+    // this.defaultdate()
+
+    // })
   },
   methods: {
+    defaultdate() {
+      // 活动券
+      let arr = this.ifDataExtension.camp_coupon_id.split(',')
+      let arr2 = this.ifDataExtension.coupon_id.split(',')
+      arr = arr.concat(arr2)
+      let result_arr = []
+      for(var i=0;i<arr.length;i++) {
+        for(var j=0;j<this.propsData.salesTable.length;j++) {
+          if(arr[i] == this.propsData.salesTable[j].sal_id) {
+            result_arr.push(this.propsData.salesTable[j])
+          }
+        }
+      }
+      console.log(result_arr)
+      this.ifChecked(result_arr)
+    },
     checked() {
-      this.$refs.multipleTable.toggleRowSelection(this.salesTable[0],true)
+      // 活动券
+      let arr = this.ifDataExtension.camp_coupon_id.split(',')
+      let arr2 = this.ifDataExtension.coupon_id.split(',')
+      arr = arr.concat(arr2)
+      let result_arr = []
+      for(var i=0;i<arr.length;i++) {
+        for(var j=0;j<this.propsData.salesTable.length;j++) {
+          if(arr[i] == this.propsData.salesTable[j].sal_id) {
+            result_arr.push(this.propsData.salesTable[j])
+          }
+        }
+        // 优惠券
+
+      result_arr.forEach(row => {
+        this.$refs.multipleTable.toggleRowSelection(row,true)
+      });
+      }
     },
     formatDate(row, column, created_time ,index) {
       if(created_time==null || created_time=="") return "";
@@ -666,6 +667,7 @@ export default {
           allTicket.discounts.push(str)
         }
       }
+      console.log(allTicket)
       this.$emit('ifCheckedVal', allTicket)
     },
     tabSelect(val) {
@@ -673,6 +675,12 @@ export default {
         this.$emit("backlevel",val)
       } else {
         this.dataSelected = val
+        if (val == '3') {
+          this.$nextTick(() => {
+          this.checked()
+
+          })
+        }
       }
     },
     periodChange() {
@@ -686,12 +694,14 @@ export default {
       }else{
         this.ifNewBuy = true
         this.ifNewMbmber = false
-        this.propsData.newMbmber = ''
       }
     },
     // 翻页
     handleSizeChange(val) {
       this.currentPage = val
+      if(this.propsData.routerType == 2) {
+        this.checked()
+      }
     }
   }
 };
