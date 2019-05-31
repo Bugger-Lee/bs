@@ -4,7 +4,21 @@
       <p>Select a duration to hold contacts within the Journey</p>
       <div class="time-content">
         <p class="mb10">Duration</p>
-        <h2 style="display:inline-block;">每 : &nbsp;&nbsp;&nbsp;</h2>
+        <el-select v-model="executeTypeVal" value="1" size="small" style="width:26%;">
+          <el-option
+            v-for="item in executeType"
+            :key="item.id"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <el-select v-model="timeType.timeVal" value="1" size="small" style="width:26%;">
+          <el-option
+            v-for="item in timeType.time"
+            :key="item.id"
+            :change = "timeChange(timeType.timeVal)"
+            :value="item.value">
+          </el-option>
+        </el-select>
         <el-select v-model="timeType.timeVal" value="1" size="small" style="width:26%;">
           <el-option
             v-for="item in timeType.time"
@@ -95,6 +109,17 @@ export default {
   data() {
       return{
         ifShowTime:"Days",
+        executeType:[
+          {
+            id:1,
+            value:'周期执行'
+          },
+          {
+            id:2,
+            value:'单次执行'
+          }
+        ],
+        executeTypeVal:'',
         pickerOptions:{
           disabledDate(time) {
             return time.getTime() < Date.now();

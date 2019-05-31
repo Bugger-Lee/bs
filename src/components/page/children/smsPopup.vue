@@ -13,7 +13,7 @@
             <span class="redStar">*</span>Message Definition
           </p>
           <div class="data-content-c" v-if="propsSms.ifSms == ''">
-            <img src="@/assets/img/noneData2.png" style="height:240px;">
+            <img src="../../../assets/img/noneData2.png" style="height:240px;">
             <p class="c-explain-one">Let's get started!</p>
             <p>Select or create a message</p>
             <el-button
@@ -72,7 +72,6 @@
               <el-tree :data="dataExtensions" class="r-content-l-b">
                 <span slot-scope="{ node, data }">
                   <span>
-                    <i :class="data.con"></i>
                     <i :class="data.icon"></i>
                     {{ node.label }}
                   </span>
@@ -120,6 +119,20 @@
                   </div>
                 </div>
             </el-col>
+            <!-- <el-col :span="19">
+                <div class="ml10">
+                  <span class="redStar">*</span>
+                  <span>短信通道</span>
+                  <el-select v-model="propsData.sendSmsVal" clearable placeholder="请选择短信通道" class="select-option-classify">
+                    <el-option
+                      v-for="item in propsData.sendSmsList"
+                      :key="item.id"
+                      :label="item.channel_content"
+                      :value="item.id"
+                    ></el-option>
+                  </el-select>
+                </div>
+            </el-col> -->
           </div>
         </el-col>
         <el-col :span="21" v-if="propsSms.dataSelected == 3" class="data-content-r">
@@ -174,7 +187,7 @@
             <span class="redStar">*</span>Message Definition
           </p>
           <div class="data-content-c" v-if="propsSms.ifSms == ''">
-            <img src="@/assets/img/noneData2.png" style="height:240px;">
+            <img src="../../../assets/img/noneData2.png" style="height:240px;">
             <p class="c-explain-one">Let's get started!</p>
             <p>Select or create a message</p>
             <el-button
@@ -332,9 +345,21 @@ export default {
     return {
       dataExtensions: [
         {
-          label: "SMS Content",
-          con: "el-icon-arrow-right",
-          icon: "icon-wenjian"
+          label: "SMS",
+          icon: "icon-wenjian",
+          id:1,
+          children: [
+            {
+              id:2,
+              label: 'sms Content',
+              icon: "icon-wenjian",
+            },
+            {
+              id:3,
+              label: 'sms Template',
+              icon: "icon-wenjian",
+            }
+          ]
         }
       ],
       brandVal: '',
@@ -376,6 +401,9 @@ export default {
       }
       return result[this.currentPage-1]
     }
+  },
+  created() {
+    console.log(this.dataExtensions)
   },
   props: ["openData", "openDataContent","propsSms"],
   methods: {

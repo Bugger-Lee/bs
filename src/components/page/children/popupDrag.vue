@@ -13,7 +13,7 @@
             <span class="redStar">*</span>Data Extension
           </p>
           <div class="data-content-c" v-if="ifDataExtension == ''">
-            <img src="@/assets/img/noneData.png">
+            <img src="../../../assets/img/noneData.png">
             <p class="c-explain-one">Let's get going!</p>
             <p>Select the data extension whose contacts should enter this journey</p>
             <el-button
@@ -38,7 +38,6 @@
               <P><span>活动券 : {{ifDataExtension.camp_coupon_id}}</span><span></span></P>
               <P><span>优惠券 : {{ifDataExtension.coupon_id}}</span><span></span></P>
               <P><span>短信通道 : {{ifDataExtension.sms_channel_id_show}}</span><span></span></P>
-              <P><span>调度命令 : {{ifDataExtension.command_code_show}}</span><span></span></P>
               <P><span>定时发送时间 : {{ifDataExtension.schulder_time}}</span><span></span></P>
             </div>
           </div>
@@ -135,32 +134,8 @@
                       ></el-option>
                     </el-select>
                   </div>
-                  <div class="ml10">
-                    <span class="redStar">*</span>
-                    <span>短信通道</span>
-                    <el-select v-model="propsData.sendSmsVal" clearable placeholder="请选择短信通道" class="select-option-classify">
-                      <el-option
-                        v-for="item in propsData.sendSmsList"
-                        :key="item.id"
-                        :label="item.channel_content"
-                        :value="item.id"
-                      ></el-option>
-                    </el-select>
-                  </div>
                 </el-col>
                 <el-col :span="12">
-                  <div class="ml10">
-                    <span class="redStar">*</span>
-                    <span>调度命令</span>
-                    <el-select v-model="propsData.orderVal" clearable placeholder="请选择调度命令" class="select-option-classify">
-                      <el-option
-                        v-for="item in propsData.orderList"
-                        :key="item.id"
-                        :label="item.command_name"
-                        :value="item.id"
-                      ></el-option>
-                    </el-select>
-                  </div>
                   <div class="ml10 mt20">
                     <span class="redStar">*</span>
                     <span>定时发送时间</span>
@@ -272,7 +247,7 @@
             <span class="redStar">*</span>Data Extension
           </p>
           <div class="data-content-c" v-if="ifDataExtension == ''">
-            <img src="@/assets/img/noneData.png">
+            <img src="../../../assets/img/noneData.png">
             <p class="c-explain-one">Let's get going!</p>
             <p>Select the data extension whose contacts should enter this journey</p>
             <el-button
@@ -392,7 +367,7 @@
                       ></el-option>
                     </el-select>
                   </div>
-                  <div class="ml10">
+                  <!-- <div class="ml10">
                     <span class="redStar">*</span>
                     <span>短信通道</span>
                     <el-select v-model="propsData.sendSmsVal" clearable placeholder="请选择短信通道" class="select-option-classify">
@@ -402,20 +377,9 @@
                         :value="item.channel_content"
                       ></el-option>
                     </el-select>
-                  </div>
+                  </div> -->
                 </el-col>
                 <el-col :span="12">
-                  <div class="ml10">
-                    <span class="redStar">*</span>
-                    <span>调度命令</span>
-                    <el-select v-model="propsData.orderVal" clearable placeholder="请选择调度命令" class="select-option-classify">
-                      <el-option
-                        v-for="item in propsData.orderList"
-                        :key="item.id"
-                        :value="item.command_name"
-                      ></el-option>
-                    </el-select>
-                  </div>
                   <div class="ml10 mt20">
                     <span class="redStar">*</span>
                     <span>定时发送时间</span>
