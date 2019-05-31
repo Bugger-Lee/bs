@@ -368,7 +368,6 @@ export default {
           this.ifColor = 2
           this.disabledBtnSave = true
           this.disabledBtnRun = false
-          this.disabledBtnTest = false
           this.systemId = res.data.data
         }else{
           this.$message(res.data.msg)
@@ -384,7 +383,7 @@ export default {
       }else if(val == 'runing'){
         this.statusTestRunVal = 2
       }
-      this.$.get("updateStatus",{params:{id:this.systemId,status:this.statusTestRunVal}}).then(res=>{
+      this.$.get("rule/updateStatus",{params:{id:this.systemId,status:this.statusTestRunVal}}).then(res=>{
         if(res.data.code == 200) {
           this.$confirm('您已经成功执行此操作,是否跳转到首页?', '提示', {
             confirmButtonText: '是',
@@ -440,7 +439,7 @@ export default {
         });
         return false
       }
-      this.propsData.registerVal = this.propsData.registerVal.join(',')
+      let registerVal = this.propsData.registerVal.join(',')
       if(this.checkedActive == undefined || this.checkedDiscounts == undefined) {
         this.$message({
           showClose: true,
@@ -457,7 +456,7 @@ export default {
       let objData = {
         brand:this.propsData.brandVal,
         period:this.propsData.periodVal,
-        register:this.propsData.registerVal,
+        register:registerVal,
         brandShow:item_data[0].brand_name,
         periodShow:item2_data[0].cycle_type,
         newPeriod:this.propsData.newPeriod,

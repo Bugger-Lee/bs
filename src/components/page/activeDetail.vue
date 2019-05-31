@@ -247,7 +247,8 @@ export default {
       ifDataExtension:'',
       defaultSet:'',
       couponName:'',
-      cron_express:''
+      cron_express:'',
+      dayVal:''
     };
   },
   components: {
@@ -370,6 +371,7 @@ export default {
           }
           if(this.ifDataExtension.enter_first == 'Y') {
             this.propsData.newPeriod = '是'
+
           }else{
             this.propsData.newPeriod = '否'
           }
@@ -378,11 +380,15 @@ export default {
           }else{
             this.propsData.newMbmber = '否'
           }
-          this.cronChangeDate('0 33 16 31 * ?')
-          console.log(this.cronChangeDate('0 33 16 31 * ?'))
-          this.timeType.timeVal = this.cronChangeDate('0 33 16 31 * ?').loopType
-
-          // this.timeType.timePicker = new Date(this.cronChangeDate("0 33 16 31 * ?").loopTime)
+          this.cronChangeDate(res.data.data)
+          this.timeType.timeVal = this.cronChangeDate(res.data.data).loopType
+          let dayVal = this.cronChangeDate(res.data.data).loopTime.split(':')
+          this.timeType.timePicker = new Date(0,0,0,dayVal[0],dayVal[1])
+          let timeMonths = this.cronChangeDate(res.data.data).loopValue
+          let date_new = new Date()
+          this.timeType.timeMonths = new Date(date_new.getFullYear(),date_new.getMonth(),timeMonths)
+          console.log(this.cronChangeDate(res.data.data))
+          this.timeType.timeWeek = this.cronChangeDate(res.data.data).loopValue
         }else{
           this.$message(res.data.msg)
         }

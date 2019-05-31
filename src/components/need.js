@@ -50,12 +50,12 @@ const cronChangeDate = (data)=>{
             return en2cnMap[key];
         })
         toDate.loopValue = cnKeys.join(',')
-    } else if (countData.count1 + countData.count2 === 4) {
+    } else if (countData.count2 === 1) {
         toDate.loopType = 'months'
         var mot = []
         var mkeys = nArr[3].split(',')
         for (var i = 0; i < mkeys.length; i++) {
-            let mo = mkeys[i] + '号'
+            let mo = mkeys[i]
             mot.push(mo)
         }
         toDate.loopValue = mot.join(',')
