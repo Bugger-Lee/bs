@@ -1,6 +1,6 @@
 <template>
   <div class="popupOpenTime">
-		<div class="data-content" v-if="timeType.routerType == 1">
+		<div class="data-content">
       <p>Select a duration to hold contacts within the Journey</p>
       <div class="time-content">
         <p class="mb10">Duration</p>
@@ -11,57 +11,6 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <el-select v-model="timeType.timeVal" value="1" size="small" style="width:26%;">
-          <el-option
-            v-for="item in timeType.time"
-            :key="item.id"
-            :change = "timeChange(timeType.timeVal)"
-            :value="item.value">
-          </el-option>
-        </el-select>
-        <el-select v-model="timeType.timeVal" value="1" size="small" style="width:26%;">
-          <el-option
-            v-for="item in timeType.time"
-            :key="item.id"
-            :change = "timeChange(timeType.timeVal)"
-            :value="item.value">
-          </el-option>
-        </el-select>
-        <el-select v-model="timeType.timeWeek" value="1" style="width:26%;" size="small" v-if="this.ifShowTime == 'weeks'" placeholder="选择周">
-          <el-option
-            v-for="item in propsTimeWeeks"
-            :key="item.id"
-            :label="item.value"
-            :disabled="item.disabled"
-            :value="item.id">
-          </el-option>
-        </el-select>
-        <el-date-picker
-          v-if="this.ifShowTime == 'months'"
-          size="small"
-          style="width:26%;"
-          v-model="timeType.timeMonths"
-          type="date"
-          :picker-options="pickerOptions"
-          placeholder="选择月">
-        </el-date-picker>
-        <el-time-picker
-          size="small"
-          format="HH:mm"
-          style="width:26%;"
-          :picker-options="{
-            selectableRange: selectRange
-          }"
-          v-model="timeType.timePicker"
-          placeholder="任意时间点">
-        </el-time-picker>
-      </div>
-    </div>
-    <div class="data-content" v-if="timeType.routerType == 2">
-      <p>Select a duration to hold contacts within the Journey</p>
-      <div class="time-content">
-        <p class="mb10">Duration</p>
-        <h2 style="display:inline-block;">每 : &nbsp;&nbsp;&nbsp;</h2>
         <el-select v-model="timeType.timeVal" value="1" size="small" style="width:26%;">
           <el-option
             v-for="item in timeType.time"

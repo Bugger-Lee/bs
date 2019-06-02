@@ -180,12 +180,10 @@
 import "@/assets/css/part.less";
 import jsplumb from "jsplumb";
 import $ from "jquery";
-import popupDrag from "./children/popupDrag.vue"
-import smsPopup from "./children/smsPopup.vue"
-import popupOpenTime from "./children/popupOpenTime.vue"
+import popupDrag from "./module/popupDrag.vue"
+import smsPopup from "./module/smsPopup.vue"
+import popupOpenTime from "@/components/public/popupOpenTime.vue"
 import "@/components/need.js"
-import { connect } from 'net';
-import { constants, truncate } from 'fs';
 export default {
   name: "marketingActive",
   data() {
@@ -205,7 +203,6 @@ export default {
       disabledBtnTest:true,
       currentTimeName:new Date(),
       timeType:{
-        routerType:1,
         timeVal:'Days',
         time:[
           {
@@ -256,7 +253,6 @@ export default {
         timeMonths:""
       },
       propsData:{
-        routerType:1,
         brandList: [],
         periodList: [],
         registerList: [],
@@ -277,7 +273,6 @@ export default {
         dateTimeVal:''
       },
       propsSms:{
-        routerType:1,
         smsTable:[],
         SearchSms: '',
         editMsg:'',
@@ -314,12 +309,13 @@ export default {
     popupOpenTime,
     smsPopup
   },
-  destroyed() {
+  beforeRouteLeave (to,from,next) {
     let allconn = jsplumb.jsPlumb.getAllConnections()
     for (var i = 0; i < allconn.length + 1; i++) {
     jsplumb.jsPlumb.deleteConnection(allconn[0])
     }
     jsplumb.jsPlumb.deleteConnection(allconn[0])
+    next()
   },
   methods: {
     doneTime() {

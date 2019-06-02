@@ -146,11 +146,10 @@
 <script>
 import jsplumb from "jsplumb";
 import "@/assets/css/part.less";
-import smsPopup from "./children/smsPopup.vue"
-import popupOpenTime from "./children/popupOpenTime.vue"
-import popupDrag from "./children/popupDrag.vue"
+import smsPopup from "./module/smsPopup.vue"
+import popupOpenTime from "@/components/public/popupOpenTime.vue"
+import popupDrag from "./module/popupDrag.vue"
 import "@/components/need.js"
-import { connect } from 'net';
 export default {
   data() {
     return {
@@ -165,7 +164,6 @@ export default {
       checkedDiscounts:'',
       statusVal:'',
       propsData:{
-          routerType:2,
           brandList: [],
           periodList: [],
           registerList: [],
@@ -188,7 +186,6 @@ export default {
           dateTimeVal:''
       },
       propsSms:{
-        routerType:2,
         smsTable:[],
         SearchSms: '',
         editMsg:'',
@@ -198,7 +195,6 @@ export default {
         ifSms:''
       },
       timeType:{
-        routerType:2,
         timeVal:'Days',
         time:[
           {
@@ -269,13 +265,6 @@ export default {
     this.discountLists()
     this.sendSmsLists()
     this.orderLists()
-  },
-  destroyed() {
-    let allconn = jsplumb.jsPlumb.getAllConnections()
-    for (var i = 0; i < allconn.length + 1; i++) {
-    jsplumb.jsPlumb.deleteConnection(allconn[0])
-    }
-    jsplumb.jsPlumb.deleteConnection(allconn[0])
   },
   methods: {
     doneTime() {
@@ -618,6 +607,16 @@ export default {
     selectTime() {
       this.openTime = true
     }
+  },
+  beforeRouteLeave (to,from,next) {
+    let allconn = jsplumb.jsPlumb.getAllConnections()
+    for (var i = 0; i < allconn.length + 1; i++) {
+    jsplumb.jsPlumb.deleteConnection(allconn[0])
+    }
+    jsplumb.jsPlumb.deleteConnection(allconn[0])
+    console.log(allconn)
+
+    next()
   }
 };
 </script>
