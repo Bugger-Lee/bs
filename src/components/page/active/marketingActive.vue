@@ -122,31 +122,31 @@
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none" />
+          <div ref="refData1div" v-if="ifDrag">data Extention</div>
           <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
             <span class="msg-style" @click="sms()">
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none" />
+          <div ref="refData2div" v-if="ifSmsDrag">sms</div>
           <div class="window" id="newreturn" ref="newData" v-if="ifSmsDrag">
-            <span class="msg-style" @click="sms()">
+            <span class="msg-style">
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <input ref="refData2div" v-if="ifSmsDrag" value="promotion" style="border:none" />
+          <div ref="refData2div" v-if="ifSmsDrag">promotion</div>
           <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
             <span class="ctl-style" @click="selectTime()">
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <input ref="refData3div" v-if="ifSmsDrag" value="Time"  style="border:none" />
+          <div ref="refData3div" v-if="ifSmsDrag">Time</div>
           <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
             <span class="crowd-style">
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <input ref="refData4div" v-if="ifSmsDrag" value="over"  style="border:none"/>
+          <div ref="refData4div" v-if="ifSmsDrag">over</div>
         </el-col>
       </div>
       <popupDrag :openData ="openData"
