@@ -57,7 +57,7 @@
               <el-menu-item-group>
                 <ul class="theme-l-tmp">
                   <li>
-                    <span class="crowd-style">
+                    <span class="crowds-style">
                       <i class="icon-shouye"></i>
                     </span>
                     <p>promotion</p>
@@ -129,6 +129,12 @@
             </span>
           </div>
           <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none" />
+          <div class="window" id="newreturn" ref="newData" v-if="ifSmsDrag">
+            <span class="msg-style" @click="sms()">
+              <i class="icon-shouye"></i>
+            </span>
+          </div>
+          <input ref="refData2div" v-if="ifSmsDrag" value="promotion" style="border:none" />
           <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
             <span class="ctl-style" @click="selectTime()">
               <i class="icon-shouye"></i>
@@ -289,7 +295,8 @@ export default {
       cron_express: '',
       currentTimeVal:'',
       statusTestRunVal:'',
-      systemId:''
+      systemId:'',
+      dargSms: false
     }
   },
   mounted() {
@@ -568,6 +575,7 @@ export default {
       });
     },
     appendSms(left, top) {
+      this.dargSms = true
       this.ifSmsDrag = true
       this.$nextTick(()=>{
         this.$refs.refData2.style.position = 'fixed'
@@ -607,6 +615,9 @@ export default {
         this.dragLeft = left
         this.dragTop = top
         this.dargNext()
+        setInterval(() => {
+          this.dargNextNew()
+        }, 100);
       })
     },
     dataExtension() {
@@ -760,6 +771,36 @@ export default {
       $(".marketing-drag").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
+          console.log(ui,that)
+          if (
+            minleft-5 <= ui.offset.left &&
+            ui.offset.left <= minleft + maxleft+20 &&
+            mintop-5 <= ui.offset.top &&
+            ui.offset.top < mintop + maxtop+20
+          ) {
+            console.log(that.dargSms)
+            if (that.dargSms) {return}
+            that.appendSms(ui.offset.left, that.dragTop);
+          }
+        }
+      });
+    },
+    dargNextNew() {
+      let minleft = $(".imaginary-squares").offset().left;
+      let mintop = $(".imaginary-squares").offset().top;
+      let maxleft = $(".imaginary-squares").width();
+      let maxtop = $(".imaginary-squares").height();
+      let that = this;
+      $(".crowds-style").draggable({
+        zIndex: 999,
+        helper: "clone",
+        scope: "dragflagnew",
+        appendTo: "body"
+      });
+      $(".marketing-drag").droppable({
+        scope: "dragflagnew",
+        drop: function(event, ui) {
+          console.log(ui,that.dargSms)
           if (
             minleft-5 <= ui.offset.left &&
             ui.offset.left <= minleft + maxleft+20 &&
