@@ -4,49 +4,63 @@
       <p>Select a duration to hold contacts within the Journey</p>
       <div class="time-content">
         <p class="mb10">Duration</p>
-        <el-select v-model="executeTypeVal" value="1" size="small" style="width:26%;">
-          <el-option
-            v-for="item in executeType"
-            :key="item.id"
-            :value="item.value">
-          </el-option>
-        </el-select>
-        <el-select v-model="timeType.timeVal" value="1" size="small" style="width:26%;">
-          <el-option
-            v-for="item in timeType.time"
-            :key="item.id"
-            :change = "timeChange(timeType.timeVal)"
-            :value="item.value">
-          </el-option>
-        </el-select>
-        <el-select v-model="timeType.timeWeek" value="1" style="width:26%;" size="small" v-if="this.ifShowTime == 'weeks'" placeholder="选择周">
-          <el-option
-            v-for="item in propsTimeWeeks"
-            :key="item.id"
-            :label="item.value"
-            :disabled="item.disabled"
-            :value="item.id">
-          </el-option>
-        </el-select>
-        <el-date-picker
-          v-if="this.ifShowTime == 'months'"
-          size="small"
-          style="width:26%;"
-          v-model="timeType.timeMonths"
-          type="date"
-          :picker-options="pickerOptions"
-          placeholder="选择月">
-        </el-date-picker>
-        <el-time-picker
-          size="small"
-          format="HH:mm"
-          style="width:26%;"
-          :picker-options="{
-            selectableRange: selectRange
-          }"
-          v-model="timeType.timePicker"
-          placeholder="任意时间点">
-        </el-time-picker>
+          <div class="mt20 mb20">
+            <span>激活时间 ： </span>
+            <el-date-picker
+              v-model="timeType.dateTimeVal"
+              size="small"
+              type="datetime"
+              :picker-options="{
+                selectableRange: selectRange,
+                disabledDate:disabledDate
+              }"
+              format="yyyy-MM-dd HH:mm"
+              placeholder="选择日期时间">
+            </el-date-picker>
+          </div>
+          <div class="mb20">
+            <span>执行类型 ： </span>
+            <el-tooltip class="item" effect="dark" content="单次执行开始时间即激活时间" placement="top-start">
+              <el-radio v-model="timeType.executeType" :label="1" :change = "carryOnce(timeType.executeType)">单次执行</el-radio>
+            </el-tooltip>
+            <el-radio v-model="timeType.executeType" :label="2" :change = "carryOnce(timeType.executeType)">周期执行</el-radio>
+          </div>
+          <div>
+            <span>执行时间 ： </span>
+            <el-select v-model="timeType.timeVal" value="1" size="small" :disabled = ifDisabled style="width:26%;">
+              <el-option
+                v-for="item in timeType.time"
+                :key="item.id"
+                :change = "timeChange(timeType.timeVal)"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-select v-model="timeType.timeWeek" value="1" style="width:26%;" :disabled = ifDisabled size="small" v-if="this.ifShowTime == 'weeks'" placeholder="选择周">
+              <el-option
+                v-for="item in propsTimeWeeks"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-date-picker
+              :disabled = ifDisabled
+              v-if="this.ifShowTime == 'months'"
+              size="small"
+              style="width:26%;"
+              v-model="timeType.timeMonths"
+              type="date"
+              placeholder="选择月">
+            </el-date-picker>
+            <el-time-picker
+              :disabled = ifDisabled
+              size="small"
+              format="HH:mm"
+              style="width:26%;"
+              v-model="timeType.timePicker"
+              placeholder="任意时间点">
+            </el-time-picker>
+          </div>
       </div>
     </div>
   </div>
@@ -56,43 +70,43 @@ import "@/assets/css/part.less";
 export default {
   name: "popupOpenTime",
   data() {
-      return{
-        ifShowTime:"Days",
-        executeType:[
-          {
-            id:1,
-            value:'周期执行'
-          },
-          {
-            id:2,
-            value:'单次执行'
-          }
-        ],
-        executeTypeVal:'',
-        pickerOptions:{
-          disabledDate(time) {
-            return time.getTime() < Date.now();
-          },
+    return{
+      ifShowTime:"Days",
+      ifDisabled:false,
+      propsTimeWeeks:[
+        {
+          id:1,
+          value:'周一'
         },
-        selectRange: new Date().getHours()+':'+new Date().getMinutes()+':00 - 23:59:00'
-      }
-  },
-  computed: {
-    propsTimeWeeks () {
-      let weeks = new Date().getDay()
-      if (weeks == 0) {
-        weeks = 7
-      }
-      // weeks = 1
-      let propsTimeWeeks = this.timeType.timeWeeks
-      for ( let i=0; i<propsTimeWeeks.length; i++) {
-        if (propsTimeWeeks[i].id < weeks) {
-          propsTimeWeeks[i].disabled = true
-        } else {
-          propsTimeWeeks[i].disabled = false
-        }
-      }
-      return propsTimeWeeks
+        {
+          id:2,
+          value:'周二'
+        },
+        {
+          id:3,
+          value:'周三'
+        },
+        {
+          id:4,
+          value:'周四'
+        },
+        {
+          id:5,
+          value:'周五'
+        },
+        {
+          id:6,
+          value:'周六'
+        },
+        {
+          id:7,
+          value:'周日'
+        },
+      ],
+      disabledDate(time) {
+        return time.getTime() < Date.now();
+      },
+      selectRange: new Date().getHours()+':'+new Date().getMinutes()+':00 - 23:59:00'
     }
   },
   props:["timeType"],
@@ -108,6 +122,15 @@ export default {
       }else if(val == "weeks") {
         this.ifShowTime = "weeks"
         this.timeType.timeMonths = ''
+      }
+    },
+    carryOnce(val) {
+      if(val != '') {
+        if(val == 1) {
+          this.ifDisabled = true
+        }else{
+          this.ifDisabled = false
+        }
       }
     }
   }
