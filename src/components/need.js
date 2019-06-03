@@ -80,6 +80,23 @@ const getPlaceholderCount = (strSource) =>{
     obj.count2 = count2
     return obj //返回一个对象，根据需要得到想要的值
 }
+// 将过去的周禁用
+//   propsTimeWeeks () {
+//     let weeks = new Date().getDay()
+//     if (weeks == 0) {
+//       weeks = 7
+//     }
+//     // weeks = 1
+//     let propsTimeWeeks = this.timeType.timeWeeks
+//     for ( let i=0; i<propsTimeWeeks.length; i++) {
+//       if (propsTimeWeeks[i].id < weeks) {
+//         propsTimeWeeks[i].disabled = true
+//       } else {
+//         propsTimeWeeks[i].disabled = false
+//       }
+//     }
+//     return propsTimeWeeks
+//   }
 Vue.prototype.dateChangeCron = dateChangeCron
 Vue.prototype.cronChangeDate = cronChangeDate
 Vue.prototype.getPlaceholderCount = getPlaceholderCount

@@ -168,9 +168,7 @@ export default {
           periodList: [],
           registerList: [],
           salesTable:[],
-          sendSmsList:[],
           orderList:[],
-          sendSmsVal:'',
           brandVal: '',
           brandId: '',
           periodVal:'',
@@ -183,11 +181,12 @@ export default {
           newMbmber:'',
           checkedActive:'',
           checkedDiscounts:'',
-          dateTimeVal:''
       },
       propsSms:{
         smsTable:[],
+        sendSmsList:[],
         SearchSms: '',
+        sendSmsVal:'',
         editMsg:'',
         ifShowInput:false,
         tableSelectVal:'',
@@ -196,6 +195,7 @@ export default {
       },
       timeType:{
         timeVal:'Days',
+        dateTimeVal:'',
         time:[
           {
             id:1,
@@ -350,8 +350,8 @@ export default {
           this.propsSms.ifSms = res.data.data
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
-          this.propsData.sendSmsVal = this.ifDataExtension.sms_channel_content
-          this.propsData.dateTimeVal = this.ifDataExtension.schulder_time
+          this.propsSms.sendSmsVal = this.ifDataExtension.sms_channel_content
+          // this.propsData.dateTimeVal = this.ifDataExtension.schulder_time
           this.statusVal = this.ifDataExtension.status
           if(this.ifDataExtension.vip_channel_name.length > 0) {
             this.propsData.registerVal = this.ifDataExtension.vip_channel_name.split(',')
@@ -432,7 +432,7 @@ export default {
     // 短信通道
     sendSmsLists() {
       this.$.get('smsChannel/getList?channelName=').then(res=>{
-        this.propsData.sendSmsList = res.data.data
+        this.propsSms.sendSmsList = res.data.data
       })
     },
     searchDate(e) {
@@ -488,8 +488,8 @@ export default {
       let reVal = this.propsData.registerVal.join(',')
       let item_data = this.propsData.brandList.filter(item => item.brand_name == this.propsData.brandVal)
       let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
-      let sms_data = this.propsData.sendSmsList.filter(item => item.channel_content == this.propsData.sendSmsVal)
-      let timestamp = new Date(this.propsData.dateTimeVal)
+      let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsData.sendSmsVal)
+      let timestamp = new Date(this.dateTimeVal.dateTimeVal)
       let objData = {
         brand:item_data[0].id,
         period:item2_data[0].id,
@@ -502,8 +502,8 @@ export default {
         camp_coupon_id:this.checkedActive,
         coupon_id:this.checkedDiscounts,
         sms_channel_id: sms_data[0].id,
-        sms_channel_content:this.propsData.sendSmsVal,
-        schulder_time:this.propsData.dateTimeVal,
+        sms_channel_content:this.propsSms.sendSmsVal,
+        // schulder_time:this.propsData.dateTimeVal,
         timestamp:timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       }
       sessionStorage.setItem('dataMsg',JSON.stringify(objData))

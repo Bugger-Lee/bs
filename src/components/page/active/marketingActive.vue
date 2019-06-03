@@ -204,6 +204,8 @@ export default {
       currentTimeName:new Date(),
       timeType:{
         timeVal:'Days',
+        executeType:'',
+        dateTimeVal:'',
         time:[
           {
             id:1,
@@ -257,7 +259,6 @@ export default {
         periodList: [],
         registerList: [],
         salesTable:[],
-        sendSmsList:[],
         orderList:[],
         brandVal: '',
         periodVal:'',
@@ -270,10 +271,10 @@ export default {
         newMbmber:'',
         checkedActive:'',
         checkedDiscounts:'',
-        dateTimeVal:''
       },
       propsSms:{
         smsTable:[],
+        sendSmsList:[],
         SearchSms: '',
         editMsg:'',
         ifShowInput:false,
@@ -444,8 +445,7 @@ export default {
     dataSummary() {
       if(this.propsData.brandVal == "" || 
       this.propsData.periodVal === "" || 
-      this.propsData.registerVal.length === 0 || 
-      this.propsData.dateTimeVal == '') {
+      this.propsData.registerVal.length === 0) {
         this.$message({
           showClose: true,
           message: '请您选择必选项',
@@ -464,7 +464,6 @@ export default {
       }
       let item_data = this.propsData.brandList.filter(item => item.id == this.propsData.brandVal)
       let item2_data = this.propsData.periodList.filter(item => item.id == this.propsData.periodVal)
-      let timestamp = this.propsData.dateTimeVal
       let objData = {
         brand:this.propsData.brandVal,
         period:this.propsData.periodVal,
@@ -476,8 +475,6 @@ export default {
         newMbmber:this.propsData.newMbmber,
         camp_coupon_id:this.checkedActive,
         coupon_id:this.checkedDiscounts,
-        schulder_time:this.propsData.dateTimeVal,
-        timestamp:timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       }
       sessionStorage.setItem('dataMsg',JSON.stringify(objData))
       this.ifDataExtension = objData
@@ -490,7 +487,7 @@ export default {
     },
     sendSmsLists() {
       this.$.get('smsChannel/getList?channelName=').then(res=>{
-        this.propsData.sendSmsList = res.data.data
+        this.propsSms.sendSmsList = res.data.data
       })
     },
     orderLists() {
