@@ -239,9 +239,6 @@ export default {
       return result[this.currentPage-1]
     }
   },
-  created() {
-    console.log(this.dataExtensions)
-  },
   props: ["openData", "openDataContent","propsSms"],
   methods: {
     clickPopup(value) {
