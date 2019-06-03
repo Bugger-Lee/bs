@@ -117,28 +117,30 @@
             <li class="imaginary-wire">-------></li>
             <li class="imaginary-square"></li>
           </ul>
-          <div class="window" id="data1"  ref="refData1" v-if="ifDrag">
-            <span  class="crowd-style" @click="dataExtension()">
-              <i class="icon-shouye"></i>
-            </span>
-          </div>
-          <div ref="refData1div" v-if="ifDrag">data Extention</div>
-          <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
-            <span class="msg-style" @click="sms()">
-              <i class="icon-shouye"></i>
-            </span>
-          </div>
-          <div ref="refData2div" v-if="ifSmsDrag">sms</div>
-          <div class="window" id="newreturn" ref="newData" v-if="ifSmsDrag">
-            <span class="msg-style" style="background-color:#ffcd43;">
-              <i class="icon-shouye"></i>
-            </span>
-          </div>
-          <div ref="refData2div" v-if="ifSmsDrag">promotion</div>
-          <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
-            <span class="ctl-style" @click="selectTime()">
-              <i class="icon-shouye"></i>
-            </span>
+          <div v-if="showFirst">
+            <div class="window" id="data1"  ref="refData1" v-if="ifDrag">
+              <span  class="crowd-style" @click="dataExtension()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <div ref="refData1div" v-if="ifDrag">data Extention</div>
+            <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
+              <span class="msg-style" @click="sms()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <div ref="refData2div" v-if="ifSmsDrag">sms</div>
+            <div class="window" id="newreturn" ref="newData" v-if="ifSmsDrag">
+              <span class="msg-style" style="background-color:#ffcd43;">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <div ref="refData2div" v-if="ifSmsDrag">promotion</div>
+            <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
+              <span class="ctl-style" @click="selectTime()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
           </div>
           <div v-else>
             <div class="window" id="data1"  ref="refData1" v-if="ifDrag">
@@ -477,8 +479,8 @@ export default {
       this.checkedDiscounts = discountsData
     },
     dataSummary() {
-      if(this.propsData.brandVal == "" || 
-      this.propsData.periodVal === "" || 
+      if(this.propsData.brandVal == "" ||
+      this.propsData.periodVal === "" ||
       this.propsData.registerVal.length === 0) {
         this.$message({
           showClose: true,
