@@ -28,6 +28,7 @@
           </p>
           <div class="data-content-apply-content mt10">
             <P><span>文案内容 : {{propsSms.ifSms.template_text}}</span><span></span></P>
+            <P><span>短信通道 : {{propsSms.ifSms.sms_channel_content}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -84,13 +85,29 @@
           <el-col :span="19" class="r-content-r">
               <div class="select-msg" >
                 <div class="select-msg-search">
-                  <el-input
-                    class="select-msg-search-ipt"
-                    placeholder="请根据文案内容搜索"
-                    prefix-icon="el-icon-search"
-                    @keyup.enter.native="searchSmsList"
-                    v-model="propsSms.SearchSms">
-                  </el-input>
+                  <el-col :span="12">
+                    <el-input
+                      class="select-msg-search-ipt"
+                      placeholder="请根据文案内容搜索"
+                      prefix-icon="el-icon-search"
+                      @keyup.enter.native="searchSmsList"
+                      v-model="propsSms.SearchSms">
+                    </el-input>
+                  </el-col>
+                  <el-col :span="12">
+                    <div class="ml10">
+                      <span class="redStar">*</span>
+                      <span>短信通道</span>
+                      <el-select v-model="propsSms.sendSmsVal" clearable placeholder="请选择短信通道" style="display:inline-block;"  class="select-option-classify">
+                        <el-option
+                          v-for="item in propsSms.sendSmsList"
+                          :key="item.id"
+                          :label="item.channel_content"
+                          :value="item.id"
+                        ></el-option>
+                      </el-select>
+                    </div>
+                  </el-col>
                 </div>
                 <div class="select-msg-table">
                   <el-table :data="propsSms.smsTable" style="width: 100%" height="220" setCurrentRow>

@@ -36,9 +36,7 @@
             <P><span>注册一周未购买 : {{ifDataExtension.purchase_week}}</span><span></span></P>
             <P><span>活动券 : {{ifDataExtension.camp_coupon_id}}</span><span></span></P>
             <P><span>优惠券 : {{ifDataExtension.coupon_id}}</span><span></span></P>
-            <P><span>短信通道 : {{ifDataExtension.sms_channel_content}}</span><span></span></P>
             <P><span>调度命令 : {{ifDataExtension.command_code}}</span><span></span></P>
-            <P><span>定时发送时间 : {{ifDataExtension.schulder_time}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -145,16 +143,6 @@
                 </div> -->
               </el-col>
               <el-col :span="12">
-                <div class="ml10 mt20">
-                  <span class="redStar">*</span>
-                  <span>定时发送时间</span>
-                  <el-date-picker
-                    v-model="propsData.dateTimeVal"
-                    type="datetime"
-                    format="yyyy-MM-dd HH:mm"
-                    placeholder="选择日期时间">
-                  </el-date-picker>
-                </div>
                 <div class="select-option-ipt" v-if="ifNewPeriod">
                   <span class="mr15">是否新进入周期:</span>
                   <el-radio v-model="propsData.newPeriod" label="是">是</el-radio>
