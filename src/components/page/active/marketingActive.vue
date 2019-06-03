@@ -117,30 +117,37 @@
             <li class="imaginary-wire">-------></li>
             <li class="imaginary-square"></li>
           </ul>
-          <div v-if="showFirst">
+          <div v-if='showFirst'>
             <div class="window" id="data1"  ref="refData1" v-if="ifDrag">
               <span  class="crowd-style" @click="dataExtension()">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">data Extention</div>
+            <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none" />
             <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <div ref="refData2div" v-if="ifSmsDrag">sms</div>
-            <div class="window" id="newreturn" ref="newData" v-if="ifSmsDrag">
-              <span class="msg-style" style="background-color:#ffcd43;">
+            <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none" />
+            <div class="window" id="newreturn" ref="newData" v-if="ifProDrag">
+              <span class="msg-style" @click="sms()">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <div ref="refData2div" v-if="ifSmsDrag">promotion</div>
+            <input ref="newrefDatadiv" v-if="ifProDrag" value="promotion" style="border:none" />
             <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
                 <i class="icon-shouye"></i>
               </span>
             </div>
+            <input ref="refData3div" v-if="ifSmsDrag" value="Time"  style="border:none" />
+            <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
+              <span class="crowd-style">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData4div" v-if="ifSmsDrag" value="over"  style="border:none"/>
           </div>
           <div v-else>
             <div class="window" id="data1"  ref="refData1" v-if="ifDrag">
