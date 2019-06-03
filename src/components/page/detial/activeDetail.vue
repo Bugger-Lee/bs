@@ -7,17 +7,22 @@
             <i class="el-icon-location"></i>
           </span>
           <div class="l-tit">
-            <p class="l-tit-t">
-              <a href>Journeys Dashboard</a>
-              <i>> Journey</i>
-            </p>
+            <div class="l-tit-t">
+              <p>
+                <a href>Journeys Dashboard</a>
+                <i>> Journey</i>
+              </p>
+              <p>{{this.ifDataExtension.rule_name}}</p>
+            </div>
           </div>
         </el-col>
         <el-col :span="12" class="marketing-header-r">
-          <el-button type="primary" class="pd-btn mr15" v-if="this.statusVal  == 0">Save</el-button>
-          <el-button type="primary" class="pd-btn mr15" v-if="this.statusVal  == 1">Test</el-button>
-          <el-button type="primary" class="pd-btn mr15" v-if="this.statusVal  == 2">running</el-button>
-          <el-button type="primary" class="pd-btn mr15" v-if="this.statusVal  == 3">stop</el-button>
+          <el-button-group class="mr05">
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.statusVal == 0}" >save</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.statusVal == 1}" @click="detailStatus()">test</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.statusVal == 2}" >runing</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.statusVal == 3}" >stop</el-button>
+          </el-button-group>
         </el-col>
       </div>
       <div class="marketing-theme">
@@ -93,7 +98,7 @@
               <i class="icon-shouye"></i>
             </span>
           </div>
-          <input ref="refData3div" v-if="ifSmsDrag" value="select" style="border:none">
+          <input ref="refData3div" v-if="ifSmsDrag" value="time" style="border:none">
           <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
             <span class="crowd-style">
               <i class="icon-shouye"></i>
@@ -141,11 +146,10 @@
 <script>
 import jsplumb from "jsplumb";
 import "@/assets/css/part.less";
-import smsPopup from "./children/smsPopup.vue"
-import popupOpenTime from "./children/popupOpenTime.vue"
-import popupDrag from "./children/popupDrag.vue"
+import smsPopup from "./module/smsPopup.vue"
+import popupOpenTime from "@/components/public/popupOpenTime.vue"
+import popupDrag from "./module/popupDrag.vue"
 import "@/components/need.js"
-import { connect } from 'net';
 export default {
   data() {
     return {
@@ -156,18 +160,16 @@ export default {
       openDataContent:false,
       openSmsContent:false,
       openTime:false,
-      statusVal:'',
       checkedActive:'',
       checkedDiscounts:'',
+      statusVal:'',
       propsData:{
-          routerType:2,
           brandList: [],
           periodList: [],
           registerList: [],
           salesTable:[],
           sendSmsList:[],
           orderList:[],
-          orderVal:'',
           sendSmsVal:'',
           brandVal: '',
           brandId: '',
@@ -184,7 +186,6 @@ export default {
           dateTimeVal:''
       },
       propsSms:{
-        routerType:2,
         smsTable:[],
         SearchSms: '',
         editMsg:'',
@@ -194,7 +195,6 @@ export default {
         ifSms:''
       },
       timeType:{
-        routerType:2,
         timeVal:'Days',
         time:[
           {
@@ -265,13 +265,6 @@ export default {
     this.discountLists()
     this.sendSmsLists()
     this.orderLists()
-  },
-  destroyed() {
-    let allconn = jsplumb.jsPlumb.getAllConnections()
-    for (var i = 0; i < allconn.length + 1; i++) {
-    jsplumb.jsPlumb.deleteConnection(allconn[0])
-    }
-    jsplumb.jsPlumb.deleteConnection(allconn[0])
   },
   methods: {
     doneTime() {
@@ -358,7 +351,6 @@ export default {
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
           this.propsData.sendSmsVal = this.ifDataExtension.sms_channel_content
-          this.propsData.orderVal = this.ifDataExtension.command_code
           this.propsData.dateTimeVal = this.ifDataExtension.schulder_time
           this.statusVal = this.ifDataExtension.status
           if(this.ifDataExtension.vip_channel_name.length > 0) {
@@ -387,13 +379,26 @@ export default {
           let timeMonths = this.cronChangeDate(res.data.data).loopValue
           let date_new = new Date()
           this.timeType.timeMonths = new Date(date_new.getFullYear(),date_new.getMonth(),timeMonths)
-          console.log(this.cronChangeDate(res.data.data))
           this.timeType.timeWeek = this.cronChangeDate(res.data.data).loopValue
         }else{
           this.$message(res.data.msg)
         }
       })
     },
+    // detailStatus() {
+    //   if(this.ifDataExtension.brand_name != this.defaultSet.brand_name ||
+    //     this.ifDataExtension.cycle_type != this.defaultSet.cycle_type ||
+    //     this.ifDataExtension.sms_channel_content != this.defaultSet.sms_channel_content ||
+    //     this.ifDataExtension.command_code != this.defaultSet.command_code ||
+    //     this.ifDataExtension.schulder_time != this.defaultSet.schulder_time ||
+    //     this.ifDataExtension.vip_channel_name != this.defaultSet.vip_channel_name ||
+    //     this.ifDataExtension.purchase_first != this.defaultSet.purchase_first ||
+    //     this.ifDataExtension.enter_first != this.defaultSet.enter_first ||
+    //     this.ifDataExtension.purchase_week != this.defaultSet.purchase_week ||
+    //     this.propsSms.ifSms.template_text != this.defaultSet.template_text) {
+          
+    //   }
+    // },
     // 调度命令
     orderLists() {
       this.$.get('command/getList?commandName=').then(res=>{
@@ -480,16 +485,15 @@ export default {
       this.checkedDiscounts = discountsData
     },
     dataSummary() {
-      this.propsData.registerVal = this.propsData.registerVal.join(',')
+      let reVal = this.propsData.registerVal.join(',')
       let item_data = this.propsData.brandList.filter(item => item.brand_name == this.propsData.brandVal)
       let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
       let sms_data = this.propsData.sendSmsList.filter(item => item.channel_content == this.propsData.sendSmsVal)
-      let command_data = this.propsData.orderList.filter(item => item.command_name == this.propsData.orderVal)
       let timestamp = new Date(this.propsData.dateTimeVal)
       let objData = {
         brand:item_data[0].id,
         period:item2_data[0].id,
-        vip_channel_name:this.propsData.registerVal,
+        vip_channel_name:reVal,
         brand_name:this.propsData.brandVal,
         cycle_type:this.propsData.periodVal,
         enter_first:this.propsData.newPeriod,
@@ -499,7 +503,6 @@ export default {
         coupon_id:this.checkedDiscounts,
         sms_channel_id: sms_data[0].id,
         sms_channel_content:this.propsData.sendSmsVal,
-        command_code:this.propsData.orderVal,
         schulder_time:this.propsData.dateTimeVal,
         timestamp:timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       }
@@ -604,6 +607,16 @@ export default {
     selectTime() {
       this.openTime = true
     }
+  },
+  beforeRouteLeave (to,from,next) {
+    let allconn = jsplumb.jsPlumb.getAllConnections()
+    for (var i = 0; i < allconn.length + 1; i++) {
+    jsplumb.jsPlumb.deleteConnection(allconn[0])
+    }
+    jsplumb.jsPlumb.deleteConnection(allconn[0])
+    console.log(allconn)
+
+    next()
   }
 };
 </script>
@@ -620,7 +633,6 @@ export default {
     .marketing-header {
       width: 100%;
       height: 60px;
-      line-height: 60px;
       background-color: #f3f2f2;
       border-radius: 10px 10px 0 0;
       .marketing-header-l {
@@ -655,6 +667,7 @@ export default {
       }
       .marketing-header-r {
         text-align: right;
+        line-height: 60px;
         .pd-btn {
           padding: 6px 12px;
           background-color: #0070d2;
@@ -664,6 +677,9 @@ export default {
           background: none;
           border: 1px solid #ece2e1;
           color: #e6e5e4;
+        }
+        .ifColor{
+          color:#409eff;
         }
       }
     }

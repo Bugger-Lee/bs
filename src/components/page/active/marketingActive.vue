@@ -52,6 +52,21 @@
             </el-submenu>
             <el-submenu index="2">
               <template slot="title">
+                <span>RIGHTS</span>
+              </template>
+              <el-menu-item-group>
+                <ul class="theme-l-tmp">
+                  <li>
+                    <span class="crowd-style">
+                      <i class="icon-shouye"></i>
+                    </span>
+                    <p>promotion</p>
+                  </li>
+                </ul>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="3">
+              <template slot="title">
                 <span>ACTIVITIES</span>
               </template>
               <el-submenu index="2-1" class="marketing-el-submenu-children">
@@ -165,12 +180,10 @@
 import "@/assets/css/part.less";
 import jsplumb from "jsplumb";
 import $ from "jquery";
-import popupDrag from "./children/popupDrag.vue"
-import smsPopup from "./children/smsPopup.vue"
-import popupOpenTime from "./children/popupOpenTime.vue"
+import popupDrag from "./module/popupDrag.vue"
+import smsPopup from "./module/smsPopup.vue"
+import popupOpenTime from "@/components/public/popupOpenTime.vue"
 import "@/components/need.js"
-import { connect } from 'net';
-import { constants, truncate } from 'fs';
 export default {
   name: "marketingActive",
   data() {
@@ -190,7 +203,6 @@ export default {
       disabledBtnTest:true,
       currentTimeName:new Date(),
       timeType:{
-        routerType:1,
         timeVal:'Days',
         time:[
           {
@@ -241,15 +253,12 @@ export default {
         timeMonths:""
       },
       propsData:{
-        routerType:1,
         brandList: [],
         periodList: [],
         registerList: [],
         salesTable:[],
         sendSmsList:[],
         orderList:[],
-        orderVal:'',
-        sendSmsVal:'',
         brandVal: '',
         periodVal:'',
         periodShow: '',
@@ -264,14 +273,14 @@ export default {
         dateTimeVal:''
       },
       propsSms:{
-        routerType:1,
         smsTable:[],
         SearchSms: '',
         editMsg:'',
         ifShowInput:false,
         tableSelectVal:'',
         dataSelected: 2,
-        ifSms:''
+        ifSms:'',
+        sendSmsVal:'',
       },
       couponName:'',
       templateName:'',
@@ -300,12 +309,13 @@ export default {
     popupOpenTime,
     smsPopup
   },
-  destroyed() {
+  beforeRouteLeave (to,from,next) {
     let allconn = jsplumb.jsPlumb.getAllConnections()
     for (var i = 0; i < allconn.length + 1; i++) {
     jsplumb.jsPlumb.deleteConnection(allconn[0])
     }
     jsplumb.jsPlumb.deleteConnection(allconn[0])
+    next()
   },
   methods: {
     doneTime() {
@@ -367,12 +377,11 @@ export default {
           this.$message(res.data.msg)
           this.ifColor = 2
           this.disabledBtnSave = true
-          this.disabledBtnRun = false
+          this.disabledBtnTest = false
           this.systemId = res.data.data
         }else{
           this.$message(res.data.msg)
           this.disabledBtnSave = false
-          this.disabledBtnRun = true
           this.disabledBtnTest = true
         }
       })
@@ -385,14 +394,21 @@ export default {
       }
       this.$.get("rule/updateStatus",{params:{id:this.systemId,status:this.statusTestRunVal}}).then(res=>{
         if(res.data.code == 200) {
-          this.$confirm('您已经成功执行此操作,是否跳转到首页?', '提示', {
-            confirmButtonText: '是',
-            cancelButtonText: '否',
-          }).then(() => {
-            this.$router.push('./homeList')
-          }).catch(() => {
-                    
-          });
+          if(val == 'test') {
+            this.disabledBtnRun = false
+            this.disabledBtnTest = true
+            this.$message(res.data.msg)
+          }else if(val == 'runing') {
+            this.disabledBtnRun = true
+            this.disabledBtnTest = true
+            this.disabledBtnSave = true
+            this.$confirm('您已经成功执行此操作,是否跳转到首页?', '提示', {
+              confirmButtonText: '是',
+              cancelButtonText: '否',
+            }).then(() => {
+              this.$router.push('./')
+            })
+          }
         }else{
           this.$message(res.data.msg)
         }
@@ -429,8 +445,6 @@ export default {
       if(this.propsData.brandVal == "" || 
       this.propsData.periodVal === "" || 
       this.propsData.registerVal.length === 0 || 
-      this.propsData.sendSmsVal == '' || 
-      this.propsData.orderVal == '' ||
       this.propsData.dateTimeVal == '') {
         this.$message({
           showClose: true,
@@ -450,8 +464,6 @@ export default {
       }
       let item_data = this.propsData.brandList.filter(item => item.id == this.propsData.brandVal)
       let item2_data = this.propsData.periodList.filter(item => item.id == this.propsData.periodVal)
-      let sms_data = this.propsData.sendSmsList.filter(item => item.id == this.propsData.sendSmsVal)
-      let command_data = this.propsData.orderList.filter(item => item.id == this.propsData.orderVal)
       let timestamp = this.propsData.dateTimeVal
       let objData = {
         brand:this.propsData.brandVal,
@@ -464,10 +476,6 @@ export default {
         newMbmber:this.propsData.newMbmber,
         camp_coupon_id:this.checkedActive,
         coupon_id:this.checkedDiscounts,
-        sms_channel_id: this.propsData.sendSmsVal,
-        command_code:this.propsData.orderVal,
-        sms_channel_id_show:sms_data[0].channel_content,
-        command_code_show:command_data[0].command_name,
         schulder_time:this.propsData.dateTimeVal,
         timestamp:timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       }
@@ -608,17 +616,17 @@ export default {
       this.openData = true
     },
     sms() {
-      if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0 || this.checkedActive == undefined || this.checkedDiscounts == undefined) {
-        this.$message({
-          showClose: true,
-          message: '请您先将数据源里的必选内容选完',
-          type: 'warning'
-        });
-        return false
-      }else{
+      // if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0 || this.checkedActive == undefined || this.checkedDiscounts == undefined) {
+      //   this.$message({
+      //     showClose: true,
+      //     message: '请您先将数据源里的必选内容选完',
+      //     type: 'warning'
+      //   });
+      //   return false
+      // }else{
         this.smsLists()
         this.openSms = true
-      }
+      // }
     },
     selectTime() {
       this.openTime = true
