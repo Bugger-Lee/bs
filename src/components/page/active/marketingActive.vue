@@ -57,7 +57,7 @@
               <el-menu-item-group>
                 <ul class="theme-l-tmp">
                   <li>
-                    <span class="crowds-style">
+                    <span class="msg-style" style="background-color:#ffcd43;">
                       <i class="icon-shouye"></i>
                     </span>
                     <p>promotion</p>
@@ -130,7 +130,7 @@
           </div>
           <div ref="refData2div" v-if="ifSmsDrag">sms</div>
           <div class="window" id="newreturn" ref="newData" v-if="ifSmsDrag">
-            <span class="msg-style">
+            <span class="msg-style" style="background-color:#ffcd43;width:20px;height:20px;">
               <i class="icon-shouye"></i>
             </span>
           </div>
@@ -664,23 +664,23 @@ export default {
         this.$message('请您输入文案内容')
         return false
       }
-        let upDate = {
-          cycle_id:this.ifDataExtension.period,
-          brand_id:this.ifDataExtension.brand,
-          document_text:val,
-          id:id
+      let upDate = {
+        cycle_id:this.ifDataExtension.period,
+        brand_id:this.ifDataExtension.brand,
+        document_text:val,
+        id:id
+      }
+      this.$.post("template/update",upDate).then(res=>{
+        if(res.data.code == 200) {
+          this.smsLists()
+        }else{
+          this.$message({
+            showClose: true,
+            message: res.data.msg,
+            type: 'warning'
+          });
         }
-        this.$.post("template/update",upDate).then(res=>{
-          if(res.data.code == 200) {
-            this.smsLists()
-          }else{
-            this.$message({
-              showClose: true,
-              message: res.data.msg,
-              type: 'warning'
-            });
-          }
-        })
+      })
     },
     saveMessage() {
       let objData = {
