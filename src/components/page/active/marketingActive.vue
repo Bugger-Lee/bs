@@ -130,7 +130,7 @@
           </div>
           <div ref="refData2div" v-if="ifSmsDrag">sms</div>
           <div class="window" id="newreturn" ref="newData" v-if="ifSmsDrag">
-            <span class="msg-style" style="background-color:#ffcd43;width:20px;height:20px;">
+            <span class="msg-style" style="background-color:#ffcd43;">
               <i class="icon-shouye"></i>
             </span>
           </div>
