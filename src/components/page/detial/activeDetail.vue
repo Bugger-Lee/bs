@@ -81,30 +81,65 @@
         </el-col>
         <el-col :span="1" class="middle-style"></el-col>
         <el-col :span="18" class="marketing-drag">
-          <div class="window" id="data1" ref="refData1" v-if="ifDrag">
-            <span class="crowd-style" @click="dataExtension()">
-              <i class="icon-shouye"></i>
-            </span>
+          <div v-if = 'showFirst'>
+            <div class="window" id="data1" ref="refData1" v-if="ifDrag">
+              <span class="crowd-style" @click="dataExtension()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none">
+            <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
+              <span class="msg-style" @click="sms()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none">
+            <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
+              <span class="ctl-style" @click="selectTime()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData3div" v-if="ifSmsDrag" value="time" style="border:none">
+            <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
+              <span class="crowd-style">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData4div" v-if="ifSmsDrag" value="over" style="border:none">
           </div>
-          <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none">
-          <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
-            <span class="msg-style" @click="sms()">
-              <i class="icon-shouye"></i>
-            </span>
+          <div v-else>
+            <div class="window" id="data1" ref="refData1" v-if="ifDrag">
+              <span class="crowd-style" @click="dataExtension()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none">
+            <div class="window" id="return12" ref="refData2" v-if="ifSmsDrag">
+              <span class="msg-style" @click="sms()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none">
+            <div class="window" id="return23" ref="refData3" v-if="ifSmsDrag">
+              <span class="ctl-style" @click="selectTime()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData3div" v-if="ifSmsDrag" value="time" style="border:none">
+            <div class="window" id="newreturn" ref="newData">
+              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="newrefDatadiv" value="promotion" style="border:none">
+            <div class="window" id="return34" ref="refData4" v-if="ifSmsDrag">
+              <span class="crowd-style">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData4div" v-if="ifSmsDrag" value="over" style="border:none">
           </div>
-          <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none">
-          <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
-            <span class="ctl-style" @click="selectTime()">
-              <i class="icon-shouye"></i>
-            </span>
-          </div>
-          <input ref="refData3div" v-if="ifSmsDrag" value="time" style="border:none">
-          <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
-            <span class="crowd-style">
-              <i class="icon-shouye"></i>
-            </span>
-          </div>
-          <input ref="refData4div" v-if="ifSmsDrag" value="over" style="border:none">
+          
         </el-col>
       </div>
     </div>
@@ -248,7 +283,9 @@ export default {
       defaultSet:'',
       couponName:'',
       cron_express:'',
-      dayVal:''
+      dayVal:'',
+      datedrag: 2,
+      showFirst: true
     };
   },
   components: {
@@ -257,7 +294,13 @@ export default {
     popupOpenTime
   },
   created() {
-    this.dragInit(200, 320);
+    if (this.datedrag == 1) {
+      this.showFirst = true
+      this.dragInit1(200, 320);
+    } else {
+      this.showFirst = false
+      this.dragInit2(200, 320);
+    }
     this.activeMessage()
     this.brandLists()
     this.periodLists()
@@ -285,7 +328,7 @@ export default {
       this.cron_express = this.dateChangeCron(datas)
       this.openTime = false
     },
-    dragInit(top, left) {
+    dragInit1(top, left) {
       this.$nextTick(() => {
         this.$refs.refData1.style.position = "fixed";
         this.$refs.refData1.style.top = top + "px";
@@ -314,9 +357,62 @@ export default {
         this.$refs.refData4div.style.position = "fixed";
         this.$refs.refData4div.style.top = top + 50 + "px";
         this.$refs.refData4div.style.left = left + 600 + 5 + "px";
+        let allconn = jsplumb.jsPlumb.getAllConnections();
+        for (var i = 0; i < allconn.length + 1; i++) {
+          jsplumb.jsPlumb.deleteConnection(allconn[0]);
+        }
+        jsplumb.jsPlumb.deleteConnection(allconn[0]);
         this.jsPlumb("data1", "return1");
         this.jsPlumb("return1", "return2");
         this.jsPlumb("return2", "return3");
+      });
+    },
+    dragInit2(top, left) {
+      this.showFirst = false
+      this.$nextTick(() => {
+        this.$refs.refData1.style.position = "fixed";
+        this.$refs.refData1.style.top = top + "px";
+        this.$refs.refData1.style.left = left + "px";
+        this.$refs.refData1div.style.position = "fixed";
+        this.$refs.refData1div.style.top = top + 50 + "px";
+        this.$refs.refData1div.style.left = left + 5 + "px";
+
+        this.$refs.newData.style.position = "fixed";
+        this.$refs.newData.style.top = top + "px";
+        this.$refs.newData.style.left = left + 200 + "px";
+        this.$refs.newrefDatadiv.style.position = "fixed";
+        this.$refs.newrefDatadiv.style.top = top + 50 + "px";
+        this.$refs.newrefDatadiv.style.left = left + 205 + "px";
+
+        this.$refs.refData2.style.position = "fixed";
+        this.$refs.refData2.style.top = top + "px";
+        this.$refs.refData2.style.left = left + 400 + "px";
+        this.$refs.refData2div.style.position = "fixed";
+        this.$refs.refData2div.style.top = top + 50 + "px";
+        this.$refs.refData2div.style.left = left + 405 + "px";
+
+        this.$refs.refData3.style.position = "fixed";
+        this.$refs.refData3.style.top = top + "px";
+        this.$refs.refData3.style.left = left + 600 + "px";
+        this.$refs.refData3div.style.position = "fixed";
+        this.$refs.refData3div.style.top = top + 50 + "px";
+        this.$refs.refData3div.style.left = left + 600 + 5 + "px";
+
+        this.$refs.refData4.style.position = "fixed";
+        this.$refs.refData4.style.top = top + "px";
+        this.$refs.refData4.style.left = left + 800 + "px";
+        this.$refs.refData4div.style.position = "fixed";
+        this.$refs.refData4div.style.top = top + 50 + "px";
+        this.$refs.refData4div.style.left = left + 800 + 5 + "px";
+        let allconn = jsplumb.jsPlumb.getAllConnections();
+        for (var i = 0; i < allconn.length + 1; i++) {
+          jsplumb.jsPlumb.deleteConnection(allconn[0]);
+        }
+        jsplumb.jsPlumb.deleteConnection(allconn[0]);
+        this.jsPlumb("data1", "newreturn");
+        this.jsPlumb("newreturn", "return12");
+        this.jsPlumb("return12", "return23");
+        this.jsPlumb("return23", "return34");
       });
     },
     jsPlumb(ele1, ele2) {
