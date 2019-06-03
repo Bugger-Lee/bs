@@ -131,7 +131,7 @@
             </div>
             <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none" />
             <div class="window" id="newreturn" ref="newData" v-if="ifProDrag">
-              <span class="msg-style" @click="sms()">
+              <span class="msg-style" @click="sms()" style="background-color:#ffcd43;">
                 <i class="icon-shouye"></i>
               </span>
             </div>
@@ -163,13 +163,13 @@
             </div>
             <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none" />
             <div class="window" id="newreturn" ref="newData" v-if="ifProDrag">
-              <span class="msg-style" @click="sms()">
+              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-shouye"></i>
               </span>
             </div>
             <input ref="newrefDatadiv" v-if="ifProDrag" value="promotion" style="border:none" />
             <div class="window" id="return22" ref="refData3" v-if="ifSmsDrag">
-              <span class="ctl-style" @click="selectTime()">
+              <span class="ctl-style" @click="selectTime()" >
                 <i class="icon-shouye"></i>
               </span>
             </div>
@@ -199,6 +199,9 @@
         @searchSmsList ="searchSmsList"
         @sltSmsContent ="sltSmsContent">
       </smsPopup>
+      <popupTicket :openData ="openTicket"
+      :openDataContent ="openTicketContent">
+      </popupTicket>
       <el-dialog
         :visible.sync="openTime"
         :close-on-click-modal="false"
@@ -222,6 +225,7 @@ import jsplumb from "jsplumb";
 import $ from "jquery";
 import popupDrag from "./module/popupDrag.vue"
 import smsPopup from "./module/smsPopup.vue"
+import popupTicket from "./module/popupTicket.vue"
 import popupOpenTime from "@/components/public/popupOpenTime.vue"
 import "@/components/need.js"
 export default {
@@ -236,6 +240,8 @@ export default {
       dragTop: '',
       openData:false,
       openSms:false,
+      openTicket:false,
+      openTicketContent:false,
       openDataContent:false,
       openSmsContent:false,
       openTime:false,
@@ -351,7 +357,8 @@ export default {
   components:{
     popupDrag,
     popupOpenTime,
-    smsPopup
+    smsPopup,
+    popupTicket
   },
   beforeRouteLeave (to,from,next) {
     let allconn = jsplumb.jsPlumb.getAllConnections()
@@ -658,8 +665,6 @@ export default {
       console.log(left, top)
       this.ifProDrag = true
       this.showFirst = false
-
-
       this.$nextTick(()=>{
         this.$refs.newData.style.position = 'fixed'
         this.$refs.newData.style.top = top+'px'
@@ -703,6 +708,9 @@ export default {
     },
     dataExtension() {
       this.openData = true
+    },
+    popupTicket() {
+      this.openTicket = true
     },
     sms() {
       // if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0 || this.checkedActive == undefined || this.checkedDiscounts == undefined) {

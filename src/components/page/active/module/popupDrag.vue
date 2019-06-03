@@ -33,8 +33,8 @@
             <P><span>是否新进入周期 : {{ifDataExtension.newPeriod}}</span><span></span></P>
             <P><span>是否为首次购买 : {{ifDataExtension.newBuy}}</span><span></span></P>
             <P><span>注册一周未购买 : {{ifDataExtension.newMbmber}}</span><span></span></P>
-            <P><span>活动券 : {{ifDataExtension.camp_coupon_id}}</span><span></span></P>
-            <P><span>优惠券 : {{ifDataExtension.coupon_id}}</span><span></span></P>
+            <!-- <P><span>活动券 : {{ifDataExtension.camp_coupon_id}}</span><span></span></P>
+            <P><span>优惠券 : {{ifDataExtension.coupon_id}}</span><span></span></P> -->
           </div>
         </div>
       </div>
@@ -61,10 +61,6 @@
             <i class="redStar">*</i>Data
           </p>
           <p>Extension</p>
-        </div>
-        <div class="data-content-summary" :class="{'data-Selected':dataSelected == 3}" @click="tabSelect(3)">
-          <p><i class="redStar">*</i>Sales</p>
-          <p>Promotion</p>
         </div>
       </el-col>
       <el-col :span="21" v-if="this.dataSelected == 2" class="data-content-r">
@@ -152,68 +148,6 @@
           </el-col>
         </div>
       </el-col>
-      <el-col :span="21" v-if="this.dataSelected == 3" class="data-content-r">
-        <div class="r-header">
-          <p class="r-header-t">
-            <span>Sales Promotion</span>
-            <span class="el-icon-back" @click="backlevel(1)"></span>
-          </p>
-          <p class="r-header-b">Select your audience to enter the Journey</p>
-        </div>
-        <div class="r-content">
-          <el-col :span="5" class="r-content-l">
-            <p class="r-content-l-t">Folders</p>
-            <el-tree :data="SalesPromotions" class="r-content-l-b">
-              <span slot-scope="{ node, data }">
-                <span>
-                  <i :class="data.con"></i>
-                  <i :class="data.icon"></i>
-                  {{ node.label }}
-                </span>
-              </span>
-            </el-tree>
-          </el-col>
-          <el-col :span="1" class="r-content-c">
-            <span></span>
-          </el-col>
-          <el-col :span="19" class="r-content-r">
-            <div class="select-msg">
-              <div class="select-msg-search">
-                <el-input
-                  class="select-msg-search-ipt"
-                  placeholder="请根据券编码搜索"
-                  prefix-icon="el-icon-search"
-                  @keyup.enter.native="searchDate"
-                  v-model="propsData.SearchSales">
-                </el-input>
-              </div>
-              <div class="select-msg-table">
-                <el-table :data="salesTable" style="width: 100%" height="220" @selection-change="ifChecked">
-                  <el-table-column type="selection" width="55"></el-table-column>
-                  <el-table-column prop="sal_id" label="劵编码" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="coupon_type" label="类型" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="brand" label="品牌" show-overflow-tooltip> </el-table-column>
-                  <el-table-column  label="详情" show-overflow-tooltip>
-                    <template slot-scope="scope">{{scope.row.act_desc}}</template>
-                  </el-table-column>
-                  <el-table-column prop="created_time" label="创建时间" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
-                </el-table>
-              </div>
-              <div class="select-msg-page">
-                <el-pagination
-                  @current-change="handleSizeChange"
-                  :current-page.sync="currentPage"
-                  :page-size="10"
-                  class="page-el-pagination"
-                  background
-                  layout="total, prev, pager, next"
-                  :total="propsData.salesTable.length">
-                </el-pagination>
-              </div>
-            </div>
-          </el-col>
-        </div>
-      </el-col>
       <span slot="footer">
         <el-button @click="openDataContentProps = false" >Cancel</el-button>
         <el-button type="primary" @click="backlevel(2)">Summary</el-button>
@@ -236,19 +170,10 @@ export default {
           icon: "icon-wenjian"
         }
       ],
-      SalesPromotions:[
-        {
-          label: "Sales Promotion",
-          con: "el-icon-arrow-right",
-          icon: "icon-wenjian"
-        }
-      ],
       ifNewPeriod:false,
       ifNewBuy:false,
       ifNewMbmber:false,
       multipleSelection:[],
-      // 分页
-      currentPage: 1
     };
   },
   props: ["openData", "openDataContent","propsData","ifDataExtension"],
@@ -268,14 +193,7 @@ export default {
       set(v) {
         this.$emit('sltDataContent', 'close1');
       }
-    },
-    salesTable() {
-      let result = [];
-      for(var i=0;i<this.propsData.salesTable.length;i+=10){
-          result.push(this.propsData.salesTable.slice(i,i+10));
-      }
-      return result[this.currentPage-1]
-    },
+    }
   },
   methods: {
     formatDate(row, column, created_time ,index) {
@@ -289,10 +207,6 @@ export default {
       let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
       return Y + M + D ;
     },
-    // 搜索框
-    searchDate(e) {
-      this.$emit('searchDate', e)
-    },
     // 监听
     clickPopup(value) {
       this.$emit("sltDataContent", value);
@@ -300,23 +214,6 @@ export default {
     // 取消  确定
     backlevel(val) {
       this.$emit("backlevel",val)
-    },
-    ifChecked(val) {
-      this.multipleSelection = val
-      let allTicket = {
-        active:[],
-        discounts:[]
-      }
-      for (var i = 0; i < this.multipleSelection.length; i++) {
-        let str = this.multipleSelection[i].sal_id
-        let ticketStr = this.multipleSelection[i].coupon_type
-        if(ticketStr == "活动券") {
-          allTicket.active.push(str)
-        }else if(ticketStr == "优惠券"){
-          allTicket.discounts.push(str)
-        }
-      }
-      this.$emit('ifCheckedVal', allTicket)
     },
     tabSelect(val) {
       if (val == '1') {
@@ -337,10 +234,6 @@ export default {
         this.ifNewBuy = true
         this.ifNewMbmber = false
       }
-    },
-    // 翻页
-    handleSizeChange(val) {
-      this.currentPage = val
     }
   }
 };
