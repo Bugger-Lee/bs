@@ -28,6 +28,7 @@
           </p>
           <div class="data-content-apply-content mt10">
             <P><span>文案内容 : {{propsSms.ifSms.contentMag}}</span><span></span></P>
+            <P><span>短信渠道 : {{propsSms.ifSms.sms_channel_id_show}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -102,7 +103,7 @@
                           v-for="item in propsSms.sendSmsList"
                           :key="item.id"
                           :label="item.channel_content"
-                          :value="item.id"
+                          :value="item.channel_content"
                         ></el-option>
                       </el-select>
                     </div>

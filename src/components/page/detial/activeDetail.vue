@@ -39,13 +39,27 @@
                     <span class="crowd-style">
                       <i class="icon-shouye"></i>
                     </span>
-                    <p>Data</p>
-                    <p>Extension</p>
+                    <p>DMP</p>
                   </li>
                 </ul>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="2">
+              <template slot="title">
+                <span>RIGHTS</span>
+              </template>
+              <el-menu-item-group>
+                <ul class="theme-l-tmp">
+                  <li>
+                    <span class="crowds-style" style="background-color:#ffcd43;">
+                      <i class="icon-shouye"></i>
+                    </span>
+                    <p>promotion</p>
+                  </li>
+                </ul>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="3">
               <template slot="title">
                 <span>ACTIVITIES</span>
               </template>
@@ -149,7 +163,6 @@
         v-if="this.propsData.periodVal != ''"
         :ifDataExtension ="ifDataExtension"
         ref="popopenref"
-        @searchDate = "searchDate"
         @backlevel ="backlevel"
         @ifCheckedVal = "ifCheckedVal"
         @sltDataContent ="sltDataContent">
@@ -161,6 +174,14 @@
         @searchSmsList ="searchSmsList"
         @sltSmsContent ="sltSmsContent">
     </smsPopup>
+    <popupTicket :openData="openTicket" 
+      :propsTicket="propsTicket"
+      :openDataContent="openTicketContent"
+      @searchDate = "searchDate"
+      @backlevel ="backlevel"
+      @ifCheckedVal = "ifCheckedVal"
+      @sltPromotion ="sltPromotion">
+    </popupTicket>
     <el-dialog
       :visible.sync="openTime"
       :close-on-click-modal="false"
@@ -182,9 +203,11 @@
 import jsplumb from "jsplumb";
 import "@/assets/css/part.less";
 import smsPopup from "./module/smsPopup.vue"
+import popupTicket from "./module/popupTicket.vue"
 import popupOpenTime from "@/components/public/popupOpenTime.vue"
 import popupDrag from "./module/popupDrag.vue"
 import "@/components/need.js"
+import { constants } from 'fs';
 export default {
   data() {
     return {
@@ -192,6 +215,8 @@ export default {
       ifSmsDrag: true,
       openData:false,
       openSms:false,
+      openTicket:false,
+      openTicketContent:false,
       openDataContent:false,
       openSmsContent:false,
       openTime:false,
@@ -202,7 +227,6 @@ export default {
           brandList: [],
           periodList: [],
           registerList: [],
-          salesTable:[],
           orderList:[],
           brandVal: '',
           brandId: '',
@@ -210,7 +234,6 @@ export default {
           periodShow: '',
           brandShow:'', 
           registerVal:[],
-          SearchSales:'',
           newPeriod:'',
           newBuy:'',
           newMbmber:'',
@@ -279,6 +302,11 @@ export default {
         timeWeek:"",
         timeMonths:""
       },
+      propsTicket:{
+        SearchSales:'',
+        ifTicket:'',
+        salesTable:[]
+      },
       ifDataExtension:'',
       defaultSet:'',
       couponName:'',
@@ -291,7 +319,8 @@ export default {
   components: {
     popupDrag,
     smsPopup,
-    popupOpenTime
+    popupOpenTime,
+    popupTicket
   },
   created() {
     if (this.datedrag == 1) {
@@ -438,6 +467,9 @@ export default {
         });
       });
     },
+    popupTicket() {
+      this.openTicket = true
+    },
     activeMessage() {
       this.$.get('rule/getDetail?id='+this.$route.query.id).then(res=>{
         if(res.data.code == 200) {
@@ -534,14 +566,14 @@ export default {
     searchDate(e) {
       var keyCode = window.event? e.keyCode:e.which;
       if(keyCode == 13){
-        this.couponName= this.propsData.SearchSales
+        this.couponName= this.propsTicket.SearchSales
         this.discountLists()
       }
     },
     discountLists() {
       this.$.get("coupon/getList",{params:{couponName:this.couponName}}).then(res=>{
         if(res.data.code == 200) {
-          this.propsData.salesTable = res.data.data
+          this.propsTicket.salesTable = res.data.data
         }
       })
     },
@@ -551,6 +583,14 @@ export default {
         this.openDataContent = false
       } else if (val == 'openNext') {
         this.openDataContent = true
+      }
+    },
+    sltPromotion(val) {
+      this.openTicket = false
+      if (val == 'close1') {
+        this.openTicketContent = false
+      } else if (val == 'openNext') {
+        this.openTicketContent = true
       }
     },
     backlevel(val) {

@@ -10,7 +10,7 @@
         </el-col>
         <el-col :span="6">
           <el-input
-            placeholder="请根据标题搜索"
+            placeholder="Search by Title"
             clearable
             prefix-icon="el-icon-search"
             @keyup.enter.native="searchHomeList"
@@ -18,7 +18,7 @@
           ></el-input>
         </el-col>
         <el-col :span="5">
-          <el-select v-model="JourneyVal" clearable placeholder="Create New Journey" class="fr">
+          <el-select v-model="JourneyVal" clearable placeholder="Create New Journey" class="fr mt15" style="line-height:0px;">
             <el-option
               v-for="item in selectList"
               :key="item.id"
@@ -55,14 +55,14 @@
               style="width: 100%"
               v-loadmore="getMoreDate"
             >
-              <el-table-column prop="rule_name" label="标题" show-overflow-tooltip>
+              <el-table-column prop="rule_name" label="Journey Title" show-overflow-tooltip>
                 <template slot-scope="scope">
                   <span @click="goToDetail(scope.row.id)">{{ scope.row.rule_name}}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="status_name" label="状态" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="cycle_type" label="数据来源" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="command_code" label="人群类型" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="status_name" label="Status" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="cycle_type" label="Period" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="command_code" label="Crowd Type" show-overflow-tooltip></el-table-column>
               <div style="text-align:center; padding: 10px 0" slot="append" v-if="showLoading"><i class="el-icon-loading" style="color:#1589ee;font-size:35px;"></i></div>
             </el-table>
           </el-col>
@@ -87,7 +87,7 @@ export default {
       searchListVal: "",
       modelClv: [
         {
-          label: "My  Journeys",
+          label: "All  Journeys",
           icon: 'icon-wenjian',
           children: [
             {

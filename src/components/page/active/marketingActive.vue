@@ -61,8 +61,7 @@
                     <span class="crowd-style">
                       <i class="icon-shouye"></i>
                     </span>
-                    <p>Data</p>
-                    <p>Extension</p>
+                    <p>DMP</p>
                   </li>
                 </ul>
               </el-menu-item-group>
@@ -148,7 +147,7 @@
             </div>
             <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none">
             <div class="window" id="newreturn" ref="newData" v-if="ifProDrag">
-              <span class="msg-style" @click="sms()" style="background-color:#ffcd43;">
+              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-shouye"></i>
               </span>
             </div>
@@ -174,7 +173,7 @@
             </div>
             <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none">
             <div class="window" id="newreturn1" ref="newData" v-if="ifProDrag">
-              <span class="msg-style" @click="sms()" style="background-color:#ffcd43;">
+              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-shouye"></i>
               </span>
             </div>
@@ -263,9 +262,7 @@
         :propsData="propsData"
         :openDataContent="openDataContent"
         :ifDataExtension="ifDataExtension"
-        @searchDate="searchDate"
         @backlevel="backlevel"
-        @ifCheckedVal="ifCheckedVal"
         @sltDataContent="sltDataContent"
       ></popupDrag>
       <smsPopup
@@ -276,7 +273,14 @@
         @searchSmsList="searchSmsList"
         @sltSmsContent="sltSmsContent"
       ></smsPopup>
-      <popupTicket :openData="openTicket" :openDataContent="openTicketContent"></popupTicket>
+      <popupTicket :openData="openTicket" 
+      :openDataContent="openTicketContent"
+      @searchDate="searchDate"
+      :propsTicket = "propsTicket"
+      @ifCheckedVal="ifCheckedVal"
+      @PromotionLevel="PromotionLevel"
+      @sltPromotion="sltPromotion">
+      </popupTicket>
       <el-dialog
         :visible.sync="openTime"
         :close-on-click-modal="false"
@@ -304,6 +308,7 @@ import smsPopup from "./module/smsPopup.vue";
 import popupTicket from "./module/popupTicket.vue";
 import popupOpenTime from "@/components/public/popupOpenTime.vue";
 import "@/components/need.js";
+import { constants } from 'fs';
 export default {
   name: "marketingActive",
   data() {
@@ -331,8 +336,9 @@ export default {
       currentTimeName: new Date(),
       timeType: {
         timeVal: "Days",
-        executeType: "",
+        executeType: 2,
         dateTimeVal: "",
+        timestamp:'',
         time: [
           {
             id: 1,
@@ -385,17 +391,20 @@ export default {
         brandList: [],
         periodList: [],
         registerList: [],
-        salesTable: [],
         orderList: [],
         brandVal: "",
         periodVal: "",
         periodShow: "",
         brandShow: "",
         registerVal: "",
-        SearchSales: "",
         newPeriod: "",
         newBuy: "",
         newMbmber: "",
+      },
+      propsTicket:{
+        salesTable: [],
+        ifPromotion:'',
+        SearchSales: "",
         checkedActive: "",
         checkedDiscounts: ""
       },
@@ -455,31 +464,30 @@ export default {
   },
   methods: {
     doneTime() {
-      if (this.timeType.timeVal == "Days") {
-        if (this.timeType.timePicker == "") {
-          this.$message("请您完善时间信息");
-          return false;
+      if(this.timeType.executeType == 2) {
+        if (this.timeType.timeVal == "Days") {
+          if (this.timeType.timePicker == "") {
+            this.$message("请您完善时间信息");
+            return false;
+          }
+        }
+        if (this.timeType.timeVal == "months") {
+          if (this.timeType.timePicker == "" || this.timeType.timeMonths == "") {
+            this.$message("请您完善时间信息");
+            return false;
+          }
+        }
+        if (this.timeType.timeVal == "weeks") {
+          if (this.timeType.timePicker == "" || this.timeType.timeWeek == "") {
+            this.$message("请您完善时间信息");
+            return false;
+          }
         }
       }
-      if (this.timeType.timeVal == "months") {
-        if (this.timeType.timePicker == "" || this.timeType.timeMonths == "") {
-          this.$message("请您完善时间信息");
-          return false;
-        }
-      }
-      if (this.timeType.timeVal == "weeks") {
-        if (this.timeType.timePicker == "" || this.timeType.timeWeek == "") {
-          this.$message("请您完善时间信息");
-          return false;
-        }
-      }
-      let timeObj = {
-        timeClassify: this.timeType.timeVal,
-        time: this.timeType.timePicker,
-        timeMonths: this.timeType.timeMonths,
-        timeWeeks: this.timeType.timeWeek
-      };
-      sessionStorage.setItem("timeMsg", JSON.stringify(timeObj));
+      if(this.timeType.dateTimeVal == '') {this.$message('请您选择激活时间')}
+      let timestamp = new Date(this.timeType.dateTimeVal)
+      // sessionStorage.setItem("timeMsg", JSON.stringify(timeObj));
+      this.timeType.timestamp = timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       let datas = {
         loopType: this.timeType.timeVal,
         wloopValue: this.timeType.timeWeek,
@@ -488,25 +496,24 @@ export default {
       };
       this.dateChangeCron(datas);
       this.cron_express = this.dateChangeCron(datas);
-      console.log(this.cron_express);
       this.openTime = false;
     },
     saveJourney() {
       let data = {
         rule_name: this.currentTimeVal,
-        sms_channel_id: this.ifDataExtension.sms_channel_id,
+        sms_channel_id: this.propsSms.ifSms.sms_channel_id,
         template_id: this.propsSms.smsTable[0].id,
         brand_id: this.ifDataExtension.brand,
         cycle_id: this.ifDataExtension.period,
         vip_channel_name: this.ifDataExtension.register,
-        schulder_time: this.ifDataExtension.timestamp,
-        camp_coupon_id: this.ifDataExtension.camp_coupon_id,
-        coupon_id: this.ifDataExtension.coupon_id,
+        schulder_time: this.timeType.timestamp,
+        camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id,
+        coupon_id: this.propsTicket.ifPromotion.coupon_id,
         enter_first: this.ifDataExtension.newPeriod,
         purchase_week: this.ifDataExtension.newMbmber,
         purchase_first: this.propsData.newBuy,
         cron_express: this.cron_express,
-        command_code: "xxl-job-executor-sample"
+        command_code: "clv-job"
       };
       this.$.post("rule/insert", data).then(res => {
         if (res.data.code == 200) {
@@ -563,6 +570,17 @@ export default {
         this.openData = false;
       }
     },
+    PromotionLevel(val) {
+      if (val == 1) {
+        this.openTicketContent = false;
+        this.openTicket = true;
+      } else if (val == 2) {
+        this.promotionSummary()
+      } else if (val == "edit") {
+        this.openTicketContent = true;
+        this.openTicket = false;
+      }
+    },
     ifCheckedVal(val) {
       let active = [];
       let discounts = [];
@@ -579,12 +597,25 @@ export default {
       this.checkedActive = activeData;
       this.checkedDiscounts = discountsData;
     },
+    promotionSummary() {
+      if (this.checkedActive == undefined || this.checkedDiscounts == undefined) {
+        this.$message({
+          showClose: true,
+          message: "请您选择优惠券或活动券",
+          type: "warning"
+        });
+        return false;
+      }
+      let obj = {
+        camp_coupon_id: this.checkedActive,
+        coupon_id: this.checkedDiscounts
+      }
+      this.propsTicket.ifPromotion = obj
+      this.openTicketContent = false;
+      this.openTicket = true;
+    },
     dataSummary() {
-      if (
-        this.propsData.brandVal == "" ||
-        this.propsData.periodVal === "" ||
-        this.propsData.registerVal.length === 0
-      ) {
+      if(this.propsData.brandVal == "" ||this.propsData.periodVal === "" ||this.propsData.registerVal.length === 0) {
         this.$message({
           showClose: true,
           message: "请您选择必选项",
@@ -593,17 +624,6 @@ export default {
         return false;
       }
       let registerVal = this.propsData.registerVal.join(",");
-      if (
-        this.checkedActive == undefined ||
-        this.checkedDiscounts == undefined
-      ) {
-        this.$message({
-          showClose: true,
-          message: "请您选择优惠券或活动券",
-          type: "warning"
-        });
-        return false;
-      }
       let item_data = this.propsData.brandList.filter(
         item => item.id == this.propsData.brandVal
       );
@@ -619,10 +639,8 @@ export default {
         newPeriod: this.propsData.newPeriod,
         newBuy: this.propsData.newBuy,
         newMbmber: this.propsData.newMbmber,
-        camp_coupon_id: this.checkedActive,
-        coupon_id: this.checkedDiscounts
       };
-      sessionStorage.setItem("dataMsg", JSON.stringify(objData));
+      // sessionStorage.setItem("dataMsg", JSON.stringify(objData));
       this.ifDataExtension = objData;
       this.openDataContent = false;
       this.openData = true;
@@ -667,14 +685,14 @@ export default {
         params: { couponName: this.couponName }
       }).then(res => {
         if (res.data.code == 200) {
-          this.propsData.salesTable = res.data.data;
+          this.propsTicket.salesTable = res.data.data;
         }
       });
     },
     searchDate(e) {
       var keyCode = window.event ? e.keyCode : e.which;
       if (keyCode == 13) {
-        this.couponName = this.propsData.SearchSales;
+        this.couponName = this.propsTicket.SearchSales;
         this.discountLists();
       }
     },
@@ -694,6 +712,7 @@ export default {
       });
     },
     searchSmsList(e) {
+      console.log(111)
       var keyCode = window.event ? e.keyCode : e.which;
       if (keyCode == 13) {
         this.templateName = this.propsSms.SearchSms;
@@ -802,7 +821,6 @@ export default {
       });
     },
     appendPro(left, top) {
-      console.log(left, top);
       this.ifProDrag = true;
       this.showFirst = false;
       this.showFirst1 = true;
@@ -847,7 +865,6 @@ export default {
       });
     },
     appendPro1(left, top) {
-      console.log(left, top);
       this.ifProDrag = true;
       this.showFirst = false;
       this.showSecend = false;
@@ -899,17 +916,17 @@ export default {
       this.openTicket = true;
     },
     sms() {
-      // if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0 || this.checkedActive == undefined || this.checkedDiscounts == undefined) {
-      //   this.$message({
-      //     showClose: true,
-      //     message: '请您先将数据源里的必选内容选完',
-      //     type: 'warning'
-      //   });
-      //   return false
-      // }else{
+      if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0) {
+        this.$message({
+          showClose: true,
+          message: '请您先将数据源里的必选内容选完',
+          type: 'warning'
+        });
+        return false
+      }else{
       this.smsLists();
       this.openSms = true;
-      // }
+      }
     },
     selectTime() {
       this.openTime = true;
@@ -920,6 +937,14 @@ export default {
         this.openDataContent = false;
       } else if (val == "openNext") {
         this.openDataContent = true;
+      }
+    },
+    sltPromotion(val) {
+      this.openTicket = false;
+      if (val == "close1") {
+        this.openTicketContent = false;
+      } else if (val == "openNext") {
+        this.openTicketContent = true;
       }
     },
     sltSmsContent(val) {
@@ -958,9 +983,16 @@ export default {
       });
     },
     saveMessage() {
+      if(this.propsSms.sendSmsVal == '') {
+        this.$message('请您选择短信渠道')
+      }
+      let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
       let objData = {
-        contentMag: this.propsSms.editMsg
+        contentMag: this.propsSms.editMsg,
+        sms_channel_id_show:this.propsSms.sendSmsVal,
+        sms_channel_id: sms_data[0].id,
       };
+      console.log(objData.sms_channel_id)
       if (this.propsSms.editMsg == "") {
         this.$message({
           showClose: true,
@@ -1042,7 +1074,6 @@ export default {
       $(".marketing-drag").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
-          console.log(ui.draggable[0]._prevClass);
           that.changedrag(ui);
         }
       });
@@ -1095,14 +1126,12 @@ export default {
         }
       } else if (this.sortDrag == "pro") {
         if (ui.draggable[0]._prevClass == "msg-style") {
-          console.log(ui.offset.left, ui.offset.top);
           if (
             this.dragLeft + 185 <= ui.offset.left &&
             ui.offset.left <= this.dragLeft + 280 &&
             this.dragTop - 5 <= ui.offset.top &&
             ui.offset.top < this.dragTop + 50
           ) {
-            console.log("dsdg");
             this.appendPro1(ui.offset.left, this.dragTop);
           }
         } else {
@@ -1111,7 +1140,6 @@ export default {
       }
     },
     dargNextNew() {
-      console.log(this.dragLeft, this.dragTop);
       let that = this;
       $(".crowds-style").draggable({
         zIndex: 999,
@@ -1122,7 +1150,6 @@ export default {
       $(".marketing-drag").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
-          console.log(ui.offset.left, ui.offset.top);
           if (
             that.dragLeft + 15 <= ui.offset.left &&
             ui.offset.left <= that.dragLeft + 200 &&

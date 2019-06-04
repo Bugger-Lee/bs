@@ -23,7 +23,6 @@
         </div>
         <div v-if="ifDataExtension != ''" class="data-content-apply">
           <p class="data-content-apply-header">
-            <!-- <span style="font-size:16px;font-weight:600;">20180202-May_0192k</span> -->
             <span style="font-size:16px;font-weight:600;">DATA EXTENSION PROPERTIES</span>
             <el-button class="bth" @click="backlevel('edit')">Edit</el-button>
           </p>
@@ -34,9 +33,8 @@
             <P><span>是否新进入周期 : {{ifDataExtension.enter_first}}</span><span></span></P>
             <P><span>是否为首次购买 : {{ifDataExtension.purchase_first}}</span><span></span></P>
             <P><span>注册一周未购买 : {{ifDataExtension.purchase_week}}</span><span></span></P>
-            <P><span>活动券 : {{ifDataExtension.camp_coupon_id}}</span><span></span></P>
-            <P><span>优惠券 : {{ifDataExtension.coupon_id}}</span><span></span></P>
-            <P><span>调度命令 : {{ifDataExtension.command_code}}</span><span></span></P>
+            <!-- <P><span>活动券 : {{ifDataExtension.camp_coupon_id}}</span><span></span></P>
+            <P><span>优惠券 : {{ifDataExtension.coupon_id}}</span><span></span></P> -->
           </div>
         </div>
       </div>
@@ -63,10 +61,6 @@
             <i class="redStar">*</i>Data
           </p>
           <p>Extension</p>
-        </div>
-        <div class="data-content-summary" :class="{'data-Selected':dataSelected == 3}" @click="tabSelect(3)">
-          <p><i class="redStar">*</i>Sales</p>
-          <p>Promotion</p>
         </div>
       </el-col>
       <el-col :span="21" v-if="this.dataSelected == 2" class="data-content-r">
@@ -163,68 +157,6 @@
           </el-col>
         </div>
       </el-col>
-      <el-col :span="21" v-if="this.dataSelected == 3" class="data-content-r">
-        <div class="r-header">
-          <p class="r-header-t">
-            <span>Sales Promotion</span>
-            <span class="el-icon-back" @click="backlevel(1)"></span>
-          </p>
-          <p class="r-header-b">Select your audience to enter the Journey</p>
-        </div>
-        <div class="r-content">
-          <el-col :span="5" class="r-content-l">
-            <p class="r-content-l-t">Folders</p>
-            <el-tree :data="SalesPromotions" class="r-content-l-b">
-              <span slot-scope="{ node, data }">
-                <span>
-                  <i :class="data.con"></i>
-                  <i :class="data.icon"></i>
-                  {{ node.label }}
-                </span>
-              </span>
-            </el-tree>
-          </el-col>
-          <el-col :span="1" class="r-content-c">
-            <span></span>
-          </el-col>
-          <el-col :span="19" class="r-content-r">
-            <div class="select-msg">
-              <div class="select-msg-search">
-                <el-input
-                  class="select-msg-search-ipt"
-                  placeholder="请根据券编码搜索"
-                  prefix-icon="el-icon-search"
-                  @keyup.enter.native="searchDate"
-                  v-model="propsData.SearchSales">
-                </el-input>
-              </div>
-              <div class="select-msg-table">
-                <el-table :data="salesTable" style="width: 100%" height="220" ref="multipleTable" @selection-change="ifChecked">
-                  <el-table-column type="selection"  width="55"></el-table-column>
-                  <el-table-column prop="sal_id" label="劵编码" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="coupon_type" label="类型" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="brand" label="品牌" show-overflow-tooltip> </el-table-column>
-                  <el-table-column  label="详情" show-overflow-tooltip>
-                    <template slot-scope="scope">{{scope.row.act_desc}}</template>
-                  </el-table-column>
-                  <el-table-column prop="created_time" label="创建时间" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
-                </el-table>
-              </div>
-              <div class="select-msg-page">
-                <el-pagination
-                  @current-change="handleSizeChange"
-                  :current-page.sync="currentPage"
-                  :page-size="10"
-                  class="page-el-pagination"
-                  background
-                  layout="total, prev, pager, next"
-                  :total="propsData.salesTable.length">
-                </el-pagination>
-              </div>
-            </div>
-          </el-col>
-        </div>
-      </el-col>
       <span slot="footer">
         <el-button @click="openDataContentProps = false" >Cancel</el-button>
         <el-button type="primary" @click="backlevel(2)">Summary</el-button>
@@ -247,19 +179,9 @@ export default {
           icon: "icon-wenjian"
         }
       ],
-      SalesPromotions:[
-        {
-          label: "Sales Promotion",
-          con: "el-icon-arrow-right",
-          icon: "icon-wenjian"
-        }
-      ],
       ifNewPeriod:false,
       ifNewBuy:false,
       ifNewMbmber:false,
-      multipleSelection:[],
-      // 分页
-      currentPage: 1
     };
   },
   props: ["openData", "openDataContent","propsData","ifDataExtension"],
@@ -279,14 +201,7 @@ export default {
       set(v) {
         this.$emit('sltDataContent', 'close1');
       }
-    },
-    salesTable() {
-      let result = [];
-      for(var i=0;i<this.propsData.salesTable.length;i+=10){
-          result.push(this.propsData.salesTable.slice(i,i+10));
-      }
-      return result[this.currentPage-1]
-    },
+    }
   },
   created() {
     if(this.propsData.periodVal != '') {
@@ -301,54 +216,6 @@ export default {
     }
   },
   methods: {
-    defaultdate() {
-      // 活动券
-      let arr = this.ifDataExtension.camp_coupon_id.split(',')
-      let arr2 = this.ifDataExtension.coupon_id.split(',')
-      arr = arr.concat(arr2)
-      let result_arr = []
-      for(var i=0;i<arr.length;i++) {
-        for(var j=0;j<this.propsData.salesTable.length;j++) {
-          if(arr[i] == this.propsData.salesTable[j].sal_id) {
-            result_arr.push(this.propsData.salesTable[j])
-          }
-        }
-      }
-      this.ifChecked(result_arr)
-    },
-    checked() {
-      // 活动券
-      let arr = this.ifDataExtension.camp_coupon_id.split(',')
-      let arr2 = this.ifDataExtension.coupon_id.split(',')
-      arr = arr.concat(arr2)
-      let result_arr = []
-      for(var i=0;i<arr.length;i++) {
-        for(var j=0;j<this.propsData.salesTable.length;j++) {
-          if(arr[i] == this.propsData.salesTable[j].sal_id) {
-            result_arr.push(this.propsData.salesTable[j])
-          }
-        }
-        // 优惠券
-      result_arr.forEach(row => {
-        this.$refs.multipleTable.toggleRowSelection(row,true)
-      });
-      }
-    },
-    formatDate(row, column, created_time ,index) {
-      if(created_time==null || created_time=="") return "";
-      let date = new Date(created_time);
-      let Y = date.getFullYear() + '-';
-      let M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) + '-' : date.getMonth() + 1 + '-';
-      let D = date.getDate() < 10 ? '0' + date.getDate() + ' ' : date.getDate() + ' ';
-      let h = date.getHours() < 10 ? '0' + date.getHours() + ':' : date.getHours() + ':';
-      let m = date.getMinutes()  < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':';
-      let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-      return Y + M + D ;
-    },
-    // 搜索框
-    searchDate(e) {
-      this.$emit('searchDate', e)
-    },
     // 监听
     clickPopup(value) {
       this.$emit("sltDataContent", value);
@@ -357,34 +224,11 @@ export default {
     backlevel(val) {
       this.$emit("backlevel",val)
     },
-    ifChecked(val) {
-      this.multipleSelection = val
-      let allTicket = {
-        active:[],
-        discounts:[]
-      }
-      for (var i = 0; i < this.multipleSelection.length; i++) {
-        let str = this.multipleSelection[i].sal_id
-        let ticketStr = this.multipleSelection[i].coupon_type
-        if(ticketStr == "活动券") {
-          allTicket.active.push(str)
-        }else if(ticketStr == "优惠券"){
-          allTicket.discounts.push(str)
-        }
-      }
-      this.$emit('ifCheckedVal', allTicket)
-    },
     tabSelect(val) {
       if (val == '1') {
         this.$emit("backlevel",val)
       } else {
         this.dataSelected = val
-        if (val == '3') {
-          this.$nextTick(() => {
-          this.checked()
-
-          })
-        }
       }
     },
     periodChange() {
@@ -400,11 +244,6 @@ export default {
         this.ifNewMbmber = false
       }
     },
-    // 翻页
-    handleSizeChange(val) {
-      this.currentPage = val
-        this.checked()
-    }
   }
 };
 </script>
