@@ -17,7 +17,7 @@
           <p class="login-icon ml15">
             <i class="icon-dengluyonghu"></i>
           </p>
-          <p class="login-icon-id">Chen Jingxue</p>
+          <span class="login-icon-id">Chen Jingxue</span>
         </div>
       </div>
     </div>
@@ -90,11 +90,12 @@ export default {
   }
   .headers-right {
     float: right;
-    width: 10%;
+    width: 15%;
     text-align: center;
     .headers-right-r {
       margin-right: 20px;
       line-height: 0px;
+      margin-top: 5px;
       .login-icon {
         width: 35px;
         height: 35px;

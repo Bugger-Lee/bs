@@ -30,9 +30,9 @@
             <P><span>Select Brands : {{ifDataExtension.brandShow}}</span><span></span></P>
             <P><span>Select Periods : {{ifDataExtension.periodShow}}</span><span></span></P>
             <P><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
-            <P v-if="ifDataExtension.newPeriod != ''"><span>是否新进入周期 : {{ifDataExtension.newPeriod}}</span><span></span></P>
-            <P v-if="ifDataExtension.newBuy != ''"><span>是否为首次购买 : {{ifDataExtension.newBuy}}</span><span></span></P>
-            <P v-if="ifDataExtension.newMbmber != ''"><span>注册一周未购买 : {{ifDataExtension.newMbmber}}</span><span></span></P>
+            <P v-if="ifDataExtension.newPeriod != ''"><span>New Entry : {{ifDataExtension.newPeriod}}</span><span></span></P>
+            <P v-if="ifDataExtension.newBuy != ''"><span>First Purchase : {{ifDataExtension.newBuy}}</span><span></span></P>
+            <P v-if="ifDataExtension.newMbmber != ''"><span>No Purchase (within a week) : {{ifDataExtension.newMbmber}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -137,11 +137,14 @@
                   <el-radio v-model="propsData.newBuy" label="否">No</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewMbmber">
-                  <span class="mr15">No Purchase:</span>  
+                  <span class="mr15">No Purchase</span>  
                   <!-- (within a week) -->
                   <el-radio v-model="propsData.newMbmber" label="是">Yes</el-radio>
                   <el-radio v-model="propsData.newMbmber" label="否">No</el-radio>
                 </div>
+                <p v-if="ifNewMbmber">
+                  <span class="mr15" style="color:red;font-size:10px;">(within a week)</span>  
+                </p>
               </el-col>
             </div>
           </el-col>
