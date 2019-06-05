@@ -39,13 +39,27 @@
                     <span class="crowd-style">
                       <i class="icon-shouye"></i>
                     </span>
-                    <p>Data</p>
-                    <p>Extension</p>
+                    <p>DMP</p>
                   </li>
                 </ul>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="2">
+              <template slot="title">
+                <span>RIGHTS</span>
+              </template>
+              <el-menu-item-group>
+                <ul class="theme-l-tmp">
+                  <li>
+                    <span class="crowds-style" style="background-color:#ffcd43;">
+                      <i class="icon-shouye"></i>
+                    </span>
+                    <p>promotion</p>
+                  </li>
+                </ul>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="3">
               <template slot="title">
                 <span>ACTIVITIES</span>
               </template>
@@ -81,30 +95,65 @@
         </el-col>
         <el-col :span="1" class="middle-style"></el-col>
         <el-col :span="18" class="marketing-drag">
-          <div class="window" id="data1" ref="refData1" v-if="ifDrag">
-            <span class="crowd-style" @click="dataExtension()">
-              <i class="icon-shouye"></i>
-            </span>
+          <div v-if = 'showFirst'>
+            <div class="window" id="data1" ref="refData1" v-if="ifDrag">
+              <span class="crowd-style" @click="dataExtension()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none">
+            <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
+              <span class="msg-style" @click="sms()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none">
+            <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
+              <span class="ctl-style" @click="selectTime()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData3div" v-if="ifSmsDrag" value="time" style="border:none">
+            <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
+              <span class="crowd-style">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData4div" v-if="ifSmsDrag" value="over" style="border:none">
           </div>
-          <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none">
-          <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
-            <span class="msg-style" @click="sms()">
-              <i class="icon-shouye"></i>
-            </span>
+          <div v-else>
+            <div class="window" id="data1" ref="refData1" v-if="ifDrag">
+              <span class="crowd-style" @click="dataExtension()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none">
+            <div class="window" id="return12" ref="refData2" v-if="ifSmsDrag">
+              <span class="msg-style" @click="sms()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none">
+            <div class="window" id="return23" ref="refData3" v-if="ifSmsDrag">
+              <span class="ctl-style" @click="selectTime()">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData3div" v-if="ifSmsDrag" value="time" style="border:none">
+            <div class="window" id="newreturn" ref="newData">
+              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="newrefDatadiv" value="promotion" style="border:none">
+            <div class="window" id="return34" ref="refData4" v-if="ifSmsDrag">
+              <span class="crowd-style">
+                <i class="icon-shouye"></i>
+              </span>
+            </div>
+            <input ref="refData4div" v-if="ifSmsDrag" value="over" style="border:none">
           </div>
-          <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none">
-          <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
-            <span class="ctl-style" @click="selectTime()">
-              <i class="icon-shouye"></i>
-            </span>
-          </div>
-          <input ref="refData3div" v-if="ifSmsDrag" value="time" style="border:none">
-          <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
-            <span class="crowd-style">
-              <i class="icon-shouye"></i>
-            </span>
-          </div>
-          <input ref="refData4div" v-if="ifSmsDrag" value="over" style="border:none">
+          
         </el-col>
       </div>
     </div>
@@ -114,7 +163,6 @@
         v-if="this.propsData.periodVal != ''"
         :ifDataExtension ="ifDataExtension"
         ref="popopenref"
-        @searchDate = "searchDate"
         @backlevel ="backlevel"
         @ifCheckedVal = "ifCheckedVal"
         @sltDataContent ="sltDataContent">
@@ -126,6 +174,15 @@
         @searchSmsList ="searchSmsList"
         @sltSmsContent ="sltSmsContent">
     </smsPopup>
+    <popupTicket :openData="openTicket" 
+      :propsTicket="propsTicket"
+      :openDataContent="openTicketContent"
+      ref="ticketenref"
+      @searchDate = "searchDate"
+      @ifCheckedVal = "ifCheckedVal"
+      @PromotionLevel ="PromotionLevel"
+      @sltPromotion ="sltPromotion">
+    </popupTicket>
     <el-dialog
       :visible.sync="openTime"
       :close-on-click-modal="false"
@@ -147,9 +204,11 @@
 import jsplumb from "jsplumb";
 import "@/assets/css/part.less";
 import smsPopup from "./module/smsPopup.vue"
+import popupTicket from "./module/popupTicket.vue"
 import popupOpenTime from "@/components/public/popupOpenTime.vue"
 import popupDrag from "./module/popupDrag.vue"
 import "@/components/need.js"
+import { constants } from 'fs';
 export default {
   data() {
     return {
@@ -157,6 +216,8 @@ export default {
       ifSmsDrag: true,
       openData:false,
       openSms:false,
+      openTicket:false,
+      openTicketContent:false,
       openDataContent:false,
       openSmsContent:false,
       openTime:false,
@@ -167,7 +228,6 @@ export default {
           brandList: [],
           periodList: [],
           registerList: [],
-          salesTable:[],
           orderList:[],
           brandVal: '',
           brandId: '',
@@ -175,7 +235,6 @@ export default {
           periodShow: '',
           brandShow:'', 
           registerVal:[],
-          SearchSales:'',
           newPeriod:'',
           newBuy:'',
           newMbmber:'',
@@ -244,20 +303,35 @@ export default {
         timeWeek:"",
         timeMonths:""
       },
+      propsTicket:{
+        SearchSales:'',
+        ifTicket:'',
+        ifPromotion:'',
+        salesTable:[]
+      },
       ifDataExtension:'',
       defaultSet:'',
       couponName:'',
       cron_express:'',
-      dayVal:''
+      dayVal:'',
+      datedrag: 2,
+      showFirst: true
     };
   },
   components: {
     popupDrag,
     smsPopup,
-    popupOpenTime
+    popupOpenTime,
+    popupTicket
   },
   created() {
-    this.dragInit(200, 320);
+    if (this.datedrag == 1) {
+      this.showFirst = true
+      this.dragInit1(200, 320);
+    } else {
+      this.showFirst = false
+      this.dragInit2(200, 320);
+    }
     this.activeMessage()
     this.brandLists()
     this.periodLists()
@@ -285,7 +359,7 @@ export default {
       this.cron_express = this.dateChangeCron(datas)
       this.openTime = false
     },
-    dragInit(top, left) {
+    dragInit1(top, left) {
       this.$nextTick(() => {
         this.$refs.refData1.style.position = "fixed";
         this.$refs.refData1.style.top = top + "px";
@@ -314,9 +388,62 @@ export default {
         this.$refs.refData4div.style.position = "fixed";
         this.$refs.refData4div.style.top = top + 50 + "px";
         this.$refs.refData4div.style.left = left + 600 + 5 + "px";
+        let allconn = jsplumb.jsPlumb.getAllConnections();
+        for (var i = 0; i < allconn.length + 1; i++) {
+          jsplumb.jsPlumb.deleteConnection(allconn[0]);
+        }
+        jsplumb.jsPlumb.deleteConnection(allconn[0]);
         this.jsPlumb("data1", "return1");
         this.jsPlumb("return1", "return2");
         this.jsPlumb("return2", "return3");
+      });
+    },
+    dragInit2(top, left) {
+      this.showFirst = false
+      this.$nextTick(() => {
+        this.$refs.refData1.style.position = "fixed";
+        this.$refs.refData1.style.top = top + "px";
+        this.$refs.refData1.style.left = left + "px";
+        this.$refs.refData1div.style.position = "fixed";
+        this.$refs.refData1div.style.top = top + 50 + "px";
+        this.$refs.refData1div.style.left = left + 5 + "px";
+
+        this.$refs.newData.style.position = "fixed";
+        this.$refs.newData.style.top = top + "px";
+        this.$refs.newData.style.left = left + 200 + "px";
+        this.$refs.newrefDatadiv.style.position = "fixed";
+        this.$refs.newrefDatadiv.style.top = top + 50 + "px";
+        this.$refs.newrefDatadiv.style.left = left + 205 + "px";
+
+        this.$refs.refData2.style.position = "fixed";
+        this.$refs.refData2.style.top = top + "px";
+        this.$refs.refData2.style.left = left + 400 + "px";
+        this.$refs.refData2div.style.position = "fixed";
+        this.$refs.refData2div.style.top = top + 50 + "px";
+        this.$refs.refData2div.style.left = left + 405 + "px";
+
+        this.$refs.refData3.style.position = "fixed";
+        this.$refs.refData3.style.top = top + "px";
+        this.$refs.refData3.style.left = left + 600 + "px";
+        this.$refs.refData3div.style.position = "fixed";
+        this.$refs.refData3div.style.top = top + 50 + "px";
+        this.$refs.refData3div.style.left = left + 600 + 5 + "px";
+
+        this.$refs.refData4.style.position = "fixed";
+        this.$refs.refData4.style.top = top + "px";
+        this.$refs.refData4.style.left = left + 800 + "px";
+        this.$refs.refData4div.style.position = "fixed";
+        this.$refs.refData4div.style.top = top + 50 + "px";
+        this.$refs.refData4div.style.left = left + 800 + 5 + "px";
+        let allconn = jsplumb.jsPlumb.getAllConnections();
+        for (var i = 0; i < allconn.length + 1; i++) {
+          jsplumb.jsPlumb.deleteConnection(allconn[0]);
+        }
+        jsplumb.jsPlumb.deleteConnection(allconn[0]);
+        this.jsPlumb("data1", "newreturn");
+        this.jsPlumb("newreturn", "return12");
+        this.jsPlumb("return12", "return23");
+        this.jsPlumb("return23", "return34");
       });
     },
     jsPlumb(ele1, ele2) {
@@ -342,12 +469,17 @@ export default {
         });
       });
     },
+    popupTicket() {
+      this.openTicket = true
+      // this.$refs.ticketenref.defaultdate()
+    },
     activeMessage() {
       this.$.get('rule/getDetail?id='+this.$route.query.id).then(res=>{
         if(res.data.code == 200) {
           this.defaultSet = res.data.data
           this.ifDataExtension = res.data.data
           this.propsSms.ifSms = res.data.data
+          this.propsTicket.ifPromotion = res.data.data
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
           this.propsSms.sendSmsVal = this.ifDataExtension.sms_channel_content
@@ -385,20 +517,6 @@ export default {
         }
       })
     },
-    // detailStatus() {
-    //   if(this.ifDataExtension.brand_name != this.defaultSet.brand_name ||
-    //     this.ifDataExtension.cycle_type != this.defaultSet.cycle_type ||
-    //     this.ifDataExtension.sms_channel_content != this.defaultSet.sms_channel_content ||
-    //     this.ifDataExtension.command_code != this.defaultSet.command_code ||
-    //     this.ifDataExtension.schulder_time != this.defaultSet.schulder_time ||
-    //     this.ifDataExtension.vip_channel_name != this.defaultSet.vip_channel_name ||
-    //     this.ifDataExtension.purchase_first != this.defaultSet.purchase_first ||
-    //     this.ifDataExtension.enter_first != this.defaultSet.enter_first ||
-    //     this.ifDataExtension.purchase_week != this.defaultSet.purchase_week ||
-    //     this.propsSms.ifSms.template_text != this.defaultSet.template_text) {
-          
-    //   }
-    // },
     // 调度命令
     orderLists() {
       this.$.get('command/getList?commandName=').then(res=>{
@@ -438,14 +556,14 @@ export default {
     searchDate(e) {
       var keyCode = window.event? e.keyCode:e.which;
       if(keyCode == 13){
-        this.couponName= this.propsData.SearchSales
+        this.couponName= this.propsTicket.SearchSales
         this.discountLists()
       }
     },
     discountLists() {
       this.$.get("coupon/getList",{params:{couponName:this.couponName}}).then(res=>{
         if(res.data.code == 200) {
-          this.propsData.salesTable = res.data.data
+          this.propsTicket.salesTable = res.data.data
         }
       })
     },
@@ -455,6 +573,14 @@ export default {
         this.openDataContent = false
       } else if (val == 'openNext') {
         this.openDataContent = true
+      }
+    },
+    sltPromotion(val) {
+      this.openTicket = false
+      if (val == 'close1') {
+        this.openTicketContent = false
+      } else if (val == 'openNext') {
+        this.openTicketContent = true
       }
     },
     backlevel(val) {
@@ -467,6 +593,24 @@ export default {
         this.openDataContent = true
         this.openData = false
       }
+    },
+    PromotionLevel() {
+      if(val == 1) {
+        this.openTicketContent = false
+        this.openTicket = true
+      }else if(val == 2){
+        this.promotionSummary()
+      }else if(val == 'edit') {
+        this.openTicketContent = true
+        this.openTicket = false
+      }
+    },
+    promotionSummary() {
+      let obj = {
+        camp_coupon_id:this.ifPromotion.camp_coupon_id,
+        coupon_id:this.ifPromotion.coupon_id
+      }
+      this.popupTicket.ifPromotion = obj
     },
     ifCheckedVal(val) {
       let active = []
@@ -599,7 +743,6 @@ export default {
     },
     dataExtension() {
       this.openData = true
-      this.$refs.popopenref.defaultdate()
     },
     sms() {
       this.openSms = true

@@ -11,7 +11,7 @@
         <p>
           <span class="redStar">*</span>Promotion
         </p>
-        <div class="data-content-c" v-if="propsTicket.ifPromotion == ''">
+        <div class="data-content-c" v-if="propsTicket.ifTicket == ''">
           <img src="../../../../assets/img/noneData.png">
           <p class="c-explain-one">Let's get going!</p>
           <p>Select the data extension whose contacts should enter this journey</p>
@@ -21,14 +21,14 @@
             @click="clickPopup('openNext')"
           >Select Promotion</el-button>
         </div>
-        <div v-if="propsTicket.ifPromotion != ''" class="data-content-apply">
+        <div v-if="propsTicket.ifTicket != ''" class="data-content-apply">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">DATA EXTENSION PROPERTIES</span>
-            <el-button class="bth" @click="PromotionLevel('edit')">Edit</el-button>
+            <el-button class="bth" @click="backlevel('edit')">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P><span>活动券 : {{propsTicket.ifPromotion.camp_coupon_id}}</span><span></span></P>
-            <P><span>优惠券 : {{propsTicket.ifPromotion.coupon_id}}</span><span></span></P>
+            <!-- <P><span>活动券 : {{ifDataExtension.camp_coupon_id}}</span><span></span></P>
+            <P><span>优惠券 : {{ifDataExtension.coupon_id}}</span><span></span></P> -->
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@
         <div class="r-header">
           <p class="r-header-t">
             <span>Sales Promotion</span>
-            <span class="el-icon-back" @click="PromotionLevel(1)"></span>
+            <span class="el-icon-back" @click="backlevel(1)"></span>
           </p>
           <p class="r-header-b">Select your audience to enter the Journey</p>
         </div>
@@ -84,23 +84,22 @@
               <div class="select-msg-search">
                 <el-input
                   class="select-msg-search-ipt"
-                  placeholder="Search by coupon"
+                  placeholder="请根据券编码搜索"
                   prefix-icon="el-icon-search"
-                  style="width:45%;"
                   @keyup.enter.native="searchDate"
                   v-model="propsTicket.SearchSales">
                 </el-input>
               </div>
               <div class="select-msg-table">
-                <el-table :data="salesTable" style="width: 100%" height="220" @selection-change="ifChecked">
-                  <el-table-column type="selection" width="55"></el-table-column>
-                  <el-table-column prop="sal_id" label="Coupon ID" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="coupon_type" label="Type" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="brand" label="Brand" show-overflow-tooltip> </el-table-column>
-                  <el-table-column  label="Content" show-overflow-tooltip>
+                <el-table :data="salesTable" style="width: 100%" height="220" ref="multipleTable" @selection-change="ifChecked">
+                  <el-table-column type="selection"  width="55"></el-table-column>
+                  <el-table-column prop="sal_id" label="劵编码" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="coupon_type" label="类型" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="brand" label="品牌" show-overflow-tooltip> </el-table-column>
+                  <el-table-column  label="详情" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.act_desc}}</template>
                   </el-table-column>
-                  <el-table-column prop="created_time" label="Created" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="created_time" label="创建时间" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
                 </el-table>
               </div>
               <div class="select-msg-page">
@@ -120,14 +119,14 @@
       </el-col>
       <span slot="footer">
         <el-button @click="openDataContentProps = false" >Cancel</el-button>
-        <el-button type="primary" @click="PromotionLevel(2)">Summary</el-button>
+        <el-button type="primary" @click="backlevel(2)">Summary</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
 import "@/assets/css/part.less";
-import { setInterval } from 'timers';
+import { setInterval, setTimeout } from 'timers';
 export default {
   name: "popupDrag",
   data() {
@@ -145,7 +144,7 @@ export default {
       currentPage: 1
     };
   },
-  props: ["openData", "openDataContent","propsTicket"],
+  props: ["openData", "openDataContent","propsTicket","ifDataExtension"],
   computed: {
     openDataProps: {
       get() {
@@ -157,6 +156,12 @@ export default {
     },
     openDataContentProps:{
       get() {
+        if(this.openDataContent) {
+            setTimeout(()=>{
+              this.checked()
+            },1000)
+        }
+        console.log(this.openDataContent)
         return this.openDataContent
       },
       set(v) {
@@ -172,6 +177,39 @@ export default {
     },
   },
   methods: {
+    defaultdate() {
+      // 活动券
+      let arr = this.propsTicket.ifPromotion.camp_coupon_id.split(',')
+      let arr2 = this.propsTicket.ifPromotion.coupon_id.split(',')
+      arr = arr.concat(arr2)
+      let result_arr = []
+      for(var i=0;i<arr.length;i++) {
+        for(var j=0;j<this.propsTicket.salesTable.length;j++) {
+          if(arr[i] == this.propsTicket.salesTable[j].sal_id) {
+            result_arr.push(this.propsTicket.salesTable[j])
+          }
+        }
+      }
+      this.ifChecked(result_arr)
+    },
+    checked() {
+      // 活动券
+      let arr = this.propsTicket.ifPromotion.camp_coupon_id.split(',')
+      let arr2 = this.propsTicket.ifPromotion.coupon_id.split(',')
+      arr = arr.concat(arr2)
+      let result_arr = []
+      for(var i=0;i<arr.length;i++) {
+        for(var j=0;j<this.propsTicket.salesTable.length;j++) {
+          if(arr[i] == this.propsTicket.salesTable[j].sal_id) {
+            result_arr.push(this.propsTicket.salesTable[j])
+          }
+        }
+        // 优惠券
+      result_arr.forEach(row => {
+        this.$refs.multipleTable.toggleRowSelection(row,true)
+      });
+      }
+    },
     formatDate(row, column, created_time ,index) {
       if(created_time==null || created_time=="") return "";
       let date = new Date(created_time);
@@ -192,8 +230,8 @@ export default {
       this.$emit("sltPromotion", value);
     },
     // 取消  确定
-    PromotionLevel(val) {
-      this.$emit("PromotionLevel",val)
+    backlevel(val) {
+      this.$emit("backlevel",val)
     },
     ifChecked(val) {
       this.multipleSelection = val
@@ -214,14 +252,21 @@ export default {
     },
     tabSelect(val) {
       if (val == '1') {
-        this.$emit("PromotionLevel",val)
+        this.$emit("backlevel",val)
       } else {
         this.dataSelected = val
+        if (val == '3') {
+          this.$nextTick(() => {
+          this.checked()
+
+          })
+        }
       }
     },
     // 翻页
     handleSizeChange(val) {
       this.currentPage = val
+        this.checked()
     }
   }
 };

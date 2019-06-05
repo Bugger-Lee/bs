@@ -28,6 +28,7 @@
           </p>
           <div class="data-content-apply-content mt10">
             <P><span>文案内容 : {{propsSms.ifSms.contentMag}}</span><span></span></P>
+            <P><span>短信渠道 : {{propsSms.ifSms.sms_channel_id_show}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -86,7 +87,7 @@
                   <el-col :span="12">
                     <el-input
                       class="select-msg-search-ipt"
-                      placeholder="请根据文案内容搜索"
+                      placeholder="Search by Template"
                       prefix-icon="el-icon-search"
                       width="200%;"
                       @keyup.enter.native="searchSmsList"
@@ -102,7 +103,7 @@
                           v-for="item in propsSms.sendSmsList"
                           :key="item.id"
                           :label="item.channel_content"
-                          :value="item.id"
+                          :value="item.channel_content"
                         ></el-option>
                       </el-select>
                     </div>
@@ -110,16 +111,16 @@
                 </div>
                 <div class="select-msg-table">
                   <el-table :data="propsSms.smsTable" style="width: 100%" height="220" setCurrentRow>
-                    <el-table-column prop="template_name" label="模板名称" show-overflow-tooltip></el-table-column>
-                    <el-table-column prop="cycle_type" label="人群类型" show-overflow-tooltip></el-table-column>
-                    <el-table-column prop="brand_name" label="品牌" show-overflow-tooltip> </el-table-column>
-                    <el-table-column prop="document_text" label="文案内容" show-overflow-tooltip>
+                    <el-table-column prop="template_name" label="Template" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="cycle_type" label="Period" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="brand_name" label="Brand" show-overflow-tooltip> </el-table-column>
+                    <el-table-column prop="document_text" label="Sms Content" show-overflow-tooltip>
                       <template slot-scope="scope">
                         <span v-if="scope.$index != change_index" @click="clickText(scope.$index)">{{scope.row.document_text}}</span>
                         <el-input v-else :placeholder="scope.row.document_text" v-model="input_text" @blur="clickPopup({name:'inputBlur',value:input_text,id:scope.row.id})"></el-input>
                       </template>  
                     </el-table-column>
-                    <el-table-column prop="create_time" label="创建时间" show-overflow-tooltip> </el-table-column>
+                    <el-table-column prop="create_time" label="Created Time" show-overflow-tooltip> </el-table-column>
                   </el-table>
                 </div>
                 <div class="select-msg-page">
