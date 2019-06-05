@@ -27,8 +27,8 @@
             <el-button class="bth" @click="PromotionLevel('edit')">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P><span>活动券 : {{this.propsTicket.ifTicket.camp_coupon_id}}</span><span></span></P>
-            <P><span>优惠券 : {{this.propsTicket.ifTicket.coupon_id}}</span><span></span></P>
+            <P v-if="ifTicket.camp_coupon_id != ''"><span>活动券 : {{ifTicket.camp_coupon_id}}</span><span></span></P>
+            <P v-if="ifTicket.coupon_id != ''"><span>优惠券 : {{ifTicket.coupon_id}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -144,7 +144,7 @@ export default {
       currentPage: 1
     };
   },
-  props: ["openData", "openDataContent","propsTicket","ifDataExtension"],
+  props: ["openData", "openDataContent","propsTicket","ifTicket"],
   computed: {
     openDataProps: {
       get() {
@@ -178,8 +178,8 @@ export default {
   methods: {
     defaultdate() {
       // 活动券
-      let arr = this.propsTicket.ifTicket.camp_coupon_id.split(',')
-      let arr2 = this.propsTicket.ifTicket.coupon_id.split(',')
+      let arr = this.ifTicket.camp_coupon_id.split(',')
+      let arr2 = this.ifTicket.coupon_id.split(',')
       arr = arr.concat(arr2)
       let result_arr = []
       for(var i=0;i<arr.length;i++) {
@@ -193,8 +193,8 @@ export default {
     },
     checked() {
       // 活动券
-      let arr = this.propsTicket.ifTicket.camp_coupon_id.split(',')
-      let arr2 = this.propsTicket.ifTicket.coupon_id.split(',')
+      let arr = this.ifTicket.camp_coupon_id.split(',')
+      let arr2 = this.ifTicket.coupon_id.split(',')
       arr = arr.concat(arr2)
       let result_arr = []
       for(var i=0;i<arr.length;i++) {

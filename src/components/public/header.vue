@@ -17,7 +17,7 @@
           <p class="login-icon ml15">
             <i class="icon-dengluyonghu"></i>
           </p>
-          <p class="login-icon-id">hmhahhaha</p>
+          <p class="login-icon-id">Chen Jingxue</p>
         </div>
       </div>
     </div>

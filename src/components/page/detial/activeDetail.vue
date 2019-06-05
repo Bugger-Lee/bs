@@ -18,10 +18,10 @@
         </el-col>
         <el-col :span="12" class="marketing-header-r">
           <el-button-group class="mr05">
-            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.statusVal == 0}" >Update</el-button>
-            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.statusVal == 1}" @click="detailStatus()">test</el-button>
-            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.statusVal == 2}" >runing</el-button>
-            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.statusVal == 3}" >stop</el-button>
+            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailUpdate == true" @click="detailStatus('update')">Update</el-button>
+            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailTest == true" @click="detailStatus('test')">test</el-button>
+            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailRun == true" @click="detailStatus('run')">runing</el-button>
+            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">stop</el-button>
           </el-button-group>
         </el-col>
       </div>
@@ -176,6 +176,7 @@
     <popupTicket :openData="openTicket" 
       :propsTicket="propsTicket"
       :openDataContent="openTicketContent"
+      :ifTicket = "ifTicket"
       @searchDate = "searchDate"
       @backChange = "backChange"
       @ifCheckedVal = "ifCheckedVal"
@@ -210,6 +211,10 @@ import { constants } from 'fs';
 export default {
   data() {
     return {
+      detailUpdate:true,
+      detailTest:true,
+      detailRun:true,
+      detailStop:false,
       ifDrag: true,
       ifSmsDrag: true,
       openData:false,
@@ -219,7 +224,6 @@ export default {
       openDataContent:false,
       openSmsContent:false,
       openTime:false,
-      statusVal:'',
       propsData:{
           brandList: [],
           periodList: [],
@@ -249,6 +253,8 @@ export default {
       timeType:{
         timeVal:'Days',
         dateTimeVal:'',
+        executeType:'',
+        timestamp:'',
         time:[
           {
             id:1,
@@ -299,18 +305,18 @@ export default {
       },
       propsTicket:{
         SearchSales:'',
-        ifTicket:'',
         checkedActive:'',
         checkedDiscounts:'',
         salesTable:[]
       },
       ifDataExtension:'',
-      // defaultSet:'',
+      ifTicket:'',
       couponName:'',
       cron_express:'',
       dayVal:'',
       datedrag: 2,
-      showFirst: true
+      showFirst: true,
+      statusTestRunVal:''
     };
   },
   components: {
@@ -320,13 +326,6 @@ export default {
     popupTicket
   },
   created() {
-    if (this.datedrag == 1) {
-      this.showFirst = true
-      this.dragInit1(200, 320);
-    } else {
-      this.showFirst = false
-      this.dragInit2(200, 320);
-    }
     this.activeMessage()
     this.brandLists()
     this.periodLists()
@@ -334,16 +333,19 @@ export default {
     this.discountLists()
     this.sendSmsLists()
     this.orderLists()
+    this.smsLists()
+    if (this.datedrag == 1) {
+      this.showFirst = true
+      this.dragInit1(200, 320);
+    } else {
+      this.showFirst = false
+      this.dragInit2(200, 320);
+    }
   },
   methods: {
     doneTime() {
-      let timeObj = {
-        timeClassify:this.timeType.timeVal,
-        time:this.timeType.timePicker,
-        timeMonths:this.timeType.timeMonths,
-        timeWeeks:this.timeType.timeWeek
-      }
-      sessionStorage.setItem('timeMsg',JSON.stringify(timeObj))
+      // sessionStorage.setItem('timeMsg',JSON.stringify(timeObj))
+      console.log(this.timeType)
       let datas = {
         loopType: this.timeType.timeVal,
         wloopValue: this.timeType.timeWeek,
@@ -467,40 +469,98 @@ export default {
     popupTicket() {
       this.openTicket = true
     },
+    detailStatus(val) {
+      let timestamp = new Date(this.timeType.dateTimeVal)
+      this.timeType.timestamp  = timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
+      if(val == 'update') {
+        let data = {
+          id:this.$route.query.id,
+          rule_name:this.ifDataExtension.rule_name,
+          sms_channel_id:this.propsSms.ifSms.sms_channel_id,
+          template_id:this.propsSms.smsTable[0].id,
+          brand_id:this.ifDataExtension.brand_id,
+          cycle_id:this.ifDataExtension.cycle_id,
+          vip_channel_name:this.ifDataExtension.vip_channel_name,
+          schulder_time:this.timeType.timestamp,
+          camp_coupon_id:this.ifTicket.camp_coupon_id,
+          coupon_id:this.ifTicket.coupon_id,
+          enter_first:this.ifDataExtension.enter_first,
+          purchase_first:this.ifDataExtension.purchase_first,
+          purchase_week:this.ifDataExtension.purchase_week,
+          cron_express:this.cron_express,
+          command_code:'clv-job'
+        }
+        this.$.post('rule/update',data).then(res=>{
+          if(res.data.code == 200) {
+            this.$message(res.data.msg)
+          }else{
+            this.$message(res.data.msg)
+          }
+        })
+      }else{
+        if(val == "test") {
+          this.statusTestRunVal = 1
+        }else if(val == "run") {
+          this.statusTestRunVal = 2
+        }else if(val == "stop") {
+          this.statusTestRunVal = 2
+        }
+        this.$.get("rule/updateStatus",{params: { id: this.$route.query.id, status: this.statusTestRunVal }}).then(res=>{
+          if(res.data.code == 200) {
+            this.$message(res.data.msg)
+            if(val == 'stop') {
+              this.detailUpdate = false
+              this.detailRun = false
+              this.detailTest = false
+            }
+          }
+        })
+      }
+    },
     activeMessage() {
       this.$.get('rule/getDetail?id='+this.$route.query.id).then(res=>{
         if(res.data.code == 200) {
-          // this.defaultSet = res.data.data
           this.ifDataExtension = res.data.data
           this.propsSms.ifSms = res.data.data
-          this.propsTicket.ifTicket = res.data.data
+          this.ifTicket = res.data.data
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
-          this.propsSms.sendSmsVal = this.ifDataExtension.sms_channel_content
-          // this.propsData.dateTimeVal = this.ifDataExtension.schulder_time
-          // if(this.propsTicket.ifTicket.camp_coupon_id != '' || this.propsTicket.ifTicket.coupon_id != '') {
+          this.propsSms.sendSmsVal =  this.propsSms.ifSms.sms_channel_content
+          // if(res.data.data.camp_coupon_id != '' || res.data.data.coupon_id != '') {
           //   this.showFirst = true
           // }else{
           //   this.showFirst = false
           // }
-          this.statusVal = this.ifDataExtension.status
+          if(res.data.data.status == 2) {
+            this.detailStop = true
+            this.detailUpdate = false
+            this.detailTest = false
+            this.detailRun = false
+          }
+          if(res.data.data.cron_express == '') {
+            this.timeType.executeType = 1
+          }else{
+            this.timeType.executeType = 2
+          }
+          let timestamp = new Date(res.data.data.schulder_time)
+          this.timeType.dateTimeVal  = timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
           if(this.ifDataExtension.vip_channel_name.length > 0) {
             this.propsData.registerVal = this.ifDataExtension.vip_channel_name.split(',')
           }
           if(this.ifDataExtension.purchase_first == 'Y') {
             this.propsData.newBuy = '是'
-          }else{
+          }else if(this.ifDataExtension.purchase_first == 'N'){
             this.propsData.newBuy = '否'
           }
           if(this.ifDataExtension.enter_first == 'Y') {
             this.propsData.newPeriod = '是'
 
-          }else{
+          }else if(this.ifDataExtension.enter_first == 'N'){
             this.propsData.newPeriod = '否'
           }
           if(this.ifDataExtension.purchase_week == 'Y') {
             this.propsData.newMbmber = '是'
-          }else{
+          }else if(this.ifDataExtension.purchase_week == 'N'){
             this.propsData.newMbmber = '否'
           }
           this.cronChangeDate(res.data.data)
@@ -609,8 +669,7 @@ export default {
         camp_coupon_id:this.popupTicket.checkedActive,
         coupon_id:this.popupTicket.checkedDiscounts
       }
-      this.popupTicket.ifTicket = obj
-      console.log(this.popupTicket.ifTicket)
+      this.ifTicket = obj
       this.openTicket = true
       this.openTicketContent = false
     },
@@ -634,22 +693,17 @@ export default {
       let reVal = this.propsData.registerVal.join(',')
       let item_data = this.propsData.brandList.filter(item => item.brand_name == this.propsData.brandVal)
       let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
-      // let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsData.sendSmsVal)
-      // let timestamp = new Date(this.dateTimeVal.dateTimeVal)
       let objData = {
-        brand:item_data[0].id,
-        period:item2_data[0].id,
+        brand_id:item_data[0].id,
+        cycle_id:item2_data[0].id,
         vip_channel_name:reVal,
         brand_name:this.propsData.brandVal,
         cycle_type:this.propsData.periodVal,
         enter_first:this.propsData.newPeriod,
         purchase_first:this.propsData.newBuy,
         purchase_week:this.propsData.newMbmber,
-        // sms_channel_id: sms_data[0].id,
-        // sms_channel_content:this.propsSms.sendSmsVal,
-        // schulder_time:this.propsData.dateTimeVal,
-        // timestamp:timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       }
+      console.log(objData)
       // sessionStorage.setItem('dataMsg',JSON.stringify(objData))
       this.ifDataExtension = objData
       this.openDataContent = false
@@ -708,25 +762,31 @@ export default {
         })
     },
     saveMessage() {
+      let smsObj = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
+      console.log(smsObj)
       let objData = {
-        template_text:this.propsSms.editMsg
+        template_text:this.propsSms.editMsg,
+        sms_channel_id: smsObj[0].id,
+        sms_channel_content:this.propsSms.sendSmsVal
       }
       if(this.propsSms.dataSelected == 2) {
-        sessionStorage.setItem('smsMsg',JSON.stringify(objData))
+        // sessionStorage.setItem('smsMsg',JSON.stringify(objData))
         this.propsSms.ifSms = objData
         this.openSmsContent = false
         this.openSms = true
       }else if(this.propsSms.dataSelected == 3){
         let insertData = {
-          cycle_id:this.ifDataExtension.period,
-          brand_id:this.ifDataExtension.brand,
+          cycle_id:this.ifDataExtension.cycle_id,
+          brand_id:this.ifDataExtension.brand_id,
           document_text:this.propsSms.editMsg
         }
         this.$.post("template/insert",insertData).then(res=>{
           if(res.data.code == 200) {
             this.smsLists()
             let objData = {
-              contentMag:this.propsSms.editMsg
+              contentMag:this.propsSms.editMsg,
+              sms_channel_id: smsObj[0].id,
+              sms_channel_content:this.propsSms.sendSmsVal
             }
             this.propsSms.ifSms = objData
             this.openSmsContent = false

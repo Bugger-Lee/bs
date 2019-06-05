@@ -30,9 +30,9 @@
             <P><span>Select Brands : {{ifDataExtension.brandShow}}</span><span></span></P>
             <P><span>Select Periods : {{ifDataExtension.periodShow}}</span><span></span></P>
             <P><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
-            <P><span>是否新进入周期 : {{ifDataExtension.newPeriod}}</span><span></span></P>
-            <P><span>是否为首次购买 : {{ifDataExtension.newBuy}}</span><span></span></P>
-            <P><span>注册一周未购买 : {{ifDataExtension.newMbmber}}</span><span></span></P>
+            <P v-if="ifDataExtension.newPeriod != ''"><span>是否新进入周期 : {{ifDataExtension.newPeriod}}</span><span></span></P>
+            <P v-if="ifDataExtension.newBuy != ''"><span>是否为首次购买 : {{ifDataExtension.newBuy}}</span><span></span></P>
+            <P v-if="ifDataExtension.newMbmber != ''"><span>注册一周未购买 : {{ifDataExtension.newMbmber}}</span><span></span></P>
           </div>
         </div>
       </div>

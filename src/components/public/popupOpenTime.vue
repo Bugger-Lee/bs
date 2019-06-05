@@ -37,7 +37,7 @@
             </el-select>
             <el-select v-model="timeType.timeWeek" value="1" style="width:26%;" :disabled = ifDisabled size="small" v-if="this.ifShowTime == 'weeks'" placeholder="选择周">
               <el-option
-                v-for="item in propsTimeWeeks"
+                v-for="item in timeType.timeWeeks"
                 :key="item.id"
                 :label="item.value"
                 :value="item.id">
@@ -73,40 +73,15 @@ export default {
     return{
       ifShowTime:"Days",
       ifDisabled:false,
-      propsTimeWeeks:[
-        {
-          id:1,
-          value:'周一'
-        },
-        {
-          id:2,
-          value:'周二'
-        },
-        {
-          id:3,
-          value:'周三'
-        },
-        {
-          id:4,
-          value:'周四'
-        },
-        {
-          id:5,
-          value:'周五'
-        },
-        {
-          id:6,
-          value:'周六'
-        },
-        {
-          id:7,
-          value:'周日'
-        },
-      ],
       disabledDate(time) {
         return time.getTime() < Date.now();
       },
       selectRange: new Date().getHours()+':'+new Date().getMinutes()+':00 - 23:59:00'
+    }
+  },
+  created() {
+    if(timeType.executeType == 1) {
+      this.ifDisabled = true
     }
   },
   props:["timeType"],

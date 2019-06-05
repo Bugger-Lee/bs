@@ -102,8 +102,7 @@
                         <el-option
                           v-for="item in propsSms.sendSmsList"
                           :key="item.id"
-                          :label="item.channel_content"
-                          :value="item.id"
+                          :value="item.channel_content"
                         ></el-option>
                       </el-select>
                     </div>
