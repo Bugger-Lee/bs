@@ -86,7 +86,7 @@
                     <span class="crowds-style" style="background-color:#ffcd43;">
                       <i class="icon-shouye"></i>
                     </span>
-                    <p>promotion</p>
+                    <p>Coupon</p>
                   </li>
                 </ul>
               </el-menu-item-group>
@@ -149,31 +149,31 @@
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none">
+            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
             <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none">
+            <div ref="refData2div" v-if="ifSmsDrag">Sms</div>
             <div class="window" id="newreturn" ref="newData" v-if="ifProDrag">
               <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="newrefDatadiv" v-if="ifProDrag" value="promotion" style="border:none">
+            <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
             <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData3div" v-if="ifSmsDrag" value="Time" style="border:none">
+            <div ref="refData3div" v-if="ifSmsDrag">Time</div>
             <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData4div" v-if="ifSmsDrag" value="over" style="border:none">
+            <div ref="refData4div" v-if="ifSmsDrag">over</div>
           </div>
           <div v-if="showSecend">
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
@@ -181,25 +181,25 @@
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none">
+            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
             <div class="window" id="newreturn1" ref="newData" v-if="ifProDrag">
               <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="newrefDatadiv" v-if="ifProDrag" value="promotion" style="border:none">
+            <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
             <div class="window" id="return222" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData3div" v-if="ifSmsDrag" value="Time" style="border:none">
+            <div ref="refData3div" v-if="ifSmsDrag">Time</div>
             <div class="window" id="return333" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData4div" v-if="ifSmsDrag" value="over" style="border:none">
+            <div ref="refData4div" v-if="ifSmsDrag">over</div>
           </div>
           <div v-if="showLast">
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
@@ -207,31 +207,31 @@
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none">
+            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
             <div class="window" id="return1111" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none">
+            <div ref="refData2div" v-if="ifSmsDrag">Sms</div>
             <div class="window" id="newreturn11" ref="newData" v-if="ifProDrag">
               <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="newrefDatadiv" v-if="ifProDrag" value="promotion" style="border:none">
+            <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
             <div class="window" id="return2222" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData3div" v-if="ifSmsDrag" value="Time" style="border:none">
+            <div ref="refData3div" v-if="ifSmsDrag">Time</div>
             <div class="window" id="return3333" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData4div" v-if="ifSmsDrag" value="over" style="border:none">
+            <div ref="refData4div" v-if="ifSmsDrag">over</div>
           </div>
           <div v-if="showFirst1">
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
@@ -239,31 +239,31 @@
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData1div" v-if="ifDrag" value="data Extention" style="border:none">
+            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
             <div class="window" id="return11" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData2div" v-if="ifSmsDrag" value="sms" style="border:none">
+            <div ref="refData2div" v-if="ifSmsDrag">Sms</div>
             <div class="window" id="newreturn" ref="newData" v-if="ifProDrag">
               <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="newrefDatadiv" v-if="ifProDrag" value="promotion" style="border:none">
+            <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
             <div class="window" id="return22" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData3div" v-if="ifSmsDrag" value="Time" style="border:none">
+            <div ref="refData3div" v-if="ifSmsDrag">Time</div>
             <div class="window" id="return33" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
                 <i class="icon-shouye"></i>
               </span>
             </div>
-            <input ref="refData4div" v-if="ifSmsDrag" value="over" style="border:none">
+            <div ref="refData4div" v-if="ifSmsDrag">over</div>
           </div>
         </el-col>
       </div>
@@ -438,7 +438,7 @@ export default {
       statusTestRunVal: "",
       systemId: "",
       dargSms: false,
-      sortDrag: ""
+      sortDrag: "",
     };
   },
   mounted() {
@@ -448,7 +448,6 @@ export default {
     this.brandLists();
     this.periodLists();
     this.registerLists();
-    this.discountLists();
     this.sendSmsLists();
     this.orderLists();
     this.currentTimeName =
@@ -726,9 +725,7 @@ export default {
       });
     },
     discountLists() {
-      this.$.get("coupon/getList", {
-        params: { couponName: this.couponName }
-      }).then(res => {
+      this.$.get("coupon/getCouponList", {params: { couponName: this.couponName ,brandName:this.ifDataExtension.brandShow}}).then(res => {
         if (res.data.code == 200) {
           this.propsTicket.salesTable = res.data.data;
         }
@@ -749,7 +746,7 @@ export default {
         }
       }).then(res => {
         if (res.data.code == 200) {
-          this.propsSms.smsTable[0] = res.data.data;
+          this.propsSms.smsTable = res.data.data;
           this.propsSms.editMsg = res.data.data.document_text;
         } else {
           this.propsSms.smsTable = [];
@@ -960,7 +957,17 @@ export default {
       this.openData = true;
     },
     popupTicket() {
-      this.openTicket = true;
+      if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0) {
+        this.$message({
+          showClose: true,
+          message: '请您先将数据源里的必选内容选完',
+          type: 'warning'
+        });
+        return false
+      }else{
+        this.discountLists();
+        this.openTicket = true;
+      }
     },
     sms() {
       if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0) {
@@ -971,8 +978,8 @@ export default {
         });
         return false
       }else{
-      this.smsLists();
-      this.openSms = true;
+        this.smsLists();
+        this.openSms = true;
       }
     },
     selectTime() {
@@ -1057,8 +1064,10 @@ export default {
         let insertData = {
           cycle_id: this.ifDataExtension.period,
           brand_id: this.ifDataExtension.brand,
-          document_text: this.propsSms.editMsg
+          document_text: this.propsSms.editMsg,
+          uuid:(new Date()).valueOf()
         };
+        
         this.$.post("template/insert", insertData).then(res => {
           if (res.data.code == 200) {
             this.smsLists();
