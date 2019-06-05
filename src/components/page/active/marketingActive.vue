@@ -71,7 +71,7 @@
                     <span class="crowd-style">
                       <i class="icon-shouye"></i>
                     </span>
-                    <p>DMP</p>
+                    <p>CLV Data</p>
                   </li>
                 </ul>
               </el-menu-item-group>
@@ -507,6 +507,9 @@ export default {
       };
       this.dateChangeCron(datas);
       this.cron_express = this.dateChangeCron(datas);
+      if(this.timeType.executeType == 1) {
+        this.cron_express = ''
+      }
       this.openTime = false;
     },
     saveJourney() {
@@ -524,6 +527,7 @@ export default {
         purchase_week: this.ifDataExtension.newMbmber,
         purchase_first: this.propsData.newBuy,
         cron_express: this.cron_express,
+        command_name:"CLV人群",
         command_code: "clv-job"
       };
       this.$.post("rule/insert", data).then(res => {

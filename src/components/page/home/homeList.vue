@@ -62,7 +62,7 @@
               </el-table-column>
               <el-table-column prop="status_name" label="Status" show-overflow-tooltip></el-table-column>
               <el-table-column prop="cycle_type" label="Period" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="command_code" label="Crowd Type" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="command_name" label="Crowd Type" show-overflow-tooltip></el-table-column>
               <div style="text-align:center; padding: 10px 0" slot="append" v-if="showLoading"><i class="el-icon-loading" style="color:#1589ee;font-size:35px;"></i></div>
             </el-table>
           </el-col>

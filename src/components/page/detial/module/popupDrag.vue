@@ -30,11 +30,9 @@
             <P><span>品牌 : {{ifDataExtension.brand_name}}</span><span></span></P>
             <P><span>周期 : {{ifDataExtension.cycle_type}}</span><span></span></P>
             <P><span>渠道 : {{ifDataExtension.vip_channel_name}}</span><span></span></P>
-            <P><span>是否新进入周期 : {{ifDataExtension.enter_first}}</span><span></span></P>
-            <P><span>是否为首次购买 : {{ifDataExtension.purchase_first}}</span><span></span></P>
-            <P><span>注册一周未购买 : {{ifDataExtension.purchase_week}}</span><span></span></P>
-            <!-- <P><span>活动券 : {{ifDataExtension.camp_coupon_id}}</span><span></span></P>
-            <P><span>优惠券 : {{ifDataExtension.coupon_id}}</span><span></span></P> -->
+            <P v-if="ifDataExtension.enter_first != ''"><span>是否新进入周期 : {{ifDataExtension.enter_first}}</span><span></span></P>
+            <P v-if="ifDataExtension.purchase_first != ''"><span>是否为首次购买 : {{ifDataExtension.purchase_first}}</span><span></span></P>
+            <P v-if="ifDataExtension.purchase_week != ''"><span>注册一周未购买 : {{ifDataExtension.purchase_week}}</span><span></span></P>
           </div>
         </div>
       </div>
