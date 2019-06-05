@@ -177,9 +177,10 @@
     <popupTicket :openData="openTicket" 
       :propsTicket="propsTicket"
       :openDataContent="openTicketContent"
+      ref="ticketenref"
       @searchDate = "searchDate"
-      @backlevel ="backlevel"
       @ifCheckedVal = "ifCheckedVal"
+      @PromotionLevel ="PromotionLevel"
       @sltPromotion ="sltPromotion">
     </popupTicket>
     <el-dialog
@@ -305,6 +306,7 @@ export default {
       propsTicket:{
         SearchSales:'',
         ifTicket:'',
+        ifPromotion:'',
         salesTable:[]
       },
       ifDataExtension:'',
@@ -469,6 +471,7 @@ export default {
     },
     popupTicket() {
       this.openTicket = true
+      // this.$refs.ticketenref.defaultdate()
     },
     activeMessage() {
       this.$.get('rule/getDetail?id='+this.$route.query.id).then(res=>{
@@ -476,6 +479,7 @@ export default {
           this.defaultSet = res.data.data
           this.ifDataExtension = res.data.data
           this.propsSms.ifSms = res.data.data
+          this.propsTicket.ifPromotion = res.data.data
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
           this.propsSms.sendSmsVal = this.ifDataExtension.sms_channel_content
@@ -513,20 +517,6 @@ export default {
         }
       })
     },
-    // detailStatus() {
-    //   if(this.ifDataExtension.brand_name != this.defaultSet.brand_name ||
-    //     this.ifDataExtension.cycle_type != this.defaultSet.cycle_type ||
-    //     this.ifDataExtension.sms_channel_content != this.defaultSet.sms_channel_content ||
-    //     this.ifDataExtension.command_code != this.defaultSet.command_code ||
-    //     this.ifDataExtension.schulder_time != this.defaultSet.schulder_time ||
-    //     this.ifDataExtension.vip_channel_name != this.defaultSet.vip_channel_name ||
-    //     this.ifDataExtension.purchase_first != this.defaultSet.purchase_first ||
-    //     this.ifDataExtension.enter_first != this.defaultSet.enter_first ||
-    //     this.ifDataExtension.purchase_week != this.defaultSet.purchase_week ||
-    //     this.propsSms.ifSms.template_text != this.defaultSet.template_text) {
-          
-    //   }
-    // },
     // 调度命令
     orderLists() {
       this.$.get('command/getList?commandName=').then(res=>{
@@ -603,6 +593,24 @@ export default {
         this.openDataContent = true
         this.openData = false
       }
+    },
+    PromotionLevel() {
+      if(val == 1) {
+        this.openTicketContent = false
+        this.openTicket = true
+      }else if(val == 2){
+        this.promotionSummary()
+      }else if(val == 'edit') {
+        this.openTicketContent = true
+        this.openTicket = false
+      }
+    },
+    promotionSummary() {
+      let obj = {
+        camp_coupon_id:this.ifPromotion.camp_coupon_id,
+        coupon_id:this.ifPromotion.coupon_id
+      }
+      this.popupTicket.ifPromotion = obj
     },
     ifCheckedVal(val) {
       let active = []
@@ -735,7 +743,6 @@ export default {
     },
     dataExtension() {
       this.openData = true
-      this.$refs.popopenref.defaultdate()
     },
     sms() {
       this.openSms = true

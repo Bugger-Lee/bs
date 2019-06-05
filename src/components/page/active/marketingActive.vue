@@ -26,25 +26,35 @@
           <el-button-group class="mr05">
             <el-button
               type="primary"
-              class="pd-btn pd-back"
-              :disabled="disabledBtnSave"
-              :class="{'ifColor':this.ifColor == 1}"
+              class="pd-btn pd-back ifColor"
+              v-if="this.saveSave==true"
               @click="saveJourney()"
             >Save</el-button>
             <el-button
               type="primary"
-              class="pd-btn pd-back"
-              :disabled="disabledBtnTest"
-              :class="{'ifColor':this.ifColor == 2}"
+               v-if="this.saveUpdate==true"
+              class="pd-btn pd-back ifColor"
+              @click="updateJorney()"
+            >update</el-button>
+            <el-button
+              type="primary"
+               v-if="this.saveTest==true"
+              class="pd-btn pd-back ifColor"
               @click="testRunJourney('test')"
             >Test</el-button>
           </el-button-group>
           <el-button
             type="primary"
             class="pd-btn mr15"
-            :disabled="disabledBtnRun"
+             v-if="this.saveRunning==true"
             @click="testRunJourney('runing')"
           >runing</el-button>
+          <el-button
+            type="primary"
+            class="pd-btn mr15"
+             v-if="this.saveStop==true"
+            @click="testRunJourney('stop')"
+          >Stop</el-button>
         </el-col>
       </div>
       <div class="marketing-theme">
@@ -313,6 +323,11 @@ export default {
   name: "marketingActive",
   data() {
     return {
+      saveSave:true,
+      saveUpdate:false,
+      saveTest:true,
+      saveRunning:true,
+      saveStop:false,
       ifDrag: false,
       ifSmsDrag: false,
       ifProDrag: false,
@@ -329,10 +344,6 @@ export default {
       openDataContent: false,
       openSmsContent: false,
       openTime: false,
-      ifColor: 1,
-      disabledBtnRun: true,
-      disabledBtnSave: false,
-      disabledBtnTest: true,
       currentTimeName: new Date(),
       timeType: {
         timeVal: "Days",
@@ -518,41 +529,71 @@ export default {
       this.$.post("rule/insert", data).then(res => {
         if (res.data.code == 200) {
           this.$message(res.data.msg);
-          this.ifColor = 2;
-          this.disabledBtnSave = true;
-          this.disabledBtnTest = false;
           this.systemId = res.data.data;
+          this.saveSave = false
+          this.saveUpdate = true
         } else {
           this.$message(res.data.msg);
-          this.disabledBtnSave = false;
-          this.disabledBtnTest = true;
+        }
+      });
+    },
+    updateJorney() {
+      let data = {
+        id:this.systemId,
+        rule_name: this.currentTimeVal,
+        sms_channel_id: this.propsSms.ifSms.sms_channel_id,
+        template_id: this.propsSms.smsTable[0].id,
+        brand_id: this.ifDataExtension.brand,
+        cycle_id: this.ifDataExtension.period,
+        vip_channel_name: this.ifDataExtension.register,
+        schulder_time: this.timeType.timestamp,
+        camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id,
+        coupon_id: this.propsTicket.ifPromotion.coupon_id,
+        enter_first: this.ifDataExtension.newPeriod,
+        purchase_week: this.ifDataExtension.newMbmber,
+        purchase_first: this.propsData.newBuy,
+        cron_express: this.cron_express,
+        command_code: "clv-job"
+      };
+      this.$.post("rule/update", data).then(res => {
+        if (res.data.code == 200) {
+          this.$message(res.data.msg);
+        } else {
+          this.$message(res.data.msg);
         }
       });
     },
     testRunJourney(val) {
+      if(this.saveSave == true) {
+        this.$message("请您新Save")
+        return false
+      }
       if (val == "test") {
         this.statusTestRunVal = 1;
       } else if (val == "runing") {
         this.statusTestRunVal = 2;
+      }else if(val == 'stop') {
+        this.statusTestRunVal = 3;
       }
       this.$.get("rule/updateStatus", {
         params: { id: this.systemId, status: this.statusTestRunVal }
       }).then(res => {
         if (res.data.code == 200) {
           if (val == "test") {
-            this.disabledBtnRun = false;
-            this.disabledBtnTest = true;
             this.$message(res.data.msg);
           } else if (val == "runing") {
-            this.disabledBtnRun = true;
-            this.disabledBtnTest = true;
-            this.disabledBtnSave = true;
+            this.saveUpdate = false 
+            this.saveTest = false
+            this.saveRunning = false
+            this.saveStop = true
             this.$confirm("您已经成功执行此操作,是否跳转到首页?", "提示", {
               confirmButtonText: "是",
               cancelButtonText: "否"
             }).then(() => {
               this.$router.push("./");
             });
+          }else if(val == "stop") {
+            this.$message(res.data.msg);
           }
         } else {
           this.$message(res.data.msg);
@@ -773,9 +814,9 @@ export default {
       });
     },
     appendSms1(left, top) {
-      this.dargSms = true;
+      this.dargSms = false;
       this.ifProDrag = true;
-      this.ifSmsDrag = true;
+      this.ifSmsDrag = false;
       this.showSecend = true;
       this.showFirst = false;
       this.showLast = false;
@@ -787,22 +828,22 @@ export default {
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
         this.$refs.newrefDatadiv.style.left = left + 5 + "px";
 
-        this.$refs.refData3.style.position = "fixed";
-        this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 200 + "px";
-        this.$refs.refData3div.style.position = "fixed";
-        this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 200 + 5 + "px";
+        // this.$refs.refData3.style.position = "fixed";
+        // this.$refs.refData3.style.top = top + "px";
+        // this.$refs.refData3.style.left = left + 200 + "px";
+        // this.$refs.refData3div.style.position = "fixed";
+        // this.$refs.refData3div.style.top = top + 50 + "px";
+        // this.$refs.refData3div.style.left = left + 200 + 5 + "px";
 
-        this.$refs.refData4.style.position = "fixed";
-        this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 400 + "px";
-        this.$refs.refData4div.style.position = "fixed";
-        this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 400 + 5 + "px";
-        this.jsPlumb("data1", "newreturn1");
-        this.jsPlumb("newreturn1", "return222");
-        this.jsPlumb("return222", "return333");
+        // this.$refs.refData4.style.position = "fixed";
+        // this.$refs.refData4.style.top = top + "px";
+        // this.$refs.refData4.style.left = left + 400 + "px";
+        // this.$refs.refData4div.style.position = "fixed";
+        // this.$refs.refData4div.style.top = top + 50 + "px";
+        // this.$refs.refData4div.style.left = left + 400 + 5 + "px";
+        // this.jsPlumb("data1", "newreturn1");
+        // this.jsPlumb("newreturn1", "return222");
+        // this.jsPlumb("return222", "return333");
         // this.dargNextNew()
       });
     },
@@ -865,6 +906,8 @@ export default {
       });
     },
     appendPro1(left, top) {
+      this.dargSms = true
+      this.ifSmsDrag =true
       this.ifProDrag = true;
       this.showFirst = false;
       this.showSecend = false;
@@ -1125,6 +1168,7 @@ export default {
           }
         }
       } else if (this.sortDrag == "pro") {
+        console.log(123)
         if (ui.draggable[0]._prevClass == "msg-style") {
           if (
             this.dragLeft + 185 <= ui.offset.left &&
@@ -1132,6 +1176,7 @@ export default {
             this.dragTop - 5 <= ui.offset.top &&
             ui.offset.top < this.dragTop + 50
           ) {
+            console.log(123)
             this.appendPro1(ui.offset.left, this.dragTop);
           }
         } else {

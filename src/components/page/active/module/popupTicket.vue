@@ -84,7 +84,7 @@
               <div class="select-msg-search">
                 <el-input
                   class="select-msg-search-ipt"
-                  placeholder="请根据券编码搜索"
+                  placeholder="Search by coupon"
                   prefix-icon="el-icon-search"
                   style="width:45%;"
                   @keyup.enter.native="searchDate"
@@ -94,13 +94,13 @@
               <div class="select-msg-table">
                 <el-table :data="salesTable" style="width: 100%" height="220" @selection-change="ifChecked">
                   <el-table-column type="selection" width="55"></el-table-column>
-                  <el-table-column prop="sal_id" label="劵编码" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="coupon_type" label="类型" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="brand" label="品牌" show-overflow-tooltip> </el-table-column>
-                  <el-table-column  label="详情" show-overflow-tooltip>
+                  <el-table-column prop="sal_id" label="Coupon ID" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="coupon_type" label="Type" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="brand" label="Brand" show-overflow-tooltip> </el-table-column>
+                  <el-table-column  label="Content" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.act_desc}}</template>
                   </el-table-column>
-                  <el-table-column prop="created_time" label="创建时间" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="created_time" label="Created" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
                 </el-table>
               </div>
               <div class="select-msg-page">

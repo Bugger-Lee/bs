@@ -126,7 +126,7 @@
 </template>
 <script>
 import "@/assets/css/part.less";
-import { setInterval } from 'timers';
+import { setInterval, setTimeout } from 'timers';
 export default {
   name: "popupDrag",
   data() {
@@ -156,6 +156,12 @@ export default {
     },
     openDataContentProps:{
       get() {
+        if(this.openDataContent) {
+            setTimeout(()=>{
+              this.checked()
+            },1000)
+        }
+        console.log(this.openDataContent)
         return this.openDataContent
       },
       set(v) {
@@ -173,8 +179,8 @@ export default {
   methods: {
     defaultdate() {
       // 活动券
-      let arr = this.ifDataExtension.camp_coupon_id.split(',')
-      let arr2 = this.ifDataExtension.coupon_id.split(',')
+      let arr = this.propsTicket.ifPromotion.camp_coupon_id.split(',')
+      let arr2 = this.propsTicket.ifPromotion.coupon_id.split(',')
       arr = arr.concat(arr2)
       let result_arr = []
       for(var i=0;i<arr.length;i++) {
@@ -188,8 +194,8 @@ export default {
     },
     checked() {
       // 活动券
-      let arr = this.ifDataExtension.camp_coupon_id.split(',')
-      let arr2 = this.ifDataExtension.coupon_id.split(',')
+      let arr = this.propsTicket.ifPromotion.camp_coupon_id.split(',')
+      let arr2 = this.propsTicket.ifPromotion.coupon_id.split(',')
       arr = arr.concat(arr2)
       let result_arr = []
       for(var i=0;i<arr.length;i++) {
