@@ -18,7 +18,7 @@
         </el-col>
         <el-col :span="12" class="marketing-header-r">
           <el-button-group class="mr05">
-            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.statusVal == 0}" >save</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.statusVal == 0}" >Update</el-button>
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.statusVal == 1}" @click="detailStatus()">test</el-button>
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.statusVal == 2}" >runing</el-button>
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.statusVal == 3}" >stop</el-button>
@@ -164,7 +164,6 @@
         :ifDataExtension ="ifDataExtension"
         ref="popopenref"
         @backlevel ="backlevel"
-        @ifCheckedVal = "ifCheckedVal"
         @sltDataContent ="sltDataContent">
     </popupDrag>
     <smsPopup :openData ="openSms"
@@ -177,11 +176,10 @@
     <popupTicket :openData="openTicket" 
       :propsTicket="propsTicket"
       :openDataContent="openTicketContent"
-      ref="ticketenref"
       @searchDate = "searchDate"
+      @backChange = "backChange"
       @ifCheckedVal = "ifCheckedVal"
-      @PromotionLevel ="PromotionLevel"
-      @sltPromotion ="sltPromotion">
+      @PromotionLevel ="PromotionLevel">
     </popupTicket>
     <el-dialog
       :visible.sync="openTime"
@@ -221,8 +219,6 @@ export default {
       openDataContent:false,
       openSmsContent:false,
       openTime:false,
-      checkedActive:'',
-      checkedDiscounts:'',
       statusVal:'',
       propsData:{
           brandList: [],
@@ -238,8 +234,6 @@ export default {
           newPeriod:'',
           newBuy:'',
           newMbmber:'',
-          checkedActive:'',
-          checkedDiscounts:'',
       },
       propsSms:{
         smsTable:[],
@@ -306,11 +300,12 @@ export default {
       propsTicket:{
         SearchSales:'',
         ifTicket:'',
-        ifPromotion:'',
+        checkedActive:'',
+        checkedDiscounts:'',
         salesTable:[]
       },
       ifDataExtension:'',
-      defaultSet:'',
+      // defaultSet:'',
       couponName:'',
       cron_express:'',
       dayVal:'',
@@ -471,19 +466,23 @@ export default {
     },
     popupTicket() {
       this.openTicket = true
-      // this.$refs.ticketenref.defaultdate()
     },
     activeMessage() {
       this.$.get('rule/getDetail?id='+this.$route.query.id).then(res=>{
         if(res.data.code == 200) {
-          this.defaultSet = res.data.data
+          // this.defaultSet = res.data.data
           this.ifDataExtension = res.data.data
           this.propsSms.ifSms = res.data.data
-          this.propsTicket.ifPromotion = res.data.data
+          this.propsTicket.ifTicket = res.data.data
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
           this.propsSms.sendSmsVal = this.ifDataExtension.sms_channel_content
           // this.propsData.dateTimeVal = this.ifDataExtension.schulder_time
+          // if(this.propsTicket.ifTicket.camp_coupon_id != '' || this.propsTicket.ifTicket.coupon_id != '') {
+          //   this.showFirst = true
+          // }else{
+          //   this.showFirst = false
+          // }
           this.statusVal = this.ifDataExtension.status
           if(this.ifDataExtension.vip_channel_name.length > 0) {
             this.propsData.registerVal = this.ifDataExtension.vip_channel_name.split(',')
@@ -575,14 +574,6 @@ export default {
         this.openDataContent = true
       }
     },
-    sltPromotion(val) {
-      this.openTicket = false
-      if (val == 'close1') {
-        this.openTicketContent = false
-      } else if (val == 'openNext') {
-        this.openTicketContent = true
-      }
-    },
     backlevel(val) {
       if(val == 1) {
         this.openDataContent = false
@@ -594,7 +585,15 @@ export default {
         this.openData = false
       }
     },
-    PromotionLevel() {
+    backChange(val) {
+      this.openTicket = false
+      if(val == 'openNext') {
+        this.openTicketContent = true
+      }else if(val == 'close1') {
+        this.openTicketContent = false
+      }
+    },
+    PromotionLevel(val) {
       if(val == 1) {
         this.openTicketContent = false
         this.openTicket = true
@@ -607,10 +606,13 @@ export default {
     },
     promotionSummary() {
       let obj = {
-        camp_coupon_id:this.ifPromotion.camp_coupon_id,
-        coupon_id:this.ifPromotion.coupon_id
+        camp_coupon_id:this.popupTicket.checkedActive,
+        coupon_id:this.popupTicket.checkedDiscounts
       }
-      this.popupTicket.ifPromotion = obj
+      this.popupTicket.ifTicket = obj
+      console.log(this.popupTicket.ifTicket)
+      this.openTicket = true
+      this.openTicketContent = false
     },
     ifCheckedVal(val) {
       let active = []
@@ -625,15 +627,15 @@ export default {
       }
       let activeData = [...new Set(active)].join(',')
       let discountsData = [...new Set(discounts)].join(',')
-      this.checkedActive = activeData
-      this.checkedDiscounts = discountsData
+      this.popupTicket.checkedActive = activeData
+      this.popupTicket.checkedDiscounts = discountsData
     },
     dataSummary() {
       let reVal = this.propsData.registerVal.join(',')
       let item_data = this.propsData.brandList.filter(item => item.brand_name == this.propsData.brandVal)
       let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
-      let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsData.sendSmsVal)
-      let timestamp = new Date(this.dateTimeVal.dateTimeVal)
+      // let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsData.sendSmsVal)
+      // let timestamp = new Date(this.dateTimeVal.dateTimeVal)
       let objData = {
         brand:item_data[0].id,
         period:item2_data[0].id,
@@ -643,14 +645,12 @@ export default {
         enter_first:this.propsData.newPeriod,
         purchase_first:this.propsData.newBuy,
         purchase_week:this.propsData.newMbmber,
-        camp_coupon_id:this.checkedActive,
-        coupon_id:this.checkedDiscounts,
-        sms_channel_id: sms_data[0].id,
-        sms_channel_content:this.propsSms.sendSmsVal,
+        // sms_channel_id: sms_data[0].id,
+        // sms_channel_content:this.propsSms.sendSmsVal,
         // schulder_time:this.propsData.dateTimeVal,
-        timestamp:timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
+        // timestamp:timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       }
-      sessionStorage.setItem('dataMsg',JSON.stringify(objData))
+      // sessionStorage.setItem('dataMsg',JSON.stringify(objData))
       this.ifDataExtension = objData
       this.openDataContent = false
       this.openData = true
@@ -757,8 +757,6 @@ export default {
     jsplumb.jsPlumb.deleteConnection(allconn[0])
     }
     jsplumb.jsPlumb.deleteConnection(allconn[0])
-    console.log(allconn)
-
     next()
   }
 };

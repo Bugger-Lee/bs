@@ -24,11 +24,11 @@
         <div v-if="propsTicket.ifTicket != ''" class="data-content-apply">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">DATA EXTENSION PROPERTIES</span>
-            <el-button class="bth" @click="backlevel('edit')">Edit</el-button>
+            <el-button class="bth" @click="PromotionLevel('edit')">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <!-- <P><span>活动券 : {{ifDataExtension.camp_coupon_id}}</span><span></span></P>
-            <P><span>优惠券 : {{ifDataExtension.coupon_id}}</span><span></span></P> -->
+            <P><span>活动券 : {{this.propsTicket.ifTicket.camp_coupon_id}}</span><span></span></P>
+            <P><span>优惠券 : {{this.propsTicket.ifTicket.coupon_id}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@
         <div class="r-header">
           <p class="r-header-t">
             <span>Sales Promotion</span>
-            <span class="el-icon-back" @click="backlevel(1)"></span>
+            <span class="el-icon-back" @click="PromotionLevel(1)"></span>
           </p>
           <p class="r-header-b">Select your audience to enter the Journey</p>
         </div>
@@ -119,7 +119,7 @@
       </el-col>
       <span slot="footer">
         <el-button @click="openDataContentProps = false" >Cancel</el-button>
-        <el-button type="primary" @click="backlevel(2)">Summary</el-button>
+        <el-button type="primary" @click="PromotionLevel(2)">Summary</el-button>
       </span>
     </el-dialog>
   </div>
@@ -151,7 +151,7 @@ export default {
         return this.openData
       },
       set(v) {
-        this.$emit('sltPromotion', 'close');
+        this.$emit('backChange', 'close');
       }
     },
     openDataContentProps:{
@@ -159,13 +159,12 @@ export default {
         if(this.openDataContent) {
             setTimeout(()=>{
               this.checked()
-            },1000)
+            },500)
         }
-        console.log(this.openDataContent)
         return this.openDataContent
       },
       set(v) {
-        this.$emit('sltPromotion', 'close1');
+        this.$emit('backChange', 'close1');
       }
     },
     salesTable() {
@@ -179,8 +178,8 @@ export default {
   methods: {
     defaultdate() {
       // 活动券
-      let arr = this.propsTicket.ifPromotion.camp_coupon_id.split(',')
-      let arr2 = this.propsTicket.ifPromotion.coupon_id.split(',')
+      let arr = this.propsTicket.ifTicket.camp_coupon_id.split(',')
+      let arr2 = this.propsTicket.ifTicket.coupon_id.split(',')
       arr = arr.concat(arr2)
       let result_arr = []
       for(var i=0;i<arr.length;i++) {
@@ -194,8 +193,8 @@ export default {
     },
     checked() {
       // 活动券
-      let arr = this.propsTicket.ifPromotion.camp_coupon_id.split(',')
-      let arr2 = this.propsTicket.ifPromotion.coupon_id.split(',')
+      let arr = this.propsTicket.ifTicket.camp_coupon_id.split(',')
+      let arr2 = this.propsTicket.ifTicket.coupon_id.split(',')
       arr = arr.concat(arr2)
       let result_arr = []
       for(var i=0;i<arr.length;i++) {
@@ -227,11 +226,11 @@ export default {
     },
     // 监听
     clickPopup(value) {
-      this.$emit("sltPromotion", value);
+      this.$emit("backChange", value);
     },
     // 取消  确定
-    backlevel(val) {
-      this.$emit("backlevel",val)
+    PromotionLevel(val) {
+      this.$emit("PromotionLevel",val)
     },
     ifChecked(val) {
       this.multipleSelection = val
@@ -248,11 +247,12 @@ export default {
           allTicket.discounts.push(str)
         }
       }
+      // console.log(allTicket)
       this.$emit('ifCheckedVal', allTicket)
     },
     tabSelect(val) {
       if (val == '1') {
-        this.$emit("backlevel",val)
+        this.$emit("PromotionLevel",val)
       } else {
         this.dataSelected = val
         if (val == '3') {

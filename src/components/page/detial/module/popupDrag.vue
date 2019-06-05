@@ -124,17 +124,6 @@
                     ></el-option>
                   </el-select>
                 </div>
-                <!-- <div class="ml10">
-                  <span class="redStar">*</span>
-                  <span>短信通道</span>
-                  <el-select v-model="propsData.sendSmsVal" clearable placeholder="请选择短信通道" class="select-option-classify">
-                    <el-option
-                      v-for="item in propsData.sendSmsList"
-                      :key="item.id"
-                      :value="item.channel_content"
-                    ></el-option>
-                  </el-select>
-                </div> -->
               </el-col>
               <el-col :span="12">
                 <div class="select-option-ipt" v-if="ifNewPeriod">
