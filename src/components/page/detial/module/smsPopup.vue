@@ -256,7 +256,11 @@ export default {
       this.$emit('backlevelSms')
     },
     tabSelect(val) {
-      this.propsSms.dataSelected = val
+      if(val == 1) {
+        this.$emit("backlevelSms")
+      }else{
+        this.propsSms.dataSelected = val
+      }
     },
     // 分页
     handleSizeChange(val) {

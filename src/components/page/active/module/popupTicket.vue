@@ -27,8 +27,8 @@
             <el-button class="bth" @click="PromotionLevel('edit')">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P v-if="propsTicket.ifPromotion.camp_coupon_id != ''"><span>Activity Ticket : {{propsTicket.ifPromotion.camp_coupon_id}}</span><span></span></P>
-            <P v-if="propsTicket.ifPromotion.coupon_id != ''"><span>Discounts Ticket : {{propsTicket.ifPromotion.coupon_id}}</span><span></span></P>
+            <P v-if="propsTicket.ifPromotion.camp_coupon_id != ''"><span>Promotion ID : {{propsTicket.ifPromotion.camp_coupon_id}}</span><span></span></P>
+            <P v-if="propsTicket.ifPromotion.coupon_id != ''"><span>Discount ID : {{propsTicket.ifPromotion.coupon_id}}</span><span></span></P>
           </div>
         </div>
       </div>

@@ -520,8 +520,8 @@ export default {
         cycle_id: this.ifDataExtension.period,
         vip_channel_name: this.ifDataExtension.register,
         schulder_time: this.timeType.timestamp,
-        camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id,
-        coupon_id: this.propsTicket.ifPromotion.coupon_id,
+        camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id || '',
+        coupon_id: this.propsTicket.ifPromotion.coupon_id || '',
         enter_first: this.ifDataExtension.newPeriod,
         purchase_week: this.ifDataExtension.newMbmber,
         purchase_first: this.propsData.newBuy,
@@ -689,7 +689,7 @@ export default {
       this.openDataContent = false;
       this.openData = true;
     },
-    backlevelSms() {
+    backlevelSms(val) {
       this.openSmsContent = false;
       this.openSms = true;
     },

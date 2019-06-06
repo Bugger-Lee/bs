@@ -241,6 +241,7 @@ export default {
   props: ["openData", "openDataContent","propsSms"],
   methods: {
     clickPopup(value) {
+      this.propsSms.dataSelected = 2
       this.$emit("sltSmsContent", value);
       if(value.name=='inputBlur') {
         this.change_index = -1
@@ -257,7 +258,11 @@ export default {
       this.$emit('backlevelSms')
     },
     tabSelect(val) {
-      this.propsSms.dataSelected = val
+      if (val == '1') {
+        this.$emit("backlevelSms")
+      } else {
+        this.propsSms.dataSelected = val
+      }
     },
     // 分页
     handleSizeChange(val) {

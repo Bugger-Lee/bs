@@ -333,13 +333,13 @@ export default {
     this.sendSmsLists()
     this.orderLists()
     this.smsLists()
-    if (this.datedrag == 1) {
-      this.showFirst = true
-      this.dragInit1(200, 320);
-    } else {
-      this.showFirst = false
-      this.dragInit2(200, 320);
-    }
+    // if (this.datedrag == 1) {
+    //   this.showFirst = true
+    //   this.dragInit1(200, 320);
+    // } else {
+    //   this.showFirst = false
+    //   this.dragInit2(200, 320);
+    // }
   },
   methods: {
     doneTime() {
@@ -525,11 +525,13 @@ export default {
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
           this.propsSms.sendSmsVal =  this.propsSms.ifSms.sms_channel_content
-          // if(res.data.data.camp_coupon_id != '' || res.data.data.coupon_id != '') {
-          //   this.showFirst = true
-          // }else{
-          //   this.showFirst = false
-          // }
+          if(res.data.data.camp_coupon_id || res.data.data.coupon_id) {
+            this.showFirst = true
+            this.dragInit2(200, 320);
+          }else{
+            this.showFirst = true
+            this.dragInit1(200, 320);
+          }
           if(res.data.data.status == 2) {
             this.detailStop = true
             this.detailUpdate = false
@@ -562,14 +564,17 @@ export default {
           }else if(this.ifDataExtension.purchase_week == 'N'){
             this.propsData.newMbmber = '否'
           }
+          if (res.data.data.cron_express) {
           this.cronChangeDate(res.data.data)
           this.timeType.timeVal = this.cronChangeDate(res.data.data).loopType
+          console.log(this.cronChangeDate(res.data.data),this.cronChangeDate(res.data.data).loopTime)
           let dayVal = this.cronChangeDate(res.data.data).loopTime.split(':')
           this.timeType.timePicker = new Date(0,0,0,dayVal[0],dayVal[1])
           let timeMonths = this.cronChangeDate(res.data.data).loopValue
           let date_new = new Date()
           this.timeType.timeMonths = new Date(date_new.getFullYear(),date_new.getMonth(),timeMonths)
           this.timeType.timeWeek = this.cronChangeDate(res.data.data).loopValue
+          }
         }else{
           this.$message(res.data.msg)
         }
