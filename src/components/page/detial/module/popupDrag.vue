@@ -27,12 +27,12 @@
             <el-button class="bth" @click="backlevel('edit')">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P><span>品牌 : {{ifDataExtension.brand_name}}</span><span></span></P>
-            <P><span>周期 : {{ifDataExtension.cycle_type}}</span><span></span></P>
-            <P><span>渠道 : {{ifDataExtension.vip_channel_name}}</span><span></span></P>
-            <P v-if="ifDataExtension.enter_first != ''"><span>是否新进入周期 : {{ifDataExtension.enter_first}}</span><span></span></P>
-            <P v-if="ifDataExtension.purchase_first != ''"><span>是否为首次购买 : {{ifDataExtension.purchase_first}}</span><span></span></P>
-            <P v-if="ifDataExtension.purchase_week != ''"><span>注册一周未购买 : {{ifDataExtension.purchase_week}}</span><span></span></P>
+            <P><span>Brands : {{ifDataExtension.brand_name}}</span><span></span></P>
+            <P><span>Periods : {{ifDataExtension.cycle_type}}</span><span></span></P>
+            <P><span>Registered Channels : {{ifDataExtension.vip_channel_name}}</span><span></span></P>
+            <P v-if="ifDataExtension.enter_first != ''"><span>New Entry : {{ifDataExtension.enter_first}}</span><span></span></P>
+            <P v-if="ifDataExtension.purchase_first != ''"><span>First Purchase : {{ifDataExtension.purchase_first}}</span><span></span></P>
+            <P v-if="ifDataExtension.purchase_week != ''"><span>No Purchase (within a week) : {{ifDataExtension.purchase_week}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -90,8 +90,8 @@
               <el-col :span="12">
                 <div class="ml10">
                   <span class="redStar">*</span>
-                  <span>选择品牌</span>
-                  <el-select v-model="propsData.brandVal" clearable placeholder="请选择品牌" class="select-option-classify">
+                  <span>Select Brands</span>
+                  <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brands" class="select-option-classify">
                     <el-option
                       v-for="item in propsData.brandList"
                       :key="item.id"
@@ -101,8 +101,8 @@
                 </div>
                 <div class="ml10">
                   <span class="redStar">*</span>
-                  <span>选择周期</span>
-                  <el-select v-model="propsData.periodVal"  clearable placeholder="请选择周期" class="select-option-classify">
+                  <span>Select Periods</span>
+                  <el-select v-model="propsData.periodVal"  clearable placeholder="Pls select periods" class="select-option-classify">
                     <el-option
                       @click.native="periodChange()"
                       v-for="item in propsData.periodList"
@@ -113,8 +113,8 @@
                 </div>
                 <div class="ml10">
                   <span class="redStar">*</span>
-                  <span>注册渠道</span>
-                  <el-select v-model="propsData.registerVal" clearable multiple placeholder="请选择注册渠道" class="select-option-classify">
+                  <span>Registered Channels</span>
+                  <el-select v-model="propsData.registerVal" clearable multiple placeholder="Pls select registered channels" class="select-option-classify">
                     <el-option
                       v-for="item in propsData.registerList"
                       :key="item.id"
@@ -125,20 +125,23 @@
               </el-col>
               <el-col :span="12">
                 <div class="select-option-ipt" v-if="ifNewPeriod">
-                  <span class="mr15">是否新进入周期:</span>
-                  <el-radio v-model="propsData.newPeriod" label="是">是</el-radio>
-                  <el-radio v-model="propsData.newPeriod" label="否">否</el-radio>
+                  <span class="mr15">New Entry:</span>
+                  <el-radio v-model="propsData.newPeriod" label="是">Yes</el-radio>
+                  <el-radio v-model="propsData.newPeriod" label="否">No</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewBuy">
-                  <span class="mr15">是否为首次购买:</span>
-                  <el-radio v-model="propsData.newBuy" label="是">是</el-radio>
-                  <el-radio v-model="propsData.newBuy" label="否">否</el-radio>
+                  <span class="mr15">First Purchase:</span>
+                  <el-radio v-model="propsData.newBuy" label="是">Yes</el-radio>
+                  <el-radio v-model="propsData.newBuy" label="否">No</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewMbmber">
-                  <span class="mr15">注册一周未购买:</span>
-                  <el-radio v-model="propsData.newMbmber" label="是">是</el-radio>
-                  <el-radio v-model="propsData.newMbmber" label="否">否</el-radio>
+                  <span class="mr15">No Purchase:</span>
+                  <el-radio v-model="propsData.newMbmber" label="是">Yes</el-radio>
+                  <el-radio v-model="propsData.newMbmber" label="否">No</el-radio>
                 </div>
+                <p v-if="ifNewMbmber">
+                  <span class="mr15" style="color:red;font-size:10px;">(within a week)</span>  
+                </p>
               </el-col>
             </div>
           </el-col>

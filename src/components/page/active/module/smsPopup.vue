@@ -27,8 +27,8 @@
             <el-button class="bth" @click="clickPopup({name:'openNext'})">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P><span>文案内容 : {{propsSms.ifSms.contentMag}}</span><span></span></P>
-            <P><span>短信渠道 : {{propsSms.ifSms.sms_channel_id_show}}</span><span></span></P>
+            <P><span>Content : {{propsSms.ifSms.contentMag}}</span><span></span></P>
+            <P><span>Sms Channel : {{propsSms.ifSms.sms_channel_id_show}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -97,8 +97,8 @@
                   <el-col :span="12">
                     <div class="ml10">
                       <span class="redStar">*</span>
-                      <span>短信通道</span>
-                      <el-select v-model="propsSms.sendSmsVal" clearable placeholder="请选择短信通道" style="display:inline-block;"  class="select-option-classify">
+                      <span>Sms Channel</span>
+                      <el-select v-model="propsSms.sendSmsVal" clearable placeholder="Pls Sms Channel" style="display:inline-block;"  class="select-option-classify">
                         <el-option
                           v-for="item in propsSms.sendSmsList"
                           :key="item.id"

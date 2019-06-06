@@ -5,7 +5,7 @@
       <div class="time-content">
         <p class="mb10">Duration</p>
           <div class="mt20 mb20">
-            <span>激活时间 ： </span>
+            <span>Active Time ： </span>
             <el-date-picker
               v-model="timeType.dateTimeVal"
               size="small"
@@ -15,18 +15,18 @@
                 disabledDate:disabledDate
               }"
               format="yyyy-MM-dd HH:mm"
-              placeholder="选择日期时间">
+              placeholder="Pls Active Time">
             </el-date-picker>
           </div>
           <div class="mb20">
-            <span>执行类型 ： </span>
+            <span>Execute Mode ： </span>
             <el-tooltip class="item" effect="dark" content="单次执行开始时间即激活时间" placement="top-start">
-              <el-radio v-model="timeType.executeType" :label="1" :change = "carryOnce(timeType.executeType)">单次执行</el-radio>
+              <el-radio v-model="timeType.executeType" :label="1" :change = "carryOnce(timeType.executeType)">One-Time</el-radio>
             </el-tooltip>
-            <el-radio v-model="timeType.executeType" :label="2" :change = "carryOnce(timeType.executeType)">周期执行</el-radio>
+            <el-radio v-model="timeType.executeType" :label="2" :change = "carryOnce(timeType.executeType)">On Schedule</el-radio>
           </div>
           <div>
-            <span>执行时间 ： </span>
+            <span>Execute Time ： </span>
             <el-select v-model="timeType.timeVal" value="1" size="small" :disabled = ifDisabled style="width:26%;">
               <el-option
                 v-for="item in timeType.time"
@@ -35,7 +35,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <el-select v-model="timeType.timeWeek" value="1" style="width:26%;" :disabled = ifDisabled size="small" v-if="this.ifShowTime == 'weeks'" placeholder="选择周">
+            <el-select v-model="timeType.timeWeek" value="1" style="width:26%;" :disabled = ifDisabled size="small" v-if="this.ifShowTime == 'weeks'" placeholder="Pls Weeks">
               <el-option
                 v-for="item in timeType.timeWeeks"
                 :key="item.id"
@@ -50,7 +50,7 @@
               style="width:26%;"
               v-model="timeType.timeMonths"
               type="date"
-              placeholder="选择月">
+              placeholder="Pls Month">
             </el-date-picker>
             <el-time-picker
               :disabled = ifDisabled
@@ -58,7 +58,7 @@
               format="HH:mm"
               style="width:26%;"
               v-model="timeType.timePicker"
-              placeholder="任意时间点">
+              placeholder="Pls Time">
             </el-time-picker>
           </div>
       </div>
