@@ -110,7 +110,7 @@
                   </el-col>
                 </div>
                 <div class="select-msg-table">
-                  <el-table :data="propsSms.smsTable" style="width: 100%" height="220" setCurrentRow>
+                  <el-table :data="propsSms.smsTable"  highlight-current-row  @current-change="tableIndex" style="width: 100%" height="220" setCurrentRow>
                     <el-table-column prop="template_name" label="Template" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="cycle_type" label="Period" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="brand_name" label="Brand" show-overflow-tooltip> </el-table-column>
@@ -151,7 +151,7 @@
               <p class="sms-edit-l-tit">CONTENT</p>
               <div class="sms-edit-l-content">
                 <p><i class="el-icon-edit"></i>Edit message template</p>
-                <textarea rows="6" placeholder="请编辑短信模板" v-model="propsSms.editMsg">
+                <textarea rows="6" placeholder="Edit Sms Template" v-model="propsSms.editMsg">
 
                 </textarea>
               </div>
@@ -241,12 +241,16 @@ export default {
   props: ["openData", "openDataContent","propsSms"],
   methods: {
     clickPopup(value) {
-      this.propsSms.dataSelected = 2
       this.$emit("sltSmsContent", value);
       if(value.name=='inputBlur') {
         this.change_index = -1
         this.input_text = ''
       }
+    },
+    tableIndex(value) {
+      value.name = 'tableIndex'
+     console.log(value)
+     this.$emit('sltSmsContent', value)
     },
     clickText(index) {
       this.change_index = index

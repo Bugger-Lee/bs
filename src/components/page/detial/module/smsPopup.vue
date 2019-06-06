@@ -109,7 +109,7 @@
                   </el-col>
                 </div>
                 <div class="select-msg-table">
-                  <el-table :data="propsSms.smsTable" style="width: 100%" height="220" setCurrentRow>
+                  <el-table :data="propsSms.smsTable" style="width: 100%"  highlight-current-row  @current-change="tableIndex" height="220" setCurrentRow>
                     <el-table-column prop="template_name" label="Template" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="cycle_type" label="Period" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="brand_name" label="Brand" show-overflow-tooltip> </el-table-column>
@@ -245,6 +245,11 @@ export default {
         this.change_index = -1
         this.input_text = ''
       }
+    },
+    tableIndex(value) {
+      value.name = 'tableIndex'
+     console.log(value)
+     this.$emit('sltSmsContent', value)
     },
     clickText(index) {
       this.change_index = index

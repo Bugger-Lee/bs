@@ -35,7 +35,7 @@
                v-if="this.saveUpdate==true"
               class="pd-btn pd-back ifColor"
               @click="updateJorney()"
-            >update</el-button>
+            >Update</el-button>
             <el-button
               type="primary"
                v-if="this.saveTest==true"
@@ -48,7 +48,7 @@
             class="pd-btn mr15"
              v-if="this.saveRunning==true"
             @click="testRunJourney('runing')"
-          >runing</el-button>
+          >Run</el-button>
           <el-button
             type="primary"
             class="pd-btn mr15"
@@ -157,7 +157,7 @@
             </div>
             <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
             <div class="window" id="newreturn" ref="newData" v-if="ifProDrag">
-              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
+              <span class="crowds-style"  @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
@@ -183,7 +183,7 @@
             </div>
             <div ref="refData1div" v-if="ifDrag">CLV Data</div>
             <div class="window" id="newreturn1" ref="newData" v-if="ifProDrag">
-              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
+              <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
@@ -215,7 +215,7 @@
             </div>
             <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
             <div class="window" id="newreturn11" ref="newData" v-if="ifProDrag">
-              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
+              <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
@@ -241,13 +241,13 @@
             </div>
             <div ref="refData1div" v-if="ifDrag">CLV Data</div>
             <div class="window" id="return11" ref="refData2" v-if="ifSmsDrag">
-              <span class="icon-duanxin2-copy" style="font-size:32px;" @click="sms()">
-                <i class="icon-shouye"></i>
+              <span class="msg-style" @click="sms()">
+                <i class="icon-duanxin2-copy"  style="font-size:32px;"></i>
               </span>
             </div>
             <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
             <div class="window" id="newreturn" ref="newData" v-if="ifProDrag">
-              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
+              <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
@@ -754,7 +754,6 @@ export default {
       });
     },
     searchSmsList(e) {
-      console.log(111)
       var keyCode = window.event ? e.keyCode : e.which;
       if (keyCode == 13) {
         this.templateName = this.propsSms.SearchSms;
@@ -1011,6 +1010,13 @@ export default {
         this.saveMessage();
       } else if (val.name == "inputBlur") {
         this.inputBlur(val.value, val.id);
+      } else if (val.name = "tableIndex") {
+          console.log(val)
+          if(val.id) {
+            this.propsSms.ifSms.contentMag = val.document_text 
+         this.propsSms.ifSms.id = val.id
+          }
+         
       }
     },
     inputBlur(val, id) {
@@ -1039,14 +1045,15 @@ export default {
     saveMessage() {
       if(this.propsSms.sendSmsVal == '') {
         this.$message('请您选择短信渠道')
+        return false
       }
       let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
+      console.log(this.propsSms.sendSmsVal,sms_data[0].id)
       let objData = {
-        contentMag: this.propsSms.editMsg,
+        contentMag: this.propsSms.ifSms.contentMag, 
         sms_channel_id_show:this.propsSms.sendSmsVal,
-        sms_channel_id: sms_data[0].id,
+        sms_channel_id: sms_data[0].id
       };
-      console.log(objData.sms_channel_id)
       if (this.propsSms.editMsg == "") {
         this.$message({
           showClose: true,
@@ -1056,7 +1063,6 @@ export default {
         return false;
       }
       if (this.propsSms.dataSelected == 2) {
-        sessionStorage.setItem("smsMsg", JSON.stringify(objData));
         this.propsSms.ifSms = objData;
         this.openSmsContent = false;
         this.openSms = true;
@@ -1067,12 +1073,13 @@ export default {
           document_text: this.propsSms.editMsg,
           uuid:(new Date()).valueOf()
         };
-        
         this.$.post("template/insert", insertData).then(res => {
           if (res.data.code == 200) {
             this.smsLists();
             let objData = {
-              contentMag: this.propsSms.editMsg
+              contentMag: this.propsSms.editMsg,
+              sms_channel_id_show:this.propsSms.sendSmsVal,
+              sms_channel_id: sms_data[0].id
             };
             this.propsSms.ifSms = objData;
             this.openSmsContent = false;
@@ -1181,7 +1188,6 @@ export default {
           }
         }
       } else if (this.sortDrag == "pro") {
-        console.log(123)
         if (ui.draggable[0]._prevClass == "msg-style") {
           if (
             this.dragLeft + 185 <= ui.offset.left &&
@@ -1189,7 +1195,6 @@ export default {
             this.dragTop - 5 <= ui.offset.top &&
             ui.offset.top < this.dragTop + 50
           ) {
-            console.log(123)
             this.appendPro1(ui.offset.left, this.dragTop);
           }
         } else {

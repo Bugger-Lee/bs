@@ -19,9 +19,9 @@
         <el-col :span="12" class="marketing-header-r">
           <el-button-group class="mr05">
             <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailUpdate == true" @click="detailStatus('update')">Update</el-button>
-            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailTest == true" @click="detailStatus('test')">test</el-button>
-            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailRun == true" @click="detailStatus('run')">runing</el-button>
-            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">stop</el-button>
+            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailTest == true" @click="detailStatus('test')">Test</el-button>
+            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailRun == true" @click="detailStatus('run')">Run</el-button>
+            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">Stop</el-button>
           </el-button-group>
         </el-col>
       </div>
@@ -141,7 +141,7 @@
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
             <div class="window" id="newreturn" ref="newData">
-              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
+              <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
@@ -316,7 +316,7 @@ export default {
       dayVal:'',
       datedrag: 2,
       showFirst: true,
-      statusTestRunVal:''
+      statusTestRunVal:'',
     };
   },
   components: {
@@ -332,7 +332,7 @@ export default {
     this.registerLists()
     this.sendSmsLists()
     this.orderLists()
-    this.smsLists()
+    // this.smsLists()
     // if (this.datedrag == 1) {
     //   this.showFirst = true
     //   this.dragInit1(200, 320);
@@ -472,11 +472,18 @@ export default {
       let timestamp = new Date(this.timeType.dateTimeVal)
       this.timeType.timestamp  = timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       if(val == 'update') {
+        let temp_id = this.propsSms.smsTable.filter(item => item.document_text == this.propsSms.ifSms.template_text)
+        let temp_data_id = ''
+        if (temp_id.length == 0) {
+          temp_data_id = this.propsSms.ifSms.template_id
+        } else {
+          temp_data_id = temp_id[0].id
+        }
         let data = {
           id:this.$route.query.id,
           rule_name:this.ifDataExtension.rule_name,
           sms_channel_id:this.propsSms.ifSms.sms_channel_id,
-          template_id:this.propsSms.smsTable[0].id,
+          template_id:temp_data_id,
           brand_id:this.ifDataExtension.brand_id,
           cycle_id:this.ifDataExtension.cycle_id,
           vip_channel_name:this.ifDataExtension.vip_channel_name,
@@ -567,7 +574,6 @@ export default {
           if (res.data.data.cron_express) {
           this.cronChangeDate(res.data.data)
           this.timeType.timeVal = this.cronChangeDate(res.data.data).loopType
-          console.log(this.cronChangeDate(res.data.data),this.cronChangeDate(res.data.data).loopTime)
           let dayVal = this.cronChangeDate(res.data.data).loopTime.split(':')
           this.timeType.timePicker = new Date(0,0,0,dayVal[0],dayVal[1])
           let timeMonths = this.cronChangeDate(res.data.data).loopValue
@@ -716,9 +722,9 @@ export default {
       this.openSms = true
     },
     smsLists() {
-      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand,cycleId:this.ifDataExtension.period}}).then(res=>{
+      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand_id,cycleId:this.ifDataExtension.cycle_id}}).then(res=>{
         if(res.data.code == 200) {
-          this.propsSms.smsTable[0] = res.data.data
+          this.propsSms.smsTable = res.data.data
           this.propsSms.editMsg = res.data.data.document_text
         }else{
           this.propsSms.smsTable = []
@@ -742,12 +748,22 @@ export default {
         this.saveMessage()
       }else if(val.name == 'inputBlur') {
         this.inputBlur(val.value,val.id)
+      } else if (val.name = "tableIndex") {
+        if(val.id) {
+          this.propsSms.ifSms.template_text = val.document_text 
+          this.propsSms.ifSms.id = val.id
+        }
       }
     },
     inputBlur(val,id) {
+        console.log(val)
+        if(val == '') {
+          this.$message('文案不可以为空')
+          return false
+        }
         let upDate = {
-          cycle_id:this.ifDataExtension.period,
-          brand_id:this.ifDataExtension.brand,
+          cycle_id:this.ifDataExtension.cycle_id,
+          brand_id:this.ifDataExtension.brand_id,
           document_text:val,
           id:id
         }
@@ -771,8 +787,7 @@ export default {
         sms_channel_content:this.propsSms.sendSmsVal
       }
       if(this.propsSms.dataSelected == 2) {
-        // sessionStorage.setItem('smsMsg',JSON.stringify(objData))
-        this.propsSms.ifSms = objData
+        this.propsSms.ifSms.sms_channel_content = this.propsSms.sendSmsVal
         this.openSmsContent = false
         this.openSms = true
       }else if(this.propsSms.dataSelected == 3){
@@ -786,7 +801,7 @@ export default {
           if(res.data.code == 200) {
             this.smsLists()
             let objData = {
-              contentMag:this.propsSms.editMsg,
+              template_text:this.propsSms.editMsg,
               sms_channel_id: smsObj[0].id,
               sms_channel_content:this.propsSms.sendSmsVal
             }
@@ -807,6 +822,7 @@ export default {
       this.openData = true
     },
     sms() {
+       this.smsLists();
       this.openSms = true
     },
     selectTime() {
