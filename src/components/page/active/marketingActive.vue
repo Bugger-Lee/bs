@@ -356,12 +356,12 @@ export default {
             value: "Days"
           },
           {
-            id: 2,
-            value: "months"
+            id: 3,
+            value: "Weeks"
           },
           {
-            id: 3,
-            value: "weeks"
+            id: 2,
+            value: "Months"
           }
         ],
         timeWeeks: [
@@ -427,7 +427,7 @@ export default {
         ifShowInput: false,
         tableSelectVal: "",
         dataSelected: 2,
-        ifSms: "",
+        ifSms: '',
         sendSmsVal: ""
       },
       couponName: "",
@@ -742,7 +742,8 @@ export default {
       this.$.get("template/getTemplate", {
         params: {
           brandId: this.ifDataExtension.brand,
-          cycleId: this.ifDataExtension.period
+          cycleId: this.ifDataExtension.period,
+          documentText:this.templateName
         }
       }).then(res => {
         if (res.data.code == 200) {
@@ -774,10 +775,11 @@ export default {
             }
           ],
           connector: "Straight",
+          paintStyle: { stroke: 'lightgray', strokeWidth: 3 },
           elementsDraggable: false,
           ConnectionsDetachable: false,
           overlays: [
-            ["Arrow", { width: 10, length: 10, location: 1, id: "arrow" }],
+            // ["Arrow", { width: 10, length: 10, location: 1, id: "arrow" }],
             ["Label", { label: "", id: "label" }]
           ]
         });
@@ -796,17 +798,17 @@ export default {
 
         this.$refs.refData3.style.position = "fixed";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 200 + "px";
+        this.$refs.refData3.style.left = left + 150 + "px";
         this.$refs.refData3div.style.position = "fixed";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 200 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 150 + 5 + "px";
 
         this.$refs.refData4.style.position = "fixed";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 400 + "px";
+        this.$refs.refData4.style.left = left + 300 + "px";
         this.$refs.refData4div.style.position = "fixed";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 400 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 300 + 5 + "px";
         this.jsPlumb("data1", "return1");
         this.jsPlumb("return1", "return2");
         this.jsPlumb("return2", "return3");
@@ -830,10 +832,10 @@ export default {
 
         // this.$refs.refData3.style.position = "fixed";
         // this.$refs.refData3.style.top = top + "px";
-        // this.$refs.refData3.style.left = left + 200 + "px";
+        // this.$refs.refData3.style.left = left + 150 + "px";
         // this.$refs.refData3div.style.position = "fixed";
         // this.$refs.refData3div.style.top = top + 50 + "px";
-        // this.$refs.refData3div.style.left = left + 200 + 5 + "px";
+        // this.$refs.refData3div.style.left = left + 150 + 5 + "px";
 
         // this.$refs.refData4.style.position = "fixed";
         // this.$refs.refData4.style.top = top + "px";
@@ -868,31 +870,31 @@ export default {
       this.$nextTick(() => {
         this.$refs.newData.style.position = "fixed";
         this.$refs.newData.style.top = top + "px";
-        this.$refs.newData.style.left = left + 200 + "px";
+        this.$refs.newData.style.left = left + 100 + "px";
         this.$refs.newrefDatadiv.style.position = "fixed";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + 205 + "px";
+        this.$refs.newrefDatadiv.style.left = left + 105 + "px";
 
         this.$refs.refData2.style.position = "fixed";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 400 + "px";
+        this.$refs.refData2.style.left = left + 300 + "px";
         this.$refs.refData2div.style.position = "fixed";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 405 + "px";
+        this.$refs.refData2div.style.left = left + 305 + "px";
 
         this.$refs.refData3.style.position = "fixed";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 600 + "px";
+        this.$refs.refData3.style.left = left + 450 + "px";
         this.$refs.refData3div.style.position = "fixed";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 600 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 450 + 5 + "px";
 
         this.$refs.refData4.style.position = "fixed";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 800 + "px";
+        this.$refs.refData4.style.left = left + 600 + "px";
         this.$refs.refData4div.style.position = "fixed";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 800 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 600 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
@@ -915,31 +917,31 @@ export default {
       this.$nextTick(() => {
         this.$refs.newData.style.position = "fixed";
         this.$refs.newData.style.top = top + "px";
-        this.$refs.newData.style.left = left + 20 + "px";
+        this.$refs.newData.style.left = left + -20 + "px";
         this.$refs.newrefDatadiv.style.position = "fixed";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + 25 + "px";
+        this.$refs.newrefDatadiv.style.left = left + -25 + "px";
 
         this.$refs.refData2.style.position = "fixed";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 200 + "px";
+        this.$refs.refData2.style.left = left + 150 + "px";
         this.$refs.refData2div.style.position = "fixed";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 205 + "px";
+        this.$refs.refData2div.style.left = left + 155 + "px";
 
         this.$refs.refData3.style.position = "fixed";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 400 + "px";
+        this.$refs.refData3.style.left = left + 300 + "px";
         this.$refs.refData3div.style.position = "fixed";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 400 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 300 + 5 + "px";
 
         this.$refs.refData4.style.position = "fixed";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 600 + "px";
+        this.$refs.refData4.style.left = left + 450 + "px";
         this.$refs.refData4div.style.position = "fixed";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 600 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 450 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
@@ -1013,8 +1015,11 @@ export default {
       } else if (val.name = "tableIndex") {
           console.log(val)
           if(val.id) {
+            if (this.propsSms.ifSms == '') {
+              this.propsSms.ifSms = {}
+            }
             this.propsSms.ifSms.contentMag = val.document_text 
-         this.propsSms.ifSms.id = val.id
+            this.propsSms.ifSms.id = val.id
           }
          
       }
@@ -1048,7 +1053,6 @@ export default {
         return false
       }
       let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
-      console.log(this.propsSms.sendSmsVal,sms_data[0].id)
       let objData = {
         contentMag: this.propsSms.ifSms.contentMag, 
         sms_channel_id_show:this.propsSms.sendSmsVal,
@@ -1063,10 +1067,16 @@ export default {
         return false;
       }
       if (this.propsSms.dataSelected == 2) {
+        let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.id)
+        objData.contentMag = doc_text[0].document_text
         this.propsSms.ifSms = objData;
         this.openSmsContent = false;
         this.openSms = true;
       } else if (this.propsSms.dataSelected == 3) {
+         if(!this.propsSms.editMsg) {
+          this.$message('模板内容不可以为空')
+          return false
+        }
         let insertData = {
           cycle_id: this.ifDataExtension.period,
           brand_id: this.ifDataExtension.brand,
@@ -1104,7 +1114,8 @@ export default {
         zIndex: 999,
         helper: "clone",
         scope: "dragflag",
-        appendTo: "body"
+        appendTo: "body",
+        containment: "parent"
       });
       $(".marketing-drag").droppable({
         scope: "dragflag",
@@ -1132,7 +1143,8 @@ export default {
         zIndex: 999,
         helper: "clone",
         scope: "dragflag",
-        appendTo: "body"
+        appendTo: "body",
+        containment: "parent"
       });
       $(".marketing-drag").droppable({
         scope: "dragflag",

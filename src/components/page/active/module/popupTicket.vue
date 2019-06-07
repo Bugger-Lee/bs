@@ -110,8 +110,12 @@
                   :page-size="10"
                   class="page-el-pagination"
                   background
-                  layout="total, prev, pager, next"
-                  :total="propsTicket.salesTable.length">
+                  layout="slot,prev, pager, next"
+                  :total="propsTicket.salesTable.length"
+                  >
+                  <slot>
+                    <span>All {{propsTicket.salesTable.length}} Item</span>
+                  </slot>
                 </el-pagination>
               </div>
             </div>

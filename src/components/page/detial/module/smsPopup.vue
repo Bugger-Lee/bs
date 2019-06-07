@@ -109,7 +109,7 @@
                   </el-col>
                 </div>
                 <div class="select-msg-table">
-                  <el-table :data="propsSms.smsTable" style="width: 100%"  highlight-current-row  @current-change="tableIndex" height="220" setCurrentRow>
+                  <el-table :data="smsTable" style="width: 100%"  highlight-current-row  @current-change="tableIndex" height="220" setCurrentRow>
                     <el-table-column prop="template_name" label="Template" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="cycle_type" label="Period" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="brand_name" label="Brand" show-overflow-tooltip> </el-table-column>
@@ -124,13 +124,16 @@
                 </div>
                 <div class="select-msg-page">
                   <el-pagination
-                  @size-change="handleSizeChange"
+                  @current-change="handleSizeChange"
                   :current-page.sync="currentPage"
                   :page-size="10"
                   class="page-el-pagination"
                   background
-                  layout="total, prev, pager, next"
+                  layout="slot, prev, pager, next"
                   :total="propsSms.smsTable.length">
+                  <slot>
+                    <span>All {{propsSms.smsTable.length}} Item</span>
+                  </slot>
                 </el-pagination>
                 </div>
               </div>
@@ -247,12 +250,21 @@ export default {
       }
     },
     tableIndex(value) {
+     console.log(value)
+      if(!value) {
+        return false
+      }
       value.name = 'tableIndex'
      console.log(value)
      this.$emit('sltSmsContent', value)
     },
     clickText(index) {
+      let result = []
+      for(var i=0;i<this.propsSms.smsTable.length;i+=10){
+          result.push(this.propsSms.smsTable.slice(i,i+10));
+      }
       this.change_index = index
+      this.input_text = result[this.currentPage-1][index].document_text
     },
     searchSmsList(e) {
       this.$emit('searchSmsList',e)

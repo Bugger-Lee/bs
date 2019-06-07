@@ -80,7 +80,7 @@ export default {
     }
   },
   created() {
-    if(timeType.executeType == 1) {
+    if(this.timeType.executeType == 1) {
       this.ifDisabled = true
     }
   },
@@ -91,10 +91,10 @@ export default {
         this.ifShowTime = "Days"
         this.timeType.timeMonths = ''
         this.timeType.timeWeek = ''
-      }else if(val == "months") {
+      }else if(val == "Months") {
         this.ifShowTime = "months"
         this.timeType.timeWeek = ''
-      }else if(val == "weeks") {
+      }else if(val == "Weeks") {
         this.ifShowTime = "weeks"
         this.timeType.timeMonths = ''
       }

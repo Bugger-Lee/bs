@@ -261,13 +261,13 @@ export default {
             value:"Days"
           },
           {
-            id:2,
-            value:"months"
+            id:3,
+            value:"Weeks"
           },
           {
-            id:3,
-            value:"weeks"
-          }
+            id:2,
+            value:"Months"
+          },
         ],
         timeWeeks:[
           {
@@ -365,24 +365,24 @@ export default {
 
         this.$refs.refData2.style.position = "fixed";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 200 + "px";
+        this.$refs.refData2.style.left = left + 150 + "px";
         this.$refs.refData2div.style.position = "fixed";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 205 + "px";
+        this.$refs.refData2div.style.left = left + 155 + "px";
 
         this.$refs.refData3.style.position = "fixed";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 400 + "px";
+        this.$refs.refData3.style.left = left + 300 + "px";
         this.$refs.refData3div.style.position = "fixed";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 400 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 300 + 5 + "px";
 
         this.$refs.refData4.style.position = "fixed";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 600 + "px";
+        this.$refs.refData4.style.left = left + 450 + "px";
         this.$refs.refData4div.style.position = "fixed";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 600 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 450 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
@@ -405,31 +405,31 @@ export default {
 
         this.$refs.newData.style.position = "fixed";
         this.$refs.newData.style.top = top + "px";
-        this.$refs.newData.style.left = left + 200 + "px";
+        this.$refs.newData.style.left = left + 150 + "px";
         this.$refs.newrefDatadiv.style.position = "fixed";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + 205 + "px";
+        this.$refs.newrefDatadiv.style.left = left + 155 + "px";
 
         this.$refs.refData2.style.position = "fixed";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 400 + "px";
+        this.$refs.refData2.style.left = left + 300 + "px";
         this.$refs.refData2div.style.position = "fixed";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 405 + "px";
+        this.$refs.refData2div.style.left = left + 305 + "px";
 
         this.$refs.refData3.style.position = "fixed";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 600 + "px";
+        this.$refs.refData3.style.left = left + 450 + "px";
         this.$refs.refData3div.style.position = "fixed";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 600 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 450 + 5 + "px";
 
         this.$refs.refData4.style.position = "fixed";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 800 + "px";
+        this.$refs.refData4.style.left = left + 600 + "px";
         this.$refs.refData4div.style.position = "fixed";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 800 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 600 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
@@ -455,12 +455,13 @@ export default {
             }
           ],
           connector: "Straight",
+          paintStyle: { stroke: 'lightgray', strokeWidth: 3 },
           elementsDraggable: false,
           ConnectionsDetachable: false,
-          overlays: [
-            ["Arrow", { width: 10, length: 10, location: 1, id: "arrow" }],
-            ["Label", { label: "", id: "label" }]
-          ]
+          // overlays: [
+          //   ["Arrow", { width: 10, length: 10, location: 1, id: "arrow" }],
+          //   ["Label", { label: "", id: "label" }]
+          // ]
         });
       });
     },
@@ -722,7 +723,7 @@ export default {
       this.openSms = true
     },
     smsLists() {
-      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand_id,cycleId:this.ifDataExtension.cycle_id}}).then(res=>{
+      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand_id,cycleId:this.ifDataExtension.cycle_id,documentText:this.templateName}}).then(res=>{
         if(res.data.code == 200) {
           this.propsSms.smsTable = res.data.data
           this.propsSms.editMsg = res.data.data.document_text
@@ -786,11 +787,18 @@ export default {
         sms_channel_id: smsObj[0].id,
         sms_channel_content:this.propsSms.sendSmsVal
       }
+      console.log(this.propsSms.dataSelected)
       if(this.propsSms.dataSelected == 2) {
+        let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.id)
+        this.propsSms.ifSms.template_text = doc_text[0].document_text
         this.propsSms.ifSms.sms_channel_content = this.propsSms.sendSmsVal
         this.openSmsContent = false
         this.openSms = true
       }else if(this.propsSms.dataSelected == 3){
+        if(!this.propsSms.editMsg) {
+          this.$message('模板内容不可以为空')
+          return false
+        }
         let insertData = {
           cycle_id:this.ifDataExtension.cycle_id,
           brand_id:this.ifDataExtension.brand_id,
