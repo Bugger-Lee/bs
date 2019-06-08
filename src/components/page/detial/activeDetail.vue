@@ -871,6 +871,9 @@ export default {
           border-radius: 5px;
           display: inline-block;
           text-align: center;
+          float: left;
+          margin-top: 9px;
+          margin-right: 5px;
           i {
             color: #fff;
             font-size: 20px;
@@ -879,6 +882,7 @@ export default {
         }
         .l-tit {
           display: inline-block;
+          margin-top: 5px;
           .l-tit-t {
             a {
               color: #409eff;

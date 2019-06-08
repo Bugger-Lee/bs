@@ -12,13 +12,15 @@
                 <a href>Journeys Dashboard</a>
                 <i>> Journey</i>
               </span>
-              <span>
-                <el-input
-                  style="width:40%;height:30px;line-height:30px;"
+                
+            </p>
+            <p>
+              <el-input
+                  style="height:20px;line-height:20px;"
                   v-model="currentTimeVal"
                   suffix-icon="el-icon-edit"
+                  size="mini"
                 ></el-input>
-              </span>
             </p>
           </div>
         </el-col>
@@ -515,7 +517,7 @@ export default {
       let data = {
         rule_name: this.currentTimeVal,
         sms_channel_id: this.propsSms.ifSms.sms_channel_id,
-        template_id: this.propsSms.smsTable[0].id,
+        template_id: this.propsSms.ifSms.id,
         brand_id: this.ifDataExtension.brand,
         cycle_id: this.ifDataExtension.period,
         vip_channel_name: this.ifDataExtension.register,
@@ -545,7 +547,7 @@ export default {
         id:this.systemId,
         rule_name: this.currentTimeVal,
         sms_channel_id: this.propsSms.ifSms.sms_channel_id,
-        template_id: this.propsSms.smsTable[0].id,
+        template_id: this.propsSms.smsTable.id,
         brand_id: this.ifDataExtension.brand,
         cycle_id: this.ifDataExtension.period,
         vip_channel_name: this.ifDataExtension.register,
@@ -1020,6 +1022,7 @@ export default {
             }
             this.propsSms.ifSms.contentMag = val.document_text 
             this.propsSms.ifSms.id = val.id
+            console.log(this.propsSms.ifSms)
           }
          
       }
@@ -1056,7 +1059,8 @@ export default {
       let objData = {
         contentMag: this.propsSms.ifSms.contentMag, 
         sms_channel_id_show:this.propsSms.sendSmsVal,
-        sms_channel_id: sms_data[0].id
+        sms_channel_id: sms_data[0].id,
+        id:this.propsSms.ifSms.id
       };
       if (this.propsSms.editMsg == "") {
         this.$message({
@@ -1072,6 +1076,7 @@ export default {
         this.propsSms.ifSms = objData;
         this.openSmsContent = false;
         this.openSms = true;
+        console.log( this.propsSms.ifSms)
       } else if (this.propsSms.dataSelected == 3) {
          if(!this.propsSms.editMsg) {
           this.$message('模板内容不可以为空')
@@ -1089,9 +1094,11 @@ export default {
             let objData = {
               contentMag: this.propsSms.editMsg,
               sms_channel_id_show:this.propsSms.sendSmsVal,
-              sms_channel_id: sms_data[0].id
+              sms_channel_id: sms_data[0].id,
+              id:res.data.data
             };
             this.propsSms.ifSms = objData;
+            console.log(this.propsSms.ifSms)
             this.openSmsContent = false;
             this.openSms = true;
           } else {
@@ -1257,13 +1264,16 @@ export default {
       border-radius: 10px 10px 0 0;
       .marketing-header-l {
         .l-icon {
-          width: 30px;
-          height: 30px;
-          line-height: 30px;
+          width: 40px;
+          height: 40px;
+          line-height: 40px;
           background-color: #fcb95b;
           border-radius: 5px;
           display: inline-block;
           text-align: center;
+          float: left;
+          margin-top: 10px;
+          margin-right: 10px;
           i {
             color: #fff;
             font-size: 20px;
@@ -1272,6 +1282,7 @@ export default {
         }
         .l-tit {
           display: inline-block;
+          margin-top: 5px;
           .l-tit-t {
             a {
               color: #409eff;

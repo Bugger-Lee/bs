@@ -3,7 +3,7 @@
     <el-dialog
       :visible.sync="openDataProps"
       :close-on-click-modal="false"
-      width="60%">
+      width="50%">
       <span slot="title" class="data-title">
         <span class="icon-shouye"></span>SMS Activity Summary
       </span>
@@ -21,14 +21,14 @@
             @click="clickPopup({name:'openNext'})"
           >Select Message</el-button>
         </div>
-        <div v-if="propsSms.ifSms != ''" class="data-content-apply">
+        <div v-if="propsSms.ifSms != ''" class="data-content-apply" style="min-height:100px;">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">Message Definition</span>
             <el-button class="bth" @click="clickPopup({name:'openNext'})">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P><span>Content : {{propsSms.ifSms.template_text}}</span><span></span></P>
-            <P><span>Sms Channel : {{propsSms.ifSms.sms_channel_content}}</span><span></span></P>
+            <P class="pttb"><span>Content : {{propsSms.ifSms.template_text}}</span><span></span></P>
+            <P class="pttb"><span>Sms Channel : {{propsSms.ifSms.sms_channel_content}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -119,7 +119,7 @@
                         <el-input v-else :placeholder="scope.row.document_text" v-model="input_text" @blur="clickPopup({name:'inputBlur',value:input_text,id:scope.row.id})"></el-input>
                       </template>  
                     </el-table-column>
-                    <el-table-column prop="create_time" label="Created Time" show-overflow-tooltip> </el-table-column>
+                    <el-table-column prop="created_time" label="Created Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
                   </el-table>
                 </div>
                 <div class="select-msg-page">

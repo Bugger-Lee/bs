@@ -27,12 +27,12 @@
             <el-button class="bth" @click="backlevel('edit')">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P><span>Brands : {{ifDataExtension.brand_name}}</span><span></span></P>
-            <P><span>Periods : {{ifDataExtension.cycle_type}}</span><span></span></P>
-            <P><span>Registered Channels : {{ifDataExtension.vip_channel_name}}</span><span></span></P>
-            <P v-if="ifDataExtension.enter_first != ''"><span>New Entry : {{ifDataExtension.enter_first}}</span><span></span></P>
-            <P v-if="ifDataExtension.purchase_first != ''"><span>First Purchase : {{ifDataExtension.purchase_first}}</span><span></span></P>
-            <P v-if="ifDataExtension.purchase_week != ''"><span>No Purchase (within a week) : {{ifDataExtension.purchase_week}}</span><span></span></P>
+            <P class="pttb"><span>Brands : {{ifDataExtension.brand_name}}</span><span></span></P>
+            <P class="pttb"><span>Periods : {{ifDataExtension.cycle_type}}</span><span></span></P>
+            <P class="pttb"><span>Registered Channels : {{ifDataExtension.vip_channel_name}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.enter_first != ''"><span>New Entry : {{ifDataExtension.enter_first}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.purchase_first != ''"><span>First Purchase : {{ifDataExtension.purchase_first}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.purchase_week != ''"><span>No Purchase (within a week) : {{ifDataExtension.purchase_week}}</span><span></span></P>
           </div>
         </div>
       </div>
