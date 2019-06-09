@@ -3,7 +3,7 @@
     <el-dialog
       :visible.sync="openDataProps"
       :close-on-click-modal="false"
-      width="60%">
+      width="50%">
       <span slot="title" class="data-title">
         <span class="icon-shouye"></span>Promotion Summary
       </span>
@@ -21,14 +21,14 @@
             @click="clickPopup('openNext')"
           >Select Promotion</el-button>
         </div>
-        <div v-if="propsTicket.ifPromotion != ''" class="data-content-apply">
+        <div v-if="propsTicket.ifPromotion != ''" class="data-content-apply" style="min-height:100px;">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">DATA EXTENSION PROPERTIES</span>
             <el-button class="bth" @click="PromotionLevel('edit')">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P v-if="propsTicket.ifPromotion.camp_coupon_id != ''"><span>Activity Ticket : {{propsTicket.ifPromotion.camp_coupon_id}}</span><span></span></P>
-            <P v-if="propsTicket.ifPromotion.coupon_id != ''"><span>Discounts Ticket : {{propsTicket.ifPromotion.coupon_id}}</span><span></span></P>
+            <P class="pttb" v-if="propsTicket.ifPromotion.camp_coupon_id != ''"><span>Promotion ID : {{propsTicket.ifPromotion.camp_coupon_id}}</span><span></span></P>
+            <P class="pttb" v-if="propsTicket.ifPromotion.coupon_id != ''"><span>Discount ID : {{propsTicket.ifPromotion.coupon_id}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -110,8 +110,12 @@
                   :page-size="10"
                   class="page-el-pagination"
                   background
-                  layout="total, prev, pager, next"
-                  :total="propsTicket.salesTable.length">
+                  layout="slot,prev, pager, next"
+                  :total="propsTicket.salesTable.length"
+                  >
+                  <slot>
+                    <span>All {{propsTicket.salesTable.length}} Item</span>
+                  </slot>
                 </el-pagination>
               </div>
             </div>
@@ -172,17 +176,6 @@ export default {
     },
   },
   methods: {
-    formatDate(row, column, created_time ,index) {
-      if(created_time==null || created_time=="") return "";
-      let date = new Date(created_time);
-      let Y = date.getFullYear() + '-';
-      let M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) + '-' : date.getMonth() + 1 + '-';
-      let D = date.getDate() < 10 ? '0' + date.getDate() + ' ' : date.getDate() + ' ';
-      let h = date.getHours() < 10 ? '0' + date.getHours() + ':' : date.getHours() + ':';
-      let m = date.getMinutes()  < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':';
-      let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-      return Y + M + D ;
-    },
     // 搜索框
     searchDate(e) {
       this.$emit('searchDate', e)

@@ -3,7 +3,7 @@
     <el-dialog
       :visible.sync="openDataProps"
       :close-on-click-modal="false"
-      width="60%">
+      width="50%">
       <span slot="title" class="data-title">
         <span class="icon-shouye"></span>Promotion Summary
       </span>
@@ -21,14 +21,14 @@
             @click="clickPopup('openNext')"
           >Select Promotion</el-button>
         </div>
-        <div v-if="propsTicket.ifTicket != ''" class="data-content-apply">
+        <div v-if="propsTicket.ifTicket != ''" class="data-content-apply" style="min-height:100px;">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">DATA EXTENSION PROPERTIES</span>
             <el-button class="bth" @click="PromotionLevel('edit')">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P v-if="ifTicket.camp_coupon_id != ''"><span>活动券 : {{ifTicket.camp_coupon_id}}</span><span></span></P>
-            <P v-if="ifTicket.coupon_id != ''"><span>优惠券 : {{ifTicket.coupon_id}}</span><span></span></P>
+            <P class="pttb" v-if="ifTicket.camp_coupon_id != ''"><span>Promotion ID : {{ifTicket.camp_coupon_id}}</span><span></span></P>
+            <P class="pttb" v-if="ifTicket.coupon_id != ''"><span>Discount ID : {{ifTicket.coupon_id}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -84,8 +84,9 @@
               <div class="select-msg-search">
                 <el-input
                   class="select-msg-search-ipt"
-                  placeholder="请根据券编码搜索"
+                  placeholder="Search by coupon"
                   prefix-icon="el-icon-search"
+                  style="width:45%;"
                   @keyup.enter.native="searchDate"
                   v-model="propsTicket.SearchSales">
                 </el-input>
@@ -93,13 +94,13 @@
               <div class="select-msg-table">
                 <el-table :data="salesTable" style="width: 100%" height="220" ref="multipleTable" @selection-change="ifChecked">
                   <el-table-column type="selection"  width="55"></el-table-column>
-                  <el-table-column prop="sal_id" label="劵编码" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="coupon_type" label="类型" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="brand" label="品牌" show-overflow-tooltip> </el-table-column>
-                  <el-table-column  label="详情" show-overflow-tooltip>
+                  <el-table-column prop="sal_id" label="Coupon ID" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="coupon_type" label="Type" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="brand" label="Brand" show-overflow-tooltip> </el-table-column>
+                  <el-table-column  label="Content" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.act_desc}}</template>
                   </el-table-column>
-                  <el-table-column prop="created_time" label="创建时间" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="created_time" label="Create Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
                 </el-table>
               </div>
               <div class="select-msg-page">
@@ -109,8 +110,11 @@
                   :page-size="10"
                   class="page-el-pagination"
                   background
-                  layout="total, prev, pager, next"
+                  layout="slot, prev, pager, next"
                   :total="propsTicket.salesTable.length">
+                  <slot>
+                    <span>All {{propsTicket.salesTable.length}} Item</span>
+                  </slot>
                 </el-pagination>
               </div>
             </div>
@@ -208,17 +212,6 @@ export default {
         this.$refs.multipleTable.toggleRowSelection(row,true)
       });
       }
-    },
-    formatDate(row, column, created_time ,index) {
-      if(created_time==null || created_time=="") return "";
-      let date = new Date(created_time);
-      let Y = date.getFullYear() + '-';
-      let M = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) + '-' : date.getMonth() + 1 + '-';
-      let D = date.getDate() < 10 ? '0' + date.getDate() + ' ' : date.getDate() + ' ';
-      let h = date.getHours() < 10 ? '0' + date.getHours() + ':' : date.getHours() + ':';
-      let m = date.getMinutes()  < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':';
-      let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-      return Y + M + D ;
     },
     // 搜索框
     searchDate(e) {

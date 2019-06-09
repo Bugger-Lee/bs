@@ -27,12 +27,12 @@
             <el-button class="bth" @click="backlevel('edit')">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P><span>Select Brands : {{ifDataExtension.brandShow}}</span><span></span></P>
-            <P><span>Select Periods : {{ifDataExtension.periodShow}}</span><span></span></P>
-            <P><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
-            <P v-if="ifDataExtension.newPeriod != ''"><span>New Entry : {{ifDataExtension.newPeriod}}</span><span></span></P>
-            <P v-if="ifDataExtension.newBuy != ''"><span>First Purchase : {{ifDataExtension.newBuy}}</span><span></span></P>
-            <P v-if="ifDataExtension.newMbmber != ''"><span>No Purchase (within a week) : {{ifDataExtension.newMbmber}}</span><span></span></P>
+            <P class="pttb"><span>Brands : {{ifDataExtension.brandShow}}</span><span></span></P>
+            <P class="pttb"><span>Periods : {{ifDataExtension.periodShow}}</span><span></span></P>
+            <P class="pttb"><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.newPeriod != ''"><span>New Entry : {{ifDataExtension.newPeriod}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.newBuy != ''"><span>First Purchase : {{ifDataExtension.newBuy}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.newMbmber != ''"><span>No Purchase (within a week) : {{ifDataExtension.newMbmber}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -138,7 +138,6 @@
                 </div>
                 <div class="select-option-ipt" v-if="ifNewMbmber">
                   <span class="mr15">No Purchase</span>  
-                  <!-- (within a week) -->
                   <el-radio v-model="propsData.newMbmber" label="是">Yes</el-radio>
                   <el-radio v-model="propsData.newMbmber" label="否">No</el-radio>
                 </div>

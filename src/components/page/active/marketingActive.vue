@@ -12,13 +12,15 @@
                 <a href>Journeys Dashboard</a>
                 <i>> Journey</i>
               </span>
-              <span>
-                <el-input
-                  style="width:40%;height:30px;line-height:30px;"
+                
+            </p>
+            <p>
+              <el-input
+                  style="height:20px;line-height:20px;"
                   v-model="currentTimeVal"
                   suffix-icon="el-icon-edit"
+                  size="mini"
                 ></el-input>
-              </span>
             </p>
           </div>
         </el-col>
@@ -35,7 +37,7 @@
                v-if="this.saveUpdate==true"
               class="pd-btn pd-back ifColor"
               @click="updateJorney()"
-            >update</el-button>
+            >Update</el-button>
             <el-button
               type="primary"
                v-if="this.saveTest==true"
@@ -48,7 +50,7 @@
             class="pd-btn mr15"
              v-if="this.saveRunning==true"
             @click="testRunJourney('runing')"
-          >runing</el-button>
+          >Run</el-button>
           <el-button
             type="primary"
             class="pd-btn mr15"
@@ -69,7 +71,7 @@
                 <ul class="theme-l-tmp">
                   <li>
                     <span class="crowd-style">
-                      <i class="icon-shouye"></i>
+                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
                     </span>
                     <p>CLV Data</p>
                   </li>
@@ -84,7 +86,7 @@
                 <ul class="theme-l-tmp">
                   <li>
                     <span class="crowds-style" style="background-color:#ffcd43;">
-                      <i class="icon-shouye"></i>
+                      <i class="icon-quanyi-copy-copy"></i>
                     </span>
                     <p>Coupon</p>
                   </li>
@@ -101,7 +103,7 @@
                   <ul class="theme-l-tmp">
                     <li>
                       <span class="msg-style">
-                        <i class="icon-shouye"></i>
+                        <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
                       </span>
                       <p>SMS</p>
                     </li>
@@ -114,7 +116,7 @@
                   <ul class="theme-l-tmp">
                     <li>
                       <span class="ctl-style">
-                        <i class="icon-shouye"></i>
+                        <i class="icon-time1"></i>
                       </span>
                       <p>Wait By</p>
                       <p>Duration</p>
@@ -146,124 +148,124 @@
           <div v-if="showFirst">
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-shouye"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">CLV Data</div>
             <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
-                <i class="icon-shouye"></i>
+                <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
               </span>
             </div>
-            <div ref="refData2div" v-if="ifSmsDrag">Sms</div>
+            <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
             <div class="window" id="newreturn" ref="newData" v-if="ifProDrag">
-              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
-                <i class="icon-shouye"></i>
+              <span class="crowds-style"  @click="popupTicket()" style="background-color:#ffcd43;">
+                <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
             <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
             <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
-                <i class="icon-shouye"></i>
+                <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
             <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
-                <i class="icon-shouye"></i>
+                <i class="icon-wancheng1"></i>
               </span>
             </div>
-            <div ref="refData4div" v-if="ifSmsDrag">over</div>
+            <div ref="refData4div" v-if="ifSmsDrag">Over</div>
           </div>
           <div v-if="showSecend">
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-shouye"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">CLV Data</div>
             <div class="window" id="newreturn1" ref="newData" v-if="ifProDrag">
-              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
-                <i class="icon-shouye"></i>
+              <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
+                <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
             <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
             <div class="window" id="return222" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
-                <i class="icon-shouye"></i>
+                <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
             <div class="window" id="return333" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
-                <i class="icon-shouye"></i>
+                <i class="icon-wancheng1"></i>
               </span>
             </div>
-            <div ref="refData4div" v-if="ifSmsDrag">over</div>
+            <div ref="refData4div" v-if="ifSmsDrag">Over</div>
           </div>
           <div v-if="showLast">
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-shouye"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">CLV Data</div>
             <div class="window" id="return1111" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
-                <i class="icon-shouye"></i>
+                <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
               </span>
             </div>
-            <div ref="refData2div" v-if="ifSmsDrag">Sms</div>
+            <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
             <div class="window" id="newreturn11" ref="newData" v-if="ifProDrag">
-              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
-                <i class="icon-shouye"></i>
+              <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
+                <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
             <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
             <div class="window" id="return2222" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
-                <i class="icon-shouye"></i>
+                <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
             <div class="window" id="return3333" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
-                <i class="icon-shouye"></i>
+                <i class="icon-wancheng1"></i>
               </span>
             </div>
-            <div ref="refData4div" v-if="ifSmsDrag">over</div>
+            <div ref="refData4div" v-if="ifSmsDrag">Over</div>
           </div>
           <div v-if="showFirst1">
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-shouye"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">CLV Data</div>
             <div class="window" id="return11" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
-                <i class="icon-shouye"></i>
+                <i class="icon-duanxin2-copy"  style="font-size:32px;"></i>
               </span>
             </div>
-            <div ref="refData2div" v-if="ifSmsDrag">Sms</div>
+            <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
             <div class="window" id="newreturn" ref="newData" v-if="ifProDrag">
-              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
-                <i class="icon-shouye"></i>
+              <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
+                <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
             <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
             <div class="window" id="return22" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
-                <i class="icon-shouye"></i>
+                <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
             <div class="window" id="return33" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
-                <i class="icon-shouye"></i>
+                <i class="icon-wancheng1"></i>
               </span>
             </div>
-            <div ref="refData4div" v-if="ifSmsDrag">over</div>
+            <div ref="refData4div" v-if="ifSmsDrag">Over</div>
           </div>
         </el-col>
       </div>
@@ -356,12 +358,12 @@ export default {
             value: "Days"
           },
           {
-            id: 2,
-            value: "months"
+            id: 3,
+            value: "Weeks"
           },
           {
-            id: 3,
-            value: "weeks"
+            id: 2,
+            value: "Months"
           }
         ],
         timeWeeks: [
@@ -427,7 +429,7 @@ export default {
         ifShowInput: false,
         tableSelectVal: "",
         dataSelected: 2,
-        ifSms: "",
+        ifSms: '',
         sendSmsVal: ""
       },
       couponName: "",
@@ -515,13 +517,13 @@ export default {
       let data = {
         rule_name: this.currentTimeVal,
         sms_channel_id: this.propsSms.ifSms.sms_channel_id,
-        template_id: this.propsSms.smsTable[0].id,
+        template_id: this.propsSms.ifSms.id,
         brand_id: this.ifDataExtension.brand,
         cycle_id: this.ifDataExtension.period,
         vip_channel_name: this.ifDataExtension.register,
         schulder_time: this.timeType.timestamp,
-        camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id,
-        coupon_id: this.propsTicket.ifPromotion.coupon_id,
+        camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id || '',
+        coupon_id: this.propsTicket.ifPromotion.coupon_id || '',
         enter_first: this.ifDataExtension.newPeriod,
         purchase_week: this.ifDataExtension.newMbmber,
         purchase_first: this.propsData.newBuy,
@@ -545,7 +547,7 @@ export default {
         id:this.systemId,
         rule_name: this.currentTimeVal,
         sms_channel_id: this.propsSms.ifSms.sms_channel_id,
-        template_id: this.propsSms.smsTable[0].id,
+        template_id: this.propsSms.smsTable.id,
         brand_id: this.ifDataExtension.brand,
         cycle_id: this.ifDataExtension.period,
         vip_channel_name: this.ifDataExtension.register,
@@ -689,7 +691,7 @@ export default {
       this.openDataContent = false;
       this.openData = true;
     },
-    backlevelSms() {
+    backlevelSms(val) {
       this.openSmsContent = false;
       this.openSms = true;
     },
@@ -742,7 +744,8 @@ export default {
       this.$.get("template/getTemplate", {
         params: {
           brandId: this.ifDataExtension.brand,
-          cycleId: this.ifDataExtension.period
+          cycleId: this.ifDataExtension.period,
+          documentText:this.templateName
         }
       }).then(res => {
         if (res.data.code == 200) {
@@ -754,7 +757,6 @@ export default {
       });
     },
     searchSmsList(e) {
-      console.log(111)
       var keyCode = window.event ? e.keyCode : e.which;
       if (keyCode == 13) {
         this.templateName = this.propsSms.SearchSms;
@@ -775,10 +777,11 @@ export default {
             }
           ],
           connector: "Straight",
+          paintStyle: { stroke: 'lightgray', strokeWidth: 3 },
           elementsDraggable: false,
           ConnectionsDetachable: false,
           overlays: [
-            ["Arrow", { width: 10, length: 10, location: 1, id: "arrow" }],
+            // ["Arrow", { width: 10, length: 10, location: 1, id: "arrow" }],
             ["Label", { label: "", id: "label" }]
           ]
         });
@@ -797,17 +800,17 @@ export default {
 
         this.$refs.refData3.style.position = "fixed";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 200 + "px";
+        this.$refs.refData3.style.left = left + 150 + "px";
         this.$refs.refData3div.style.position = "fixed";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 200 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 150 + 5 + "px";
 
         this.$refs.refData4.style.position = "fixed";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 400 + "px";
+        this.$refs.refData4.style.left = left + 300 + "px";
         this.$refs.refData4div.style.position = "fixed";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 400 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 300 + 5 + "px";
         this.jsPlumb("data1", "return1");
         this.jsPlumb("return1", "return2");
         this.jsPlumb("return2", "return3");
@@ -831,10 +834,10 @@ export default {
 
         // this.$refs.refData3.style.position = "fixed";
         // this.$refs.refData3.style.top = top + "px";
-        // this.$refs.refData3.style.left = left + 200 + "px";
+        // this.$refs.refData3.style.left = left + 150 + "px";
         // this.$refs.refData3div.style.position = "fixed";
         // this.$refs.refData3div.style.top = top + 50 + "px";
-        // this.$refs.refData3div.style.left = left + 200 + 5 + "px";
+        // this.$refs.refData3div.style.left = left + 150 + 5 + "px";
 
         // this.$refs.refData4.style.position = "fixed";
         // this.$refs.refData4.style.top = top + "px";
@@ -869,31 +872,31 @@ export default {
       this.$nextTick(() => {
         this.$refs.newData.style.position = "fixed";
         this.$refs.newData.style.top = top + "px";
-        this.$refs.newData.style.left = left + 200 + "px";
+        this.$refs.newData.style.left = left + 80 + "px";
         this.$refs.newrefDatadiv.style.position = "fixed";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + 205 + "px";
+        this.$refs.newrefDatadiv.style.left = left + 85 + "px";
 
         this.$refs.refData2.style.position = "fixed";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 400 + "px";
+        this.$refs.refData2.style.left = left + 230 + "px";
         this.$refs.refData2div.style.position = "fixed";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 405 + "px";
+        this.$refs.refData2div.style.left = left + 235 + "px";
 
         this.$refs.refData3.style.position = "fixed";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 600 + "px";
+        this.$refs.refData3.style.left = left + 380 + "px";
         this.$refs.refData3div.style.position = "fixed";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 600 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 380 + 5 + "px";
 
         this.$refs.refData4.style.position = "fixed";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 800 + "px";
+        this.$refs.refData4.style.left = left + 530 + "px";
         this.$refs.refData4div.style.position = "fixed";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 800 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 530 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
@@ -916,31 +919,31 @@ export default {
       this.$nextTick(() => {
         this.$refs.newData.style.position = "fixed";
         this.$refs.newData.style.top = top + "px";
-        this.$refs.newData.style.left = left + 20 + "px";
+        this.$refs.newData.style.left = left + -20 + "px";
         this.$refs.newrefDatadiv.style.position = "fixed";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + 25 + "px";
+        this.$refs.newrefDatadiv.style.left = left + -25 + "px";
 
         this.$refs.refData2.style.position = "fixed";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 200 + "px";
+        this.$refs.refData2.style.left = left + 150 + "px";
         this.$refs.refData2div.style.position = "fixed";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 205 + "px";
+        this.$refs.refData2div.style.left = left + 155 + "px";
 
         this.$refs.refData3.style.position = "fixed";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 400 + "px";
+        this.$refs.refData3.style.left = left + 300 + "px";
         this.$refs.refData3div.style.position = "fixed";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 400 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 300 + 5 + "px";
 
         this.$refs.refData4.style.position = "fixed";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 600 + "px";
+        this.$refs.refData4.style.left = left + 450 + "px";
         this.$refs.refData4div.style.position = "fixed";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 600 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 450 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
@@ -1011,6 +1014,17 @@ export default {
         this.saveMessage();
       } else if (val.name == "inputBlur") {
         this.inputBlur(val.value, val.id);
+      } else if (val.name = "tableIndex") {
+          console.log(val)
+          if(val.id) {
+            if (this.propsSms.ifSms == '') {
+              this.propsSms.ifSms = {}
+            }
+            this.propsSms.ifSms.contentMag = val.document_text 
+            this.propsSms.ifSms.id = val.id
+            console.log(this.propsSms.ifSms)
+          }
+         
       }
     },
     inputBlur(val, id) {
@@ -1039,14 +1053,15 @@ export default {
     saveMessage() {
       if(this.propsSms.sendSmsVal == '') {
         this.$message('请您选择短信渠道')
+        return false
       }
       let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
       let objData = {
-        contentMag: this.propsSms.editMsg,
+        contentMag: this.propsSms.ifSms.contentMag, 
         sms_channel_id_show:this.propsSms.sendSmsVal,
         sms_channel_id: sms_data[0].id,
+        id:this.propsSms.ifSms.id
       };
-      console.log(objData.sms_channel_id)
       if (this.propsSms.editMsg == "") {
         this.$message({
           showClose: true,
@@ -1056,25 +1071,34 @@ export default {
         return false;
       }
       if (this.propsSms.dataSelected == 2) {
-        sessionStorage.setItem("smsMsg", JSON.stringify(objData));
+        let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.id)
+        objData.contentMag = doc_text[0].document_text
         this.propsSms.ifSms = objData;
         this.openSmsContent = false;
         this.openSms = true;
+        console.log( this.propsSms.ifSms)
       } else if (this.propsSms.dataSelected == 3) {
+         if(!this.propsSms.editMsg) {
+          this.$message('模板内容不可以为空')
+          return false
+        }
         let insertData = {
           cycle_id: this.ifDataExtension.period,
           brand_id: this.ifDataExtension.brand,
           document_text: this.propsSms.editMsg,
           uuid:(new Date()).valueOf()
         };
-        
         this.$.post("template/insert", insertData).then(res => {
           if (res.data.code == 200) {
             this.smsLists();
             let objData = {
-              contentMag: this.propsSms.editMsg
+              contentMag: this.propsSms.editMsg,
+              sms_channel_id_show:this.propsSms.sendSmsVal,
+              sms_channel_id: sms_data[0].id,
+              id:res.data.data
             };
             this.propsSms.ifSms = objData;
+            console.log(this.propsSms.ifSms)
             this.openSmsContent = false;
             this.openSms = true;
           } else {
@@ -1097,7 +1121,8 @@ export default {
         zIndex: 999,
         helper: "clone",
         scope: "dragflag",
-        appendTo: "body"
+        appendTo: "body",
+        containment: "parent"
       });
       $(".marketing-drag").droppable({
         scope: "dragflag",
@@ -1125,7 +1150,8 @@ export default {
         zIndex: 999,
         helper: "clone",
         scope: "dragflag",
-        appendTo: "body"
+        appendTo: "body",
+        containment: "parent"
       });
       $(".marketing-drag").droppable({
         scope: "dragflag",
@@ -1181,7 +1207,6 @@ export default {
           }
         }
       } else if (this.sortDrag == "pro") {
-        console.log(123)
         if (ui.draggable[0]._prevClass == "msg-style") {
           if (
             this.dragLeft + 185 <= ui.offset.left &&
@@ -1189,7 +1214,6 @@ export default {
             this.dragTop - 5 <= ui.offset.top &&
             ui.offset.top < this.dragTop + 50
           ) {
-            console.log(123)
             this.appendPro1(ui.offset.left, this.dragTop);
           }
         } else {
@@ -1240,13 +1264,16 @@ export default {
       border-radius: 10px 10px 0 0;
       .marketing-header-l {
         .l-icon {
-          width: 30px;
-          height: 30px;
-          line-height: 30px;
+          width: 40px;
+          height: 40px;
+          line-height: 40px;
           background-color: #fcb95b;
           border-radius: 5px;
           display: inline-block;
           text-align: center;
+          float: left;
+          margin-top: 10px;
+          margin-right: 10px;
           i {
             color: #fff;
             font-size: 20px;
@@ -1255,6 +1282,7 @@ export default {
         }
         .l-tit {
           display: inline-block;
+          margin-top: 5px;
           .l-tit-t {
             a {
               color: #409eff;

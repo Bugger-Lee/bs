@@ -19,9 +19,9 @@
         <el-col :span="12" class="marketing-header-r">
           <el-button-group class="mr05">
             <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailUpdate == true" @click="detailStatus('update')">Update</el-button>
-            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailTest == true" @click="detailStatus('test')">test</el-button>
-            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailRun == true" @click="detailStatus('run')">runing</el-button>
-            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">stop</el-button>
+            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailTest == true" @click="detailStatus('test')">Test</el-button>
+            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailRun == true" @click="detailStatus('run')">Run</el-button>
+            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">Stop</el-button>
           </el-button-group>
         </el-col>
       </div>
@@ -37,7 +37,7 @@
                 <ul class="theme-l-tmp">
                   <li>
                     <span class="crowd-style">
-                      <i class="icon-shouye"></i>
+                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
                     </span>
                     <p>CLV Data</p>
                   </li>
@@ -52,7 +52,7 @@
                 <ul class="theme-l-tmp">
                   <li>
                     <span class="crowds-style" style="background-color:#ffcd43;">
-                      <i class="icon-shouye"></i>
+                      <i class="icon-quanyi-copy-copy"></i>
                     </span>
                     <p>Coupon</p>
                   </li>
@@ -69,7 +69,7 @@
                   <ul class="theme-l-tmp">
                     <li>
                       <span class="msg-style">
-                        <i class="icon-shouye"></i>
+                        <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
                       </span>
                       <p>SMS</p>
                     </li>
@@ -82,7 +82,7 @@
                   <ul class="theme-l-tmp">
                     <li>
                       <span class="ctl-style">
-                        <i class="icon-shouye"></i>
+                        <i class="icon-time1"></i>
                       </span>
                       <p>Wait By</p>
                       <p>Duration</p>
@@ -98,25 +98,25 @@
           <div v-if = 'showFirst'>
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-shouye"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">CLV Data</div>
             <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
-                <i class="icon-shouye"></i>
+                <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
               </span>
             </div>
-            <div ref="refData2div" v-if="ifSmsDrag">Sms</div>
+            <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
             <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
-                <i class="icon-shouye"></i>
+                <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
             <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
-                <i class="icon-shouye"></i>
+                <i class="icon-wancheng1"></i>
               </span>
             </div>
             <div ref="refData4div" v-if="ifSmsDrag">Over</div>
@@ -124,31 +124,31 @@
           <div v-else>
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-shouye"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">CLV Data</div>
             <div class="window" id="return12" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
-                <i class="icon-shouye"></i>
+                <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
               </span>
             </div>
-            <div ref="refData2div" v-if="ifSmsDrag">Sms</div>
+            <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
             <div class="window" id="return23" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
-                <i class="icon-shouye"></i>
+                <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
             <div class="window" id="newreturn" ref="newData">
-              <span class="msg-style" @click="popupTicket()" style="background-color:#ffcd43;">
-                <i class="icon-shouye"></i>
+              <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
+                <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
             <div ref="newrefDatadiv">Coupon</div>
             <div class="window" id="return34" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
-                <i class="icon-shouye"></i>
+                <i class="icon-wancheng1"></i>
               </span>
             </div>
             <div ref="refData4div" v-if="ifSmsDrag">Over</div>
@@ -261,13 +261,13 @@ export default {
             value:"Days"
           },
           {
-            id:2,
-            value:"months"
+            id:3,
+            value:"Weeks"
           },
           {
-            id:3,
-            value:"weeks"
-          }
+            id:2,
+            value:"Months"
+          },
         ],
         timeWeeks:[
           {
@@ -316,7 +316,7 @@ export default {
       dayVal:'',
       datedrag: 2,
       showFirst: true,
-      statusTestRunVal:''
+      statusTestRunVal:'',
     };
   },
   components: {
@@ -332,14 +332,14 @@ export default {
     this.registerLists()
     this.sendSmsLists()
     this.orderLists()
-    this.smsLists()
-    if (this.datedrag == 1) {
-      this.showFirst = true
-      this.dragInit1(200, 320);
-    } else {
-      this.showFirst = false
-      this.dragInit2(200, 320);
-    }
+    // this.smsLists()
+    // if (this.datedrag == 1) {
+    //   this.showFirst = true
+    //   this.dragInit1(200, 320);
+    // } else {
+    //   this.showFirst = false
+    //   this.dragInit2(200, 320);
+    // }
   },
   methods: {
     doneTime() {
@@ -365,24 +365,24 @@ export default {
 
         this.$refs.refData2.style.position = "fixed";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 200 + "px";
+        this.$refs.refData2.style.left = left + 150 + "px";
         this.$refs.refData2div.style.position = "fixed";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 205 + "px";
+        this.$refs.refData2div.style.left = left + 155 + "px";
 
         this.$refs.refData3.style.position = "fixed";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 400 + "px";
+        this.$refs.refData3.style.left = left + 300 + "px";
         this.$refs.refData3div.style.position = "fixed";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 400 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 300 + 5 + "px";
 
         this.$refs.refData4.style.position = "fixed";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 600 + "px";
+        this.$refs.refData4.style.left = left + 450 + "px";
         this.$refs.refData4div.style.position = "fixed";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 600 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 450 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
@@ -405,31 +405,31 @@ export default {
 
         this.$refs.newData.style.position = "fixed";
         this.$refs.newData.style.top = top + "px";
-        this.$refs.newData.style.left = left + 200 + "px";
+        this.$refs.newData.style.left = left + 150 + "px";
         this.$refs.newrefDatadiv.style.position = "fixed";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + 205 + "px";
+        this.$refs.newrefDatadiv.style.left = left + 155 + "px";
 
         this.$refs.refData2.style.position = "fixed";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 400 + "px";
+        this.$refs.refData2.style.left = left + 300 + "px";
         this.$refs.refData2div.style.position = "fixed";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 405 + "px";
+        this.$refs.refData2div.style.left = left + 305 + "px";
 
         this.$refs.refData3.style.position = "fixed";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 600 + "px";
+        this.$refs.refData3.style.left = left + 450 + "px";
         this.$refs.refData3div.style.position = "fixed";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 600 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 450 + 5 + "px";
 
         this.$refs.refData4.style.position = "fixed";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 800 + "px";
+        this.$refs.refData4.style.left = left + 600 + "px";
         this.$refs.refData4div.style.position = "fixed";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 800 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 600 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
@@ -455,12 +455,13 @@ export default {
             }
           ],
           connector: "Straight",
+          paintStyle: { stroke: 'lightgray', strokeWidth: 3 },
           elementsDraggable: false,
           ConnectionsDetachable: false,
-          overlays: [
-            ["Arrow", { width: 10, length: 10, location: 1, id: "arrow" }],
-            ["Label", { label: "", id: "label" }]
-          ]
+          // overlays: [
+          //   ["Arrow", { width: 10, length: 10, location: 1, id: "arrow" }],
+          //   ["Label", { label: "", id: "label" }]
+          // ]
         });
       });
     },
@@ -472,11 +473,18 @@ export default {
       let timestamp = new Date(this.timeType.dateTimeVal)
       this.timeType.timestamp  = timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       if(val == 'update') {
+        let temp_id = this.propsSms.smsTable.filter(item => item.document_text == this.propsSms.ifSms.template_text)
+        let temp_data_id = ''
+        if (temp_id.length == 0) {
+          temp_data_id = this.propsSms.ifSms.template_id
+        } else {
+          temp_data_id = temp_id[0].id
+        }
         let data = {
           id:this.$route.query.id,
           rule_name:this.ifDataExtension.rule_name,
           sms_channel_id:this.propsSms.ifSms.sms_channel_id,
-          template_id:this.propsSms.smsTable[0].id,
+          template_id:temp_data_id,
           brand_id:this.ifDataExtension.brand_id,
           cycle_id:this.ifDataExtension.cycle_id,
           vip_channel_name:this.ifDataExtension.vip_channel_name,
@@ -525,11 +533,13 @@ export default {
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
           this.propsSms.sendSmsVal =  this.propsSms.ifSms.sms_channel_content
-          // if(res.data.data.camp_coupon_id != '' || res.data.data.coupon_id != '') {
-          //   this.showFirst = true
-          // }else{
-          //   this.showFirst = false
-          // }
+          if(res.data.data.camp_coupon_id || res.data.data.coupon_id) {
+            this.showFirst = true
+            this.dragInit2(200, 320);
+          }else{
+            this.showFirst = true
+            this.dragInit1(200, 320);
+          }
           if(res.data.data.status == 2) {
             this.detailStop = true
             this.detailUpdate = false
@@ -562,6 +572,7 @@ export default {
           }else if(this.ifDataExtension.purchase_week == 'N'){
             this.propsData.newMbmber = '否'
           }
+          if (res.data.data.cron_express) {
           this.cronChangeDate(res.data.data)
           this.timeType.timeVal = this.cronChangeDate(res.data.data).loopType
           let dayVal = this.cronChangeDate(res.data.data).loopTime.split(':')
@@ -570,6 +581,7 @@ export default {
           let date_new = new Date()
           this.timeType.timeMonths = new Date(date_new.getFullYear(),date_new.getMonth(),timeMonths)
           this.timeType.timeWeek = this.cronChangeDate(res.data.data).loopValue
+          }
         }else{
           this.$message(res.data.msg)
         }
@@ -711,9 +723,9 @@ export default {
       this.openSms = true
     },
     smsLists() {
-      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand,cycleId:this.ifDataExtension.period}}).then(res=>{
+      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand_id,cycleId:this.ifDataExtension.cycle_id,documentText:this.templateName}}).then(res=>{
         if(res.data.code == 200) {
-          this.propsSms.smsTable[0] = res.data.data
+          this.propsSms.smsTable = res.data.data
           this.propsSms.editMsg = res.data.data.document_text
         }else{
           this.propsSms.smsTable = []
@@ -737,12 +749,22 @@ export default {
         this.saveMessage()
       }else if(val.name == 'inputBlur') {
         this.inputBlur(val.value,val.id)
+      } else if (val.name = "tableIndex") {
+        if(val.id) {
+          this.propsSms.ifSms.template_text = val.document_text 
+          this.propsSms.ifSms.id = val.id
+        }
       }
     },
     inputBlur(val,id) {
+        console.log(val)
+        if(val == '') {
+          this.$message('文案不可以为空')
+          return false
+        }
         let upDate = {
-          cycle_id:this.ifDataExtension.period,
-          brand_id:this.ifDataExtension.brand,
+          cycle_id:this.ifDataExtension.cycle_id,
+          brand_id:this.ifDataExtension.brand_id,
           document_text:val,
           id:id
         }
@@ -765,12 +787,18 @@ export default {
         sms_channel_id: smsObj[0].id,
         sms_channel_content:this.propsSms.sendSmsVal
       }
+      console.log(this.propsSms.dataSelected)
       if(this.propsSms.dataSelected == 2) {
-        // sessionStorage.setItem('smsMsg',JSON.stringify(objData))
-        this.propsSms.ifSms = objData
+        let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.id)
+        this.propsSms.ifSms.template_text = doc_text[0].document_text
+        this.propsSms.ifSms.sms_channel_content = this.propsSms.sendSmsVal
         this.openSmsContent = false
         this.openSms = true
       }else if(this.propsSms.dataSelected == 3){
+        if(!this.propsSms.editMsg) {
+          this.$message('模板内容不可以为空')
+          return false
+        }
         let insertData = {
           cycle_id:this.ifDataExtension.cycle_id,
           brand_id:this.ifDataExtension.brand_id,
@@ -781,7 +809,7 @@ export default {
           if(res.data.code == 200) {
             this.smsLists()
             let objData = {
-              contentMag:this.propsSms.editMsg,
+              template_text:this.propsSms.editMsg,
               sms_channel_id: smsObj[0].id,
               sms_channel_content:this.propsSms.sendSmsVal
             }
@@ -802,6 +830,7 @@ export default {
       this.openData = true
     },
     sms() {
+       this.smsLists();
       this.openSms = true
     },
     selectTime() {
@@ -842,6 +871,9 @@ export default {
           border-radius: 5px;
           display: inline-block;
           text-align: center;
+          float: left;
+          margin-top: 9px;
+          margin-right: 5px;
           i {
             color: #fff;
             font-size: 20px;
@@ -850,6 +882,7 @@ export default {
         }
         .l-tit {
           display: inline-block;
+          margin-top: 5px;
           .l-tit-t {
             a {
               color: #409eff;

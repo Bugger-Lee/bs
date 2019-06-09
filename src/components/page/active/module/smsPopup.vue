@@ -3,7 +3,7 @@
     <el-dialog
       :visible.sync="openDataProps"
       :close-on-click-modal="false"
-      width="60%">
+      width="50%">
       <span slot="title" class="data-title">
         <span class="icon-shouye"></span>SMS Activity Summary
       </span>
@@ -21,14 +21,14 @@
             @click="clickPopup({name:'openNext'})"
           >Select Message</el-button>
         </div>
-        <div v-if="propsSms.ifSms != ''" class="data-content-apply">
+        <div v-if="propsSms.ifSms != ''" class="data-content-apply" style="min-height:100px;">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">Message Definition</span>
             <el-button class="bth" @click="clickPopup({name:'openNext'})">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P><span>文案内容 : {{propsSms.ifSms.contentMag}}</span><span></span></P>
-            <P><span>短信渠道 : {{propsSms.ifSms.sms_channel_id_show}}</span><span></span></P>
+            <P class="pttb"><span>Content : {{propsSms.ifSms.contentMag}}</span><span></span></P>
+            <P class="pttb"><span>Sms Channel : {{propsSms.ifSms.sms_channel_id_show}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -97,8 +97,8 @@
                   <el-col :span="12">
                     <div class="ml10">
                       <span class="redStar">*</span>
-                      <span>短信通道</span>
-                      <el-select v-model="propsSms.sendSmsVal" clearable placeholder="请选择短信通道" style="display:inline-block;"  class="select-option-classify">
+                      <span>Sms Channel</span>
+                      <el-select v-model="propsSms.sendSmsVal" clearable placeholder="Pls Sms Channel" style="display:inline-block;"  class="select-option-classify">
                         <el-option
                           v-for="item in propsSms.sendSmsList"
                           :key="item.id"
@@ -110,7 +110,7 @@
                   </el-col>
                 </div>
                 <div class="select-msg-table">
-                  <el-table :data="propsSms.smsTable" style="width: 100%" height="220" setCurrentRow>
+                  <el-table :data="smsTable"  highlight-current-row  @current-change="tableIndex" style="width: 100%" height="220" setCurrentRow>
                     <el-table-column prop="template_name" label="Template" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="cycle_type" label="Period" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="brand_name" label="Brand" show-overflow-tooltip> </el-table-column>
@@ -120,18 +120,21 @@
                         <el-input v-else :placeholder="scope.row.document_text" v-model="input_text" @blur="clickPopup({name:'inputBlur',value:input_text,id:scope.row.id})"></el-input>
                       </template>  
                     </el-table-column>
-                    <el-table-column prop="create_time" label="Created Time" show-overflow-tooltip> </el-table-column>
+                    <el-table-column prop="created_time" label="Created Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
                   </el-table>
                 </div>
                 <div class="select-msg-page">
                   <el-pagination
-                  @size-change="handleSizeChange"
+                  @current-change="handleSizeChange"
                   :current-page.sync="currentPage"
                   :page-size="10"
                   class="page-el-pagination"
                   background
-                  layout="total, prev, pager, next"
+                  layout="slot, prev, pager, next"
                   :total="propsSms.smsTable.length">
+                  <slot>
+                    <span>All {{propsSms.smsTable.length}} Item</span>
+                  </slot>
                 </el-pagination>
                 </div>
               </div>
@@ -151,7 +154,7 @@
               <p class="sms-edit-l-tit">CONTENT</p>
               <div class="sms-edit-l-content">
                 <p><i class="el-icon-edit"></i>Edit message template</p>
-                <textarea rows="6" placeholder="请编辑短信模板" v-model="propsSms.editMsg">
+                <textarea rows="6" placeholder="Edit Sms Template" v-model="propsSms.editMsg">
 
                 </textarea>
               </div>
@@ -247,8 +250,20 @@ export default {
         this.input_text = ''
       }
     },
+    tableIndex(value) {
+      if(!value) {
+        return false
+      }
+      value.name = 'tableIndex'
+     this.$emit('sltSmsContent', value)
+    },
     clickText(index) {
+      let result = []
+      for(var i=0;i<this.propsSms.smsTable.length;i+=10){
+          result.push(this.propsSms.smsTable.slice(i,i+10));
+      }
       this.change_index = index
+      this.input_text = result[this.currentPage-1][index].document_text
     },
     searchSmsList(e) {
       this.$emit('searchSmsList',e)
@@ -257,10 +272,15 @@ export default {
       this.$emit('backlevelSms')
     },
     tabSelect(val) {
-      this.propsSms.dataSelected = val
+      if (val == '1') {
+        this.$emit("backlevelSms")
+      } else {
+        this.propsSms.dataSelected = val
+      }
     },
     // 分页
     handleSizeChange(val) {
+      console.log(val)
       this.currentPage = val
     }
   }
