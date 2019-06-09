@@ -872,31 +872,31 @@ export default {
       this.$nextTick(() => {
         this.$refs.newData.style.position = "fixed";
         this.$refs.newData.style.top = top + "px";
-        this.$refs.newData.style.left = left + 100 + "px";
+        this.$refs.newData.style.left = left + 80 + "px";
         this.$refs.newrefDatadiv.style.position = "fixed";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + 105 + "px";
+        this.$refs.newrefDatadiv.style.left = left + 85 + "px";
 
         this.$refs.refData2.style.position = "fixed";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 300 + "px";
+        this.$refs.refData2.style.left = left + 230 + "px";
         this.$refs.refData2div.style.position = "fixed";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 305 + "px";
+        this.$refs.refData2div.style.left = left + 235 + "px";
 
         this.$refs.refData3.style.position = "fixed";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 450 + "px";
+        this.$refs.refData3.style.left = left + 380 + "px";
         this.$refs.refData3div.style.position = "fixed";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 450 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 380 + 5 + "px";
 
         this.$refs.refData4.style.position = "fixed";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 600 + "px";
+        this.$refs.refData4.style.left = left + 530 + "px";
         this.$refs.refData4div.style.position = "fixed";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 600 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 530 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
