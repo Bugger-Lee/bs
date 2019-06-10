@@ -332,14 +332,6 @@ export default {
     this.registerLists()
     this.sendSmsLists()
     this.orderLists()
-    // this.smsLists()
-    // if (this.datedrag == 1) {
-    //   this.showFirst = true
-    //   this.dragInit1(200, 320);
-    // } else {
-    //   this.showFirst = false
-    //   this.dragInit2(200, 320);
-    // }
   },
   methods: {
     doneTime() {
@@ -361,7 +353,7 @@ export default {
         this.$refs.refData1.style.left = left + "px";
         this.$refs.refData1div.style.position = "fixed";
         this.$refs.refData1div.style.top = top + 50 + "px";
-        this.$refs.refData1div.style.left = left + 5 + "px";
+        this.$refs.refData1div.style.left = left + -5 + "px";
 
         this.$refs.refData2.style.position = "fixed";
         this.$refs.refData2.style.top = top + "px";
@@ -401,14 +393,14 @@ export default {
         this.$refs.refData1.style.left = left + "px";
         this.$refs.refData1div.style.position = "fixed";
         this.$refs.refData1div.style.top = top + 50 + "px";
-        this.$refs.refData1div.style.left = left + 5 + "px";
+        this.$refs.refData1div.style.left = left + -5 + "px";
 
         this.$refs.newData.style.position = "fixed";
         this.$refs.newData.style.top = top + "px";
         this.$refs.newData.style.left = left + 150 + "px";
         this.$refs.newrefDatadiv.style.position = "fixed";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + 155 + "px";
+        this.$refs.newrefDatadiv.style.left = left + 147 + "px";
 
         this.$refs.refData2.style.position = "fixed";
         this.$refs.refData2.style.top = top + "px";
@@ -556,22 +548,9 @@ export default {
           if(this.ifDataExtension.vip_channel_name.length > 0) {
             this.propsData.registerVal = this.ifDataExtension.vip_channel_name.split(',')
           }
-          if(this.ifDataExtension.purchase_first == 'Y') {
-            this.propsData.newBuy = '是'
-          }else if(this.ifDataExtension.purchase_first == 'N'){
-            this.propsData.newBuy = '否'
-          }
-          if(this.ifDataExtension.enter_first == 'Y') {
-            this.propsData.newPeriod = '是'
-
-          }else if(this.ifDataExtension.enter_first == 'N'){
-            this.propsData.newPeriod = '否'
-          }
-          if(this.ifDataExtension.purchase_week == 'Y') {
-            this.propsData.newMbmber = '是'
-          }else if(this.ifDataExtension.purchase_week == 'N'){
-            this.propsData.newMbmber = '否'
-          }
+          this.propsData.newBuy = this.ifDataExtension.purchase_first
+          this.propsData.newPeriod = this.ifDataExtension.enter_first
+          this.propsData.newMbmber = this.ifDataExtension.purchase_week
           if (res.data.data.cron_express) {
           this.cronChangeDate(res.data.data)
           this.timeType.timeVal = this.cronChangeDate(res.data.data).loopType

@@ -126,18 +126,18 @@
               <el-col :span="12">
                 <div class="select-option-ipt" v-if="ifNewPeriod">
                   <span class="mr15">New Entry:</span>
-                  <el-radio v-model="propsData.newPeriod" label="是">Yes</el-radio>
-                  <el-radio v-model="propsData.newPeriod" label="否">No</el-radio>
+                  <el-radio v-model="propsData.newPeriod" label="Yes">Yes</el-radio>
+                  <el-radio v-model="propsData.newPeriod" label="No">No</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewBuy">
                   <span class="mr15">First Purchase:</span>
-                  <el-radio v-model="propsData.newBuy" label="是">Yes</el-radio>
-                  <el-radio v-model="propsData.newBuy" label="否">No</el-radio>
+                  <el-radio v-model="propsData.newBuy" label="Yes">Yes</el-radio>
+                  <el-radio v-model="propsData.newBuy" label="No">No</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewMbmber">
                   <span class="mr15">No Purchase:</span>
-                  <el-radio v-model="propsData.newMbmber" label="是">Yes</el-radio>
-                  <el-radio v-model="propsData.newMbmber" label="否">No</el-radio>
+                  <el-radio v-model="propsData.newMbmber" label="Yes">Yes</el-radio>
+                  <el-radio v-model="propsData.newMbmber" label="No">No</el-radio>
                 </div>
                 <p v-if="ifNewMbmber">
                   <span class="mr15" style="color:red;font-size:10px;">(within a week)</span>  
