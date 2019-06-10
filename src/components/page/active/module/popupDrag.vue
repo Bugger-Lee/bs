@@ -5,7 +5,7 @@
       :close-on-click-modal="false"
       width="60%">
       <span slot="title" class="data-title">
-        <span class="icon-shouye"></span>Data Extension Summary
+        <span class="icon-dbsshujukubeifenDBS-copy-copy-copy"></span>Data Extension Summary
       </span>
       <div class="data-content">
         <p>
@@ -50,7 +50,7 @@
       <el-col :span="3" class="data-content-l">
         <div class="data-content-summary" :class="{'data-Selected':dataSelected == 1}" @click="tabSelect(1)">
           <span>
-            <i class="icon-shouye"></i>
+            <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
           </span>
           <p class="summary-title mt10">Summary</p>
         </div>

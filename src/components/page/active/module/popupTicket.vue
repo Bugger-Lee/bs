@@ -5,7 +5,7 @@
       :close-on-click-modal="false"
       width="50%">
       <span slot="title" class="data-title">
-        <span class="icon-shouye"></span>Promotion Summary
+        <span class="icon-quanyi-copy-copy" style="background-color:#ffcd43;"></span>Promotion Summary
       </span>
       <div class="data-content">
         <p>
@@ -45,8 +45,8 @@
       width="98%">
       <el-col :span="3" class="data-content-l">
         <div class="data-content-summary" :class="{'data-Selected':dataSelected == 1}" @click="tabSelect(1)">
-          <span>
-            <i class="icon-shouye"></i>
+          <span style="background-color:#ffcd43;">
+            <i class="icon-quanyi-copy-copy"></i>
           </span>
           <p class="summary-title mt10">Summary</p>
         </div>

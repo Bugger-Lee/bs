@@ -5,7 +5,7 @@
       :close-on-click-modal="false"
       width="50%">
       <span slot="title" class="data-title">
-        <span class="icon-shouye"></span>SMS Activity Summary
+        <span class="icon-duanxin2-copy" style="background-color:#4dc6bd;border-radius:8px;"></span>SMS Activity Summary
       </span>
       <div class="data-content">
         <p>
