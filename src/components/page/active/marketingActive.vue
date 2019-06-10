@@ -300,7 +300,7 @@
         width="45%"
       >
         <span slot="title" class="data-title">
-          <span class="icon-shouye"></span>Wait By Duration
+          <span class="data-title-time"><i class="icon-time1"></i></span>Wait By Duration
         </span>
         <span slot="footer">
           <el-button @click="openTime = false">Cancel</el-button>
