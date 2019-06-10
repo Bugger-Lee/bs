@@ -830,7 +830,7 @@ export default {
         this.$refs.newData.style.left = left + "px";
         this.$refs.newrefDatadiv.style.position = "fixed";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + 5 + "px";
+        this.$refs.newrefDatadiv.style.left = left + -5 + "px";
 
         // this.$refs.refData3.style.position = "fixed";
         // this.$refs.refData3.style.top = top + "px";
@@ -859,7 +859,7 @@ export default {
         this.$refs.refData1.style.left = left + "px";
         this.$refs.refData1div.style.position = "fixed";
         this.$refs.refData1div.style.top = top + 50 + "px";
-        this.$refs.refData1div.style.left = left + 5 + "px";
+        this.$refs.refData1div.style.left = left + -8 + "px";
         this.dragLeft = left;
         this.dragTop = top;
         this.dargNext();
@@ -875,7 +875,7 @@ export default {
         this.$refs.newData.style.left = left + 80 + "px";
         this.$refs.newrefDatadiv.style.position = "fixed";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + 85 + "px";
+        this.$refs.newrefDatadiv.style.left = left + 75 + "px";
 
         this.$refs.refData2.style.position = "fixed";
         this.$refs.refData2.style.top = top + "px";
