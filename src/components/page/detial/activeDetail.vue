@@ -702,7 +702,8 @@ export default {
       this.openSms = true
     },
     smsLists() {
-      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand_id,cycleId:this.ifDataExtension.cycle_id,documentText:this.templateName}}).then(res=>{
+      console.log(111)
+      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand_id,cycleId:this.ifDataExtension.cycle_id,documentText:this.propsSms.SearchSms}}).then(res=>{
         if(res.data.code == 200) {
           this.propsSms.smsTable = res.data.data
           this.propsSms.editMsg = res.data.data.document_text
@@ -714,7 +715,6 @@ export default {
     searchSmsList(e) {
       var keyCode = window.event? e.keyCode:e.which;
       if(keyCode == 13){
-        this.templateName = this.propsSms.SearchSms
         this.smsLists()
       }
     },
@@ -809,7 +809,7 @@ export default {
       this.openData = true
     },
     sms() {
-       this.smsLists();
+      this.smsLists();
       this.openSms = true
     },
     selectTime() {

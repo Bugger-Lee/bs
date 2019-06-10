@@ -433,7 +433,6 @@ export default {
         sendSmsVal: ""
       },
       couponName: "",
-      templateName: "",
       ifDataExtension: "",
       cron_express: "",
       currentTimeVal: "",
@@ -745,7 +744,7 @@ export default {
         params: {
           brandId: this.ifDataExtension.brand,
           cycleId: this.ifDataExtension.period,
-          documentText:this.templateName
+          documentText:this.propsSms.SearchSms
         }
       }).then(res => {
         if (res.data.code == 200) {
@@ -759,7 +758,6 @@ export default {
     searchSmsList(e) {
       var keyCode = window.event ? e.keyCode : e.which;
       if (keyCode == 13) {
-        this.templateName = this.propsSms.SearchSms;
         this.smsLists();
       }
     },
