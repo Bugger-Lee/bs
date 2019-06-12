@@ -34,12 +34,33 @@ export default {
           name: "Journeys"
         }
       ],
-      changeTab: 1
+      changeTab: 1,
+      userName:''
     };
+  },
+  created() {
+    let user = {
+      user_name:this.userName
+    }
+    sessionStorage.setItem("user", JSON.stringify(user));
+    if(user.user_name == '') {
+      this.userList()
+    }else{
+      this.$router.push('./')
+    }
   },
   methods: {
     changes(id) {
       this.changeTab = id;
+    },
+    userList() {
+      this.$.get('http://bestsellerdmp.bestseller.com.cn/web/sso').then(res=>{
+        if(res.data.code == 200) {
+          this.userName = res.data.data.user_name
+        }else{
+          this.$message(res.data.msg)
+        }
+      })
     }
   }
 };
