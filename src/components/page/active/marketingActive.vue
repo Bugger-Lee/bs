@@ -152,31 +152,31 @@
             <li class="imaginary-square"></li>
           </ul>
           <div v-if="showFirst">
-            <div class="window" id="data1" ref="refData1" v-if="ifDrag">
+            <div  id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">CLV Data</div>
-            <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
+            <div  id="return1" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
               </span>
             </div>
             <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
-            <div class="window" id="newreturn" ref="newData" v-if="ifProDrag">
+            <div  id="newreturn" ref="newData" v-if="ifProDrag">
               <span class="crowds-style"  @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
             <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
-            <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
+            <div  id="return2" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
                 <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
+            <div  id="return3" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
                 <i class="icon-wancheng1"></i>
               </span>
@@ -184,25 +184,25 @@
             <div ref="refData4div" v-if="ifSmsDrag">Over</div>
           </div>
           <div v-if="showSecend">
-            <div class="window" id="data1" ref="refData1" v-if="ifDrag">
+            <div  id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">CLV Data</div>
-            <div class="window" id="newreturn1" ref="newData" v-if="ifProDrag">
+            <div  id="newreturn1" ref="newData" v-if="ifProDrag">
               <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
             <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
-            <div class="window" id="return222" ref="refData3" v-if="ifSmsDrag">
+            <div  id="return222" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
                 <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div class="window" id="return333" ref="refData4" v-if="ifSmsDrag">
+            <div  id="return333" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
                 <i class="icon-wancheng1"></i>
               </span>
@@ -210,31 +210,31 @@
             <div ref="refData4div" v-if="ifSmsDrag">Over</div>
           </div>
           <div v-if="showLast">
-            <div class="window" id="data1" ref="refData1" v-if="ifDrag">
+            <div  id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">CLV Data</div>
-            <div class="window" id="return1111" ref="refData2" v-if="ifSmsDrag">
+            <div  id="return1111" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
               </span>
             </div>
             <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
-            <div class="window" id="newreturn11" ref="newData" v-if="ifProDrag">
+            <div  id="newreturn11" ref="newData" v-if="ifProDrag">
               <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
             <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
-            <div class="window" id="return2222" ref="refData3" v-if="ifSmsDrag">
+            <div  id="return2222" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
                 <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div class="window" id="return3333" ref="refData4" v-if="ifSmsDrag">
+            <div  id="return3333" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
                 <i class="icon-wancheng1"></i>
               </span>
@@ -242,31 +242,31 @@
             <div ref="refData4div" v-if="ifSmsDrag">Over</div>
           </div>
           <div v-if="showFirst1">
-            <div class="window" id="data1" ref="refData1" v-if="ifDrag">
+            <div  id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">CLV Data</div>
-            <div class="window" id="return11" ref="refData2" v-if="ifSmsDrag">
+            <div  id="return11" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy"  style="font-size:32px;"></i>
               </span>
             </div>
             <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
-            <div class="window" id="newreturn" ref="newData" v-if="ifProDrag">
+            <div  id="newreturn" ref="newData" v-if="ifProDrag">
               <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
             <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
-            <div class="window" id="return22" ref="refData3" v-if="ifSmsDrag">
+            <div  id="return22" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
                 <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div class="window" id="return33" ref="refData4" v-if="ifSmsDrag">
+            <div  id="return33" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
                 <i class="icon-wancheng1"></i>
               </span>
