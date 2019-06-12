@@ -69,6 +69,12 @@
               </template>
               <el-menu-item-group>
                 <ul class="theme-l-tmp">
+                  <!-- <li v-for="i in sourcesType" :key="i.id">
+                    <span class="crowd-style">
+                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                    </span>
+                    <p>{{i.command_name}}</p>
+                  </li> -->
                   <li>
                     <span class="crowd-style">
                       <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
@@ -404,7 +410,6 @@ export default {
         brandList: [],
         periodList: [],
         registerList: [],
-        orderList: [],
         brandVal: "",
         periodVal: "",
         periodShow: "",
@@ -440,6 +445,7 @@ export default {
       systemId: "",
       dargSms: false,
       sortDrag: "",
+      sourcesType:[]
     };
   },
   mounted() {
@@ -450,7 +456,7 @@ export default {
     this.periodLists();
     this.registerLists();
     this.sendSmsLists();
-    this.orderLists();
+    this.sourcesList();
     this.currentTimeName =
       this.currentTimeName.getFullYear() +
       "-" +
@@ -497,7 +503,6 @@ export default {
       }
       if(this.timeType.dateTimeVal == '') {this.$message('请您选择激活时间')}
       let timestamp = new Date(this.timeType.dateTimeVal)
-      // sessionStorage.setItem("timeMsg", JSON.stringify(timeObj));
       this.timeType.timestamp = timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       let datas = {
         loopType: this.timeType.timeVal,
@@ -557,6 +562,7 @@ export default {
         purchase_week: this.ifDataExtension.newMbmber,
         purchase_first: this.propsData.newBuy,
         cron_express: this.cron_express,
+        command_name:"CLV人群",
         command_code: "clv-job"
       };
       this.$.post("rule/update", data).then(res => {
@@ -699,9 +705,11 @@ export default {
         this.propsSms.sendSmsList = res.data.data;
       });
     },
-    orderLists() {
+    sourcesList() {
       this.$.get("command/getList?commandName=").then(res => {
-        this.propsData.orderList = res.data.data;
+          if(res.data.code == 200) {
+            this.sourcesType  = res.data.data
+          }
       });
     },
     brandLists() {
@@ -829,24 +837,6 @@ export default {
         this.$refs.newrefDatadiv.style.position = "fixed";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
         this.$refs.newrefDatadiv.style.left = left + -5 + "px";
-
-        // this.$refs.refData3.style.position = "fixed";
-        // this.$refs.refData3.style.top = top + "px";
-        // this.$refs.refData3.style.left = left + 150 + "px";
-        // this.$refs.refData3div.style.position = "fixed";
-        // this.$refs.refData3div.style.top = top + 50 + "px";
-        // this.$refs.refData3div.style.left = left + 150 + 5 + "px";
-
-        // this.$refs.refData4.style.position = "fixed";
-        // this.$refs.refData4.style.top = top + "px";
-        // this.$refs.refData4.style.left = left + 400 + "px";
-        // this.$refs.refData4div.style.position = "fixed";
-        // this.$refs.refData4div.style.top = top + 50 + "px";
-        // this.$refs.refData4div.style.left = left + 400 + 5 + "px";
-        // this.jsPlumb("data1", "newreturn1");
-        // this.jsPlumb("newreturn1", "return222");
-        // this.jsPlumb("return222", "return333");
-        // this.dargNextNew()
       });
     },
     appendDiv(left, top) {
@@ -1110,6 +1100,7 @@ export default {
       }
     },
     dragInit() {
+      console.log(1111)
       let minleft = $(".imaginary-circle").offset().left;
       let mintop = $(".imaginary-circle").offset().top;
       let maxleft = $(".imaginary-circle").width();

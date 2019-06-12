@@ -1,6 +1,14 @@
 import axios from 'axios'
 // 设置域名
-let BASEURL = 'http://10.150.33.126:8106/'
+// let BASEURL = 'http://10.150.33.126:8106/'
+
+let BASEURL = ''
+let domain = document.domain
+if (domain == 'localhost') {
+  BASEURL ='http://10.150.33.126:8115/'  //本地
+} else {
+  BASEURL =document.location.origin +'/'
+}
 
 // 配置域名、超时时间（10s）
 let $ = axios.create({

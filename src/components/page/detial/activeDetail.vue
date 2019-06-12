@@ -335,7 +335,6 @@ export default {
   },
   methods: {
     doneTime() {
-      // sessionStorage.setItem('timeMsg',JSON.stringify(timeObj))
       let datas = {
         loopType: this.timeType.timeVal,
         wloopValue: this.timeType.timeWeek,
@@ -344,6 +343,9 @@ export default {
       }
       this.dateChangeCron(datas)
       this.cron_express = this.dateChangeCron(datas)
+      if(this.timeType.executeType == 1) {
+        this.cron_express = ''
+      }
       this.openTime = false
     },
     dragInit1(top, left) {
@@ -487,6 +489,7 @@ export default {
           purchase_first:this.ifDataExtension.purchase_first,
           purchase_week:this.ifDataExtension.purchase_week,
           cron_express:this.cron_express,
+          command_name:"CLV人群",
           command_code:'clv-job'
         }
         this.$.post('rule/update',data).then(res=>{
