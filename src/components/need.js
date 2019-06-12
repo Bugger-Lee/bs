@@ -20,9 +20,9 @@ const dateChangeCron = (dates) =>{
     var cron = ''
     if (loopType === 'Days') {
         cron = 0 + '' + s + ' ' + m + ' ' + h + ' * * ?'
-    } else if (loopType === 'weeks') { 
+    } else if (loopType === 'Weeks') { 
         cron = 0 + '' + s + ' ' + m + ' ' + h + ' ? * ' + w.join(',')
-    } else if (loopType === 'months') { // 1-31
+    } else if (loopType === 'Months') { // 1-31
         cron = 0 + '' + s + ' ' + m + ' ' + h + ' ' + mo.join(',') + ' * ?'
     }
     console.log(cron)
