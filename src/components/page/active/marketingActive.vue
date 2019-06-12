@@ -691,7 +691,6 @@ export default {
         newBuy: this.propsData.newBuy,
         newMbmber: this.propsData.newMbmber,
       };
-      // sessionStorage.setItem("dataMsg", JSON.stringify(objData));
       this.ifDataExtension = objData;
       this.openDataContent = false;
       this.openData = true;
