@@ -1252,21 +1252,17 @@ export default {
       border-radius: 10px 10px 0 0;
       .marketing-header-l {
         .l-icon {
-          width: 35px;
-          height: 35px;
-          line-height: 50px;
+          width: 40px;
+          height: 40px;
+          line-height: 40px;
           background-color: #fcb95b;
           border-radius: 5px;
-          display: inline-block;
           text-align: center;
-          position: relative;
-          margin-right: 10px;
+          float: left;
+          margin: 9px 10px 0px 0px;
           i {
             color: #fff;
             font-size: 20px;
-            position: absolute;
-            top: 8px;
-            left: 8px;
           }
         }
         .l-tit {
