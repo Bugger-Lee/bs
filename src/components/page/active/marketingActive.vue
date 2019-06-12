@@ -1248,25 +1248,25 @@ export default {
     .marketing-header {
       width: 100%;
       height: 60px;
-      // line-height: 60px;
       background-color: #f3f2f2;
       border-radius: 10px 10px 0 0;
       .marketing-header-l {
         .l-icon {
-          width: 40px;
-          height: 40px;
-          line-height: 40px;
+          width: 35px;
+          height: 35px;
+          line-height: 50px;
           background-color: #fcb95b;
           border-radius: 5px;
           display: inline-block;
           text-align: center;
-          float: left;
-          margin-top: 10px;
+          position: relative;
           margin-right: 10px;
           i {
             color: #fff;
             font-size: 20px;
-            line-height: 30px;
+            position: absolute;
+            top: 8px;
+            left: 8px;
           }
         }
         .l-tit {
