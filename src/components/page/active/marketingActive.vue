@@ -518,6 +518,7 @@ export default {
       this.openTime = false;
     },
     saveJourney() {
+      let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
       let data = {
         rule_name: this.currentTimeVal,
         sms_channel_id: this.propsSms.ifSms.sms_channel_id,
@@ -533,7 +534,8 @@ export default {
         purchase_first: this.propsData.newBuy,
         cron_express: this.cron_express,
         command_name:"CLV人群",
-        command_code: "clv-job"
+        command_code: "clv-job",
+        created_by:getSessionItem.user_name
       };
       this.$.post("rule/insert", data).then(res => {
         if (res.data.code == 200) {
@@ -547,6 +549,7 @@ export default {
       });
     },
     updateJorney() {
+      let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
       let data = {
         id:this.systemId,
         rule_name: this.currentTimeVal,
@@ -563,7 +566,8 @@ export default {
         purchase_first: this.propsData.newBuy,
         cron_express: this.cron_express,
         command_name:"CLV人群",
-        command_code: "clv-job"
+        command_code: "clv-job",
+        created_by:getSessionItem.user_name
       };
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {

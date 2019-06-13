@@ -12,7 +12,7 @@
                 <a href>Journeys Dashboard</a>
                 <i>> Journey</i>
               </p>
-              <p>{{this.ifDataExtension.rule_name}}</p>
+              <p>{{this.userNameTie}}</p>
             </div>
           </div>
         </el-col>
@@ -317,6 +317,7 @@ export default {
       datedrag: 2,
       showFirst: true,
       statusTestRunVal:'',
+      userNameTie:''
     };
   },
   components: {
@@ -467,6 +468,7 @@ export default {
       let timestamp = new Date(this.timeType.dateTimeVal)
       this.timeType.timestamp  = timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       if(val == 'update') {
+        let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
         let temp_id = this.propsSms.smsTable.filter(item => item.document_text == this.propsSms.ifSms.template_text)
         let temp_data_id = ''
         if (temp_id.length == 0) {
@@ -476,7 +478,7 @@ export default {
         }
         let data = {
           id:this.$route.query.id,
-          rule_name:this.ifDataExtension.rule_name,
+          rule_name:this.userNameTie,
           sms_channel_id:this.propsSms.ifSms.sms_channel_id,
           template_id:temp_data_id,
           brand_id:this.ifDataExtension.brand_id,
@@ -490,7 +492,8 @@ export default {
           purchase_week:this.ifDataExtension.purchase_week,
           cron_express:this.cron_express,
           command_name:"CLV人群",
-          command_code:'clv-job'
+          command_code:'clv-job',
+          created_by:getSessionItem.user_name
         }
         this.$.post('rule/update',data).then(res=>{
           if(res.data.code == 200) {
@@ -525,6 +528,7 @@ export default {
           this.ifDataExtension = res.data.data
           this.propsSms.ifSms = res.data.data
           this.ifTicket = res.data.data
+          this.userNameTie = res.data.data.rule_name
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
           this.propsSms.sendSmsVal =  this.propsSms.ifSms.sms_channel_content
