@@ -493,7 +493,7 @@ export default {
           cron_express:this.cron_express,
           command_name:"CLV人群",
           command_code:'clv-job',
-          created_by:getSessionItem.user_name
+          created_by:getSessionItem.user_info
         }
         this.$.post('rule/update',data).then(res=>{
           if(res.data.code == 200) {
@@ -508,16 +508,25 @@ export default {
         }else if(val == "run") {
           this.statusTestRunVal = 2
         }else if(val == "stop") {
-          this.statusTestRunVal = 2
+          this.statusTestRunVal = 3
         }
         this.$.get("rule/updateStatus",{params: { id: this.$route.query.id, status: this.statusTestRunVal }}).then(res=>{
           if(res.data.code == 200) {
             this.$message(res.data.msg)
-            if(val == 'stop') {
+            console.log(this.detailUpdate,this.detailRun,this.detailTest)
+            if(this.statusTestRunVal == 3) {
+              this.detailUpdate = true
+              this.detailRun = true
+              this.detailTest = true
+              this.detailStop = false
+            }else if(this.statusTestRunVal == 2){
               this.detailUpdate = false
               this.detailRun = false
               this.detailTest = false
+              this.detailStop = true
             }
+          }else{
+            this.$message(res.data.msg)
           }
         })
       }

@@ -57,7 +57,7 @@
             >
               <el-table-column prop="rule_name" label="Journey Title" show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <span @click="goToDetail(scope.row.id)">{{ scope.row.rule_name}}</span>
+                  <span @click="goToDetail(scope.row.id)" class="mouseAfter">{{ scope.row.rule_name}}</span>
                 </template>
               </el-table-column>
               <el-table-column prop="status_name" label="Status" show-overflow-tooltip></el-table-column>
