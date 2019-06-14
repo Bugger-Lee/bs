@@ -6,7 +6,9 @@ let BASEURL = ''
 let domain = document.domain
 if (domain == 'localhost') {
   BASEURL ='http://10.150.33.126:8115/'  //本地
-} else {
+}else if(document.location.origin=='http://bestsellerdmp.bestseller.com.cn') {
+  BASEURL='http://bestsellerdmp.bestseller.com.cn/web'
+}else {
   BASEURL =document.location.origin +'/'
 }
 
