@@ -325,7 +325,6 @@ import popupDrag from "./module/popupDrag.vue";
 import smsPopup from "./module/smsPopup.vue";
 import popupTicket from "./module/popupTicket.vue";
 import popupOpenTime from "@/components/public/popupOpenTime.vue";
-import "@/components/need.js";
 import { constants } from 'fs';
 export default {
   name: "marketingActive",

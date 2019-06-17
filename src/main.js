@@ -9,7 +9,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/base.less'
 import 'jquery-ui-dist/jquery-ui'
-
+import '@/components/need.js'
 Vue.prototype.$ = axios
 Vue.config.productionTip = false
 Vue.use(ElementUI)
