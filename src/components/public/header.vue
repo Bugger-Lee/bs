@@ -17,13 +17,14 @@
           <p class="login-icon ml15">
             <i class="icon-dengluyonghu"></i>
           </p>
-          <span class="login-icon-id">Chen Jingxue</span>
+          <span class="login-icon-id">{{this.userInfo}}</span>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import axios from 'axios'
 export default {
   name: "Header",
   data() {
@@ -35,16 +36,33 @@ export default {
         }
       ],
       changeTab: 1,
-      userName:''
+      userInfo:'',
+      linkUserId:''
     };
   },
   created() {
+    let url = window.location.href
+    let indexStart = url.indexOf("==")
+    let indexEnd = url.indexOf("?token")
+    if(indexStart > 0) {
+      this.linkUserId = url.substring(indexStart+2,indexEnd).replace("#","").replace("/","")
+    }else{
+      this.linkUserId = ''
+    }
+    // alert(this.linkUserId)
     let user = {
-      user_name:this.userName
+      user_info:this.userInfo
     }
     sessionStorage.setItem("user", JSON.stringify(user));
-    if(user.user_name == '') {
-      this.userList()
+    if(this.linkUserId == '') {
+      this.$.get('getSsoUrl').then(res=>{
+        window.location.href=res.data.data
+      })
+    }else if(this.linkUserId != ''){
+      // alert('有值')
+      this.$.get('getUserInfo',{params:{bsAccount:this.linkUserId}}).then(res=>{
+        this.userInfo=res.data.data.user_name
+      })
     }else{
       this.$router.push('./')
     }
@@ -52,15 +70,6 @@ export default {
   methods: {
     changes(id) {
       this.changeTab = id;
-    },
-    userList() {
-      this.$.get('http://bestsellerdmp.bestseller.com.cn/web/sso').then(res=>{
-        if(res.data.code == 200) {
-          this.userName = res.data.data.user_name
-        }else{
-          this.$message(res.data.msg)
-        }
-      })
     }
   }
 };

@@ -535,7 +535,7 @@ export default {
         cron_express: this.cron_express,
         command_name:"CLV人群",
         command_code: "clv-job",
-        created_by:getSessionItem.user_name
+        created_by:getSessionItem.user_info
       };
       this.$.post("rule/insert", data).then(res => {
         if (res.data.code == 200) {
@@ -567,7 +567,7 @@ export default {
         cron_express: this.cron_express,
         command_name:"CLV人群",
         command_code: "clv-job",
-        created_by:getSessionItem.user_name
+        created_by:getSessionItem.user_info
       };
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
@@ -579,7 +579,7 @@ export default {
     },
     testRunJourney(val) {
       if(this.saveSave == true) {
-        this.$message("请您新Save")
+        this.$message("请您先Save")
         return false
       }
       if (val == "test") {
