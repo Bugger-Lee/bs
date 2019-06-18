@@ -36,36 +36,12 @@ export default {
         }
       ],
       changeTab: 1,
-      userInfo:'',
-      linkUserId:''
+      userInfo:''
     };
   },
   created() {
-    let url = window.location.href
-    let indexStart = url.indexOf("==")
-    let indexEnd = url.indexOf("?token")
-    if(indexStart > 0) {
-      this.linkUserId = url.substring(indexStart+2,indexEnd).replace("#","").replace("/","")
-    }else{
-      this.linkUserId = ''
-    }
-    // alert(this.linkUserId)
-    let user = {
-      user_info:this.userInfo
-    }
-    sessionStorage.setItem("user", JSON.stringify(user));
-    if(this.linkUserId == '') {
-      this.$.get('getSsoUrl').then(res=>{
-        window.location.href=res.data.data
-      })
-    }else if(this.linkUserId != ''){
-      // alert('有值')
-      this.$.get('getUserInfo',{params:{bsAccount:this.linkUserId}}).then(res=>{
-        this.userInfo=res.data.data.user_name
-      })
-    }else{
-      this.$router.push('./')
-    }
+    let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
+    this.userInfo = getSessionItem.user_info
   },
   methods: {
     changes(id) {

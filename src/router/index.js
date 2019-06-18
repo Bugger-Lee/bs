@@ -11,7 +11,10 @@ export default new Router({
     {
       path: '/',
       name: 'homeList',
-      component: homeList
+      component: homeList,
+      meta:{
+        requireAuth:true
+      }
     },
     {
       path: '/marketingActive',
