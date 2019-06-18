@@ -32,10 +32,13 @@ router.beforeEach((to, from, next) => {
     }
     sessionStorage.setItem("user", JSON.stringify(user));
     if(linkUserId == '') {
-      console.log(111)
-      axios.get('getSsoUrl').then(res=>{
-        window.location.href=res.data.data
-      })
+      debugger
+      // console.log(111)
+      // axios.get('getSsoUrl').then(res=>{
+        // window.location.href=res.data.data
+        window.location.href="https://www.baidu.com/"
+        return false
+      // })
     }else if(linkUserId != ''){
       axios.get('getUserInfo',{params:{bsAccount:linkUserId}}).then(res=>{
         userInfo=res.data.data.user_name
@@ -44,7 +47,7 @@ router.beforeEach((to, from, next) => {
       _this.$router.push('./')
     }
   }else{
-    next()
+    // next()
   }
 })
 /* eslint-disable no-new */
