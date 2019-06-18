@@ -58,11 +58,15 @@ export default {
     }else if(this.linkUserId != ''){
       this.fullscreenLoading = false
       this.$.get('getUserInfo',{params:{bsAccount:this.linkUserId}}).then(res=>{
-        this.userInfo=res.data.data.user_name
-        let user = {
-          user_info:res.data.data.user_name
+        if(res.data.code == 200) {
+          this.userInfo=res.data.data.user_name
+          let user = {
+            user_info:res.data.data.user_name
+          }
+          sessionStorage.setItem("user", JSON.stringify(user));
+        }else{
+          this.$message(res.data.msg)
         }
-        sessionStorage.setItem("user", JSON.stringify(user));
       })
     }else{
       this.$router.push('./')
