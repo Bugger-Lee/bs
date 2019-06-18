@@ -1,5 +1,5 @@
 <template>
-  <div class="Header">
+  <div class="Header" v-loading.fullscreen.lock="fullscreenLoading">
     <div class="headers">
       <p class="headers-left">
         <i class="ml15">Journey Builder</i>
@@ -36,12 +36,37 @@ export default {
         }
       ],
       changeTab: 1,
-      userInfo:''
+      linkUserId:'',
+      userInfo:'',
+      fullscreenLoading: false
     };
   },
   created() {
-    let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
-    this.userInfo = getSessionItem.user_info
+    let url = window.location.href
+    let indexStart = url.indexOf("==")
+    let indexEnd = url.indexOf("?token")
+    if(indexStart > 0) {
+      this.linkUserId = url.substring(indexStart+2,indexEnd).replace("#","").replace("/","")
+    }else{
+      this.linkUserId = ''
+    }
+    if(this.linkUserId == '') {
+      this.fullscreenLoading = true
+      this.$.get('getSsoUrl').then(res=>{
+        window.location.href=res.data.data
+      })
+    }else if(this.linkUserId != ''){
+      this.fullscreenLoading = false
+      this.$.get('getUserInfo',{params:{bsAccount:this.linkUserId}}).then(res=>{
+        this.userInfo=res.data.data.user_name
+        let user = {
+          user_info:res.data.data.user_name
+        }
+        sessionStorage.setItem("user", JSON.stringify(user));
+      })
+    }else{
+      this.$router.push('./')
+    }
   },
   methods: {
     changes(id) {

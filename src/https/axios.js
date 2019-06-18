@@ -6,7 +6,7 @@ let BASEURL = ''
 let domain = document.domain
 let teamUrl = document.location.pathname.split('/')[1]
 if (domain == 'localhost') {
-  BASEURL ='http://10.150.33.126:8115/'  //本地
+  BASEURL ='http://10.150.33.126:8106/'  //本地
 }else if(document.location.origin=='http://bestsellerdmp.bestseller.com.cn') {
   BASEURL='http://bestsellerdmp.bestseller.com.cn/'+teamUrl
 }else {

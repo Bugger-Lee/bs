@@ -754,7 +754,7 @@ export default {
         params: {
           brandId: this.ifDataExtension.brand,
           cycleId: this.ifDataExtension.period,
-          documentText:this.propsSms.SearchSms
+          templateName:this.propsSms.SearchSms
         }
       }).then(res => {
         if (res.data.code == 200) {
