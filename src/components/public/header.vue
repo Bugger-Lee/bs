@@ -38,7 +38,8 @@ export default {
       changeTab: 1,
       linkUserId:'',
       userInfo:'',
-      fullscreenLoading: false
+      fullscreenLoading: false,
+      backUrl:''
     };
   },
   created() {
@@ -54,6 +55,7 @@ export default {
       this.fullscreenLoading = true
       this.$.get('getSsoUrl').then(res=>{
         window.location.href=res.data.data
+        this.backUrl=res.data.data
       })
     }else if(this.linkUserId != ''){
       this.fullscreenLoading = false
@@ -66,7 +68,7 @@ export default {
           sessionStorage.setItem("user", JSON.stringify(user));
         }else{
           this.$message(res.data.msg)
-          window.location.href=go(-1)
+          window.location.href=this.backUrl
           return false
         }
       })
