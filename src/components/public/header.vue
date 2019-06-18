@@ -66,6 +66,8 @@ export default {
           sessionStorage.setItem("user", JSON.stringify(user));
         }else{
           this.$message(res.data.msg)
+          window.location.href=go(-1)
+          return false
         }
       })
     }else{
