@@ -109,36 +109,7 @@ const formatDate = (row, column, created_time ,index) =>{
     let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
     return Y + M + D ;
 }
-const ifLogin = ()=>{
-    let url = window.location.href
-    let indexStart = url.indexOf("==")
-    let indexEnd = url.indexOf("?token")
-    let linkUserId = ''
-    let userInfo = ''
-    if(indexStart > 0) {
-      linkUserId = url.substring(indexStart+2,indexEnd).replace("#","").replace("/","")
-    }else{
-      linkUserId = ''
-    }
-    let user = {
-      user_info:userInfo
-    }
-    sessionStorage.setItem("user", JSON.stringify(user));
-    if(linkUserId == '') {
-    //   this.$.get('getSsoUrl').then(res=>{
-        // window.location.href=res.data.data
-        window.location.href="https://www.baidu.com/"
-    //   })
-    }else if(linkUserId != ''){
-      this.$.get('getUserInfo',{params:{bsAccount:linkUserId}}).then(res=>{
-        userInfo=res.data.data.user_name
-      })
-    }else{
-      this.$router.push('./')
-    }
-}
 Vue.prototype.dateChangeCron = dateChangeCron
 Vue.prototype.cronChangeDate = cronChangeDate
 Vue.prototype.getPlaceholderCount = getPlaceholderCount
 Vue.prototype.formatDate = formatDate
-Vue.prototype.ifLogin = ifLogin
