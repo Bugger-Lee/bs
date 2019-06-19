@@ -12,6 +12,7 @@
           <el-input
             placeholder="Search by Title"
             clearable
+            style="width:70%;"
             prefix-icon="el-icon-search"
             @keyup.enter.native="searchHomeList"
             v-model="searchListVal"
