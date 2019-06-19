@@ -38,8 +38,7 @@ export default {
       changeTab: 1,
       linkUserId:'',
       userInfo:'',
-      fullscreenLoading: false,
-      backUrl:''
+      fullscreenLoading: false
     };
   },
   created() {
@@ -55,7 +54,6 @@ export default {
       this.fullscreenLoading = true
       this.$.get('getSsoUrl').then(res=>{
         window.location.href=res.data.data
-        this.backUrl=res.data.data
       })
     }else if(this.linkUserId != ''){
       this.fullscreenLoading = false
@@ -67,9 +65,13 @@ export default {
           }
           sessionStorage.setItem("user", JSON.stringify(user));
         }else{
-          this.$message(res.data.msg)
-          window.location.href=this.backUrl
-          return false
+          this.$alert(res.data.msg, '提示', {
+            confirmButtonText:'请重新登录',
+            showClose:false,
+            callback: action => {
+              window.location.href="http://bestsellerdmp.bestseller.com.cn/journey-builder/index.html"
+            }
+          });
         }
       })
     }else{
