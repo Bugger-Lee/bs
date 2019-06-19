@@ -69,17 +69,11 @@
               </template>
               <el-menu-item-group>
                 <ul class="theme-l-tmp">
-                  <!-- <li v-for="i in sourcesType" :key="i.id">
+                  <li v-for="i in sourcesType" :key="i.id">
                     <span class="crowd-style">
                       <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
                     </span>
                     <p>{{i.command_name}}</p>
-                  </li> -->
-                  <li>
-                    <span class="crowd-style">
-                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
-                    </span>
-                    <p>CLV Data</p>
                   </li>
                 </ul>
               </el-menu-item-group>
