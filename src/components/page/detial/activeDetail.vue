@@ -718,7 +718,7 @@ export default {
     },
     smsLists() {
       console.log(111)
-      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand_id,cycleId:this.ifDataExtension.cycle_id,documentText:this.propsSms.SearchSms}}).then(res=>{
+      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand_id,cycleId:this.ifDataExtension.cycle_id,templateName:this.propsSms.SearchSms}}).then(res=>{
         if(res.data.code == 200) {
           this.propsSms.smsTable = res.data.data
           this.propsSms.editMsg = res.data.data.document_text
