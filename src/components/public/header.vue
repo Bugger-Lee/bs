@@ -40,7 +40,8 @@ export default {
       linkUserId:'',
       userInfo:'',
       fullscreenLoading: false,
-      alertIndex:false
+      alertIndex:false,
+      urlIndexLogin:''
     };
   },
   created() {
@@ -57,6 +58,7 @@ export default {
       this.alertIndex = false
       this.$.get('getSsoUrl').then(res=>{
         window.location.href=res.data.data
+        this.urlIndexLogin=res.data.data
       })
     }else if(this.linkUserId != ''){
       this.fullscreenLoading = false
@@ -71,11 +73,12 @@ export default {
         }else{
           this.alertIndex = true
           this.linkUserId = ''
+          console.log(this.urlIndexLogin)
           this.$alert(res.data.msg, '提示', {
             confirmButtonText:'请重新登录',
             showClose:false,
             callback: action => {
-              window.location.href="http://bestsellerdmp.bestseller.com.cn/journey-builder/index.html"
+              window.location.href="https://sso.bestseller.com.cn/sso/login?service=http://bestsellerdmp.bestseller.com.cn/journey-builder/j_spring_cas_security_check?spring-security-redirect=http://bestsellerdmp.bestseller.com.cn/journey-builder/index.html"
             }
           });
           return false
