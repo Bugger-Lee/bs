@@ -21,6 +21,7 @@
         </div>
       </div>
     </div>
+  <div style="width:100%;height:100%;position:fixed;background:white;" v-if="this.alertIndex==true"></div>
   </div>
 </template>
 <script>
@@ -38,7 +39,8 @@ export default {
       changeTab: 1,
       linkUserId:'',
       userInfo:'',
-      fullscreenLoading: false
+      fullscreenLoading: false,
+      alertIndex:false
     };
   },
   created() {
@@ -52,6 +54,7 @@ export default {
     }
     if(this.linkUserId == '') {
       this.fullscreenLoading = true
+      this.alertIndex = false
       this.$.get('getSsoUrl').then(res=>{
         window.location.href=res.data.data
       })
@@ -59,12 +62,15 @@ export default {
       this.fullscreenLoading = false
       this.$.get('getUserInfo',{params:{bsAccount:this.linkUserId}}).then(res=>{
         if(res.data.code == 200) {
+          this.alertIndex = false
           this.userInfo=res.data.data.user_name
           let user = {
             user_info:res.data.data.user_name
           }
           sessionStorage.setItem("user", JSON.stringify(user));
         }else{
+          this.alertIndex = true
+          this.linkUserId = ''
           this.$alert(res.data.msg, '提示', {
             confirmButtonText:'请重新登录',
             showClose:false,
@@ -72,6 +78,7 @@ export default {
               window.location.href="http://bestsellerdmp.bestseller.com.cn/journey-builder/index.html"
             }
           });
+          return false
         }
       })
     }else{
