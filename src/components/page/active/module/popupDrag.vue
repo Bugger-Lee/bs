@@ -85,7 +85,7 @@
           <el-col :span="1" class="r-content-c">
             <span></span>
           </el-col>
-          <el-col :span="19" class="r-content-r">
+          <el-col :span="19" class="r-content-r" v-if="propsData.data_socure == 'CLV人群'">
             <div class="select-option">
               <el-col :span="12">
                 <div class="ml10">
@@ -145,6 +145,47 @@
                   <span class="mr15" style="color:red;font-size:10px;">(within a week)</span>  
                 </p>
               </el-col>
+            </div>
+          </el-col>
+          <el-col :span="19" class="r-content-r" v-if="propsData.data_socure == '测试人群'">
+                        <div class="select-msg">
+              <div class="select-msg-search">
+                <el-input
+                  class="select-msg-search-ipt"
+                  placeholder="Search by coupon"
+                  prefix-icon="el-icon-search"
+                  style="width:45%;"
+                  @keyup.enter.native="searchDmp"
+                  v-model="propsData.SearchDmp">
+                </el-input>
+              </div>
+              <div class="select-msg-table">
+                <el-table :data="salesTable" style="width: 100%" height="220" @selection-change="ifChecked">
+                  <el-table-column type="selection" width="55"></el-table-column>
+                  <el-table-column prop="sal_id" label="Coupon ID" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="coupon_type" label="Type" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="brand" label="Brand" show-overflow-tooltip> </el-table-column>
+                  <el-table-column  label="Content" show-overflow-tooltip>
+                    <template slot-scope="scope">{{scope.row.act_desc}}</template>
+                  </el-table-column>
+                  <el-table-column prop="created_time" label="Created" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
+                </el-table>
+              </div>
+              <div class="select-msg-page">
+                <el-pagination
+                  @current-change="handleSizeChange"
+                  :current-page.sync="currentPage"
+                  :page-size="10"
+                  class="page-el-pagination"
+                  background
+                  layout="slot,prev, pager, next"
+                  :total="propsTicket.salesTable.length"
+                  >
+                  <slot>
+                    <span>All {{propsTicket.salesTable.length}} Item</span>
+                  </slot>
+                </el-pagination>
+              </div>
             </div>
           </el-col>
         </div>

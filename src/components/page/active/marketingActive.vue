@@ -151,7 +151,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">{{data_socure}}</div>
+            <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
             <div  id="return1" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
@@ -183,7 +183,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">{{data_socure}}</div>
+            <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
             <div  id="newreturn1" ref="newData" v-if="ifProDrag">
               <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
@@ -209,7 +209,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">{{data_socure}}</div>
+            <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
             <div  id="return1111" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
@@ -241,7 +241,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">{{data_socure}}</div>
+            <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
             <div  id="return11" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy"  style="font-size:32px;"></i>
@@ -411,6 +411,8 @@ export default {
         newPeriod: "",
         newBuy: "",
         newMbmber: "",
+        data_socure: '',
+        SearchDmp:''
       },
       propsTicket:{
         salesTable: [],
@@ -439,7 +441,6 @@ export default {
       dargSms: false,
       sortDrag: "",
       sourcesType:[],
-      data_socure: ''
     };
   },
   mounted() {
@@ -840,7 +841,7 @@ export default {
       });
     },
     appendDiv(left, top,text,className) {
-      this.data_socure = text
+      this.propsData.data_socure = text
       this.ifDrag = true;
       this.$nextTick(() => {
         this.$refs.refData1.style.position = "fixed";
