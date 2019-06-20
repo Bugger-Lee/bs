@@ -21,6 +21,7 @@
         </div>
       </div>
     </div>
+  <div style="width:100%;height:100%;position:fixed;background:white;" v-if="this.alertIndex==true"></div>
   </div>
 </template>
 <script>
@@ -38,46 +39,52 @@ export default {
       changeTab: 1,
       linkUserId:'',
       userInfo:'',
-      fullscreenLoading: false
+      fullscreenLoading: false,
+      alertIndex:false
     };
   },
-  // created() {
-  //   let url = window.location.href
-  //   let indexStart = url.indexOf("==")
-  //   let indexEnd = url.indexOf("?token")
-  //   if(indexStart > 0) {
-  //     this.linkUserId = url.substring(indexStart+2,indexEnd).replace("#","").replace("/","")
-  //   }else{
-  //     this.linkUserId = ''
-  //   }
-  //   if(this.linkUserId == '') {
-  //     this.fullscreenLoading = true
-  //     this.$.get('getSsoUrl').then(res=>{
-  //       window.location.href=res.data.data
-  //     })
-  //   }else if(this.linkUserId != ''){
-  //     this.fullscreenLoading = false
-  //     this.$.get('getUserInfo',{params:{bsAccount:this.linkUserId}}).then(res=>{
-  //       if(res.data.code == 200) {
-  //         this.userInfo=res.data.data.user_name
-  //         let user = {
-  //           user_info:res.data.data.user_name
-  //         }
-  //         sessionStorage.setItem("user", JSON.stringify(user));
-  //       }else{
-  //         this.$alert(res.data.msg, '提示', {
-  //           confirmButtonText:'请重新登录',
-  //           showClose:false,
-  //           callback: action => {
-  //             window.location.href="http://bestsellerdmp.bestseller.com.cn/journey-builder/index.html"
-  //           }
-  //         });
-  //       }
-  //     })
-  //   }else{
-  //     this.$router.push('./')
-  //   }
-  // },
+  created() {
+    let url = window.location.href
+    let indexStart = url.indexOf("==")
+    let indexEnd = url.indexOf("?token")
+    if(indexStart > 0) {
+      this.linkUserId = url.substring(indexStart+2,indexEnd).replace("#","").replace("/","")
+    }else{
+      this.linkUserId = ''
+    }
+    if(this.linkUserId == '') {
+      this.fullscreenLoading = true
+      this.alertIndex = false
+      this.$.get('getSsoUrl').then(res=>{
+        window.location.href=res.data.data
+      })
+    }else if(this.linkUserId != ''){
+      this.fullscreenLoading = false
+      this.$.get('getUserInfo',{params:{bsAccount:this.linkUserId}}).then(res=>{
+        if(res.data.code == 200) {
+          this.alertIndex = false
+          this.userInfo=res.data.data.user_name
+          let user = {
+            user_info:res.data.data.user_name
+          }
+          sessionStorage.setItem("user", JSON.stringify(user));
+        }else{
+          this.alertIndex = true
+          this.linkUserId = ''
+          this.$alert(res.data.msg, '提示', {
+            confirmButtonText:'请重新登录',
+            showClose:false,
+            callback: action => {
+              window.location.href="http://bestsellerdmp.bestseller.com.cn/journey-builder/index.html"
+            }
+          });
+          return false
+        }
+      })
+    }else{
+      this.$router.push('./')
+    }
+  },
   methods: {
     changes(id) {
       this.changeTab = id;
