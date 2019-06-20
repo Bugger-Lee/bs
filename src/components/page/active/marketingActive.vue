@@ -12,7 +12,7 @@
                 <a href>Journeys Dashboard</a>
                 <i>> Journey</i>
               </span>
-                
+
             </p>
             <p>
               <el-input
@@ -70,7 +70,7 @@
               <el-menu-item-group>
                 <ul class="theme-l-tmp">
                   <li v-for="i in sourcesType" :key="i.id">
-                    <span class="crowd-style">
+                    <span class="crowd-style" :title ='i.command_name'>
                       <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
                     </span>
                     <p>{{i.command_name}}</p>
@@ -151,7 +151,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
+            <div ref="refData1div" v-if="ifDrag">{{data_socure}}</div>
             <div  id="return1" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
@@ -183,7 +183,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
+            <div ref="refData1div" v-if="ifDrag">{{data_socure}}</div>
             <div  id="newreturn1" ref="newData" v-if="ifProDrag">
               <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
@@ -209,7 +209,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
+            <div ref="refData1div" v-if="ifDrag">{{data_socure}}</div>
             <div  id="return1111" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
@@ -241,7 +241,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
+            <div ref="refData1div" v-if="ifDrag">{{data_socure}}</div>
             <div  id="return11" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy"  style="font-size:32px;"></i>
@@ -285,7 +285,7 @@
         @searchSmsList="searchSmsList"
         @sltSmsContent="sltSmsContent"
       ></smsPopup>
-      <popupTicket :openData="openTicket" 
+      <popupTicket :openData="openTicket"
       :openDataContent="openTicketContent"
       @searchDate="searchDate"
       :propsTicket = "propsTicket"
@@ -438,11 +438,12 @@ export default {
       systemId: "",
       dargSms: false,
       sortDrag: "",
-      sourcesType:[]
+      sourcesType:[],
+      data_socure: ''
     };
   },
   mounted() {
-    this.dragInit();
+    // this.dragInit();
   },
   created() {
     this.brandLists();
@@ -589,7 +590,7 @@ export default {
           if (val == "test") {
             this.$message(res.data.msg);
           } else if (val == "runing") {
-            this.saveUpdate = false 
+            this.saveUpdate = false
             this.saveTest = false
             this.saveRunning = false
             this.saveStop = true
@@ -705,6 +706,9 @@ export default {
       this.$.get("command/getList?commandName=").then(res => {
           if(res.data.code == 200) {
             this.sourcesType  = res.data.data
+            this.$nextTick(()=>{
+              this.dragInit();
+            })
           }
       });
     },
@@ -835,7 +839,8 @@ export default {
         this.$refs.newrefDatadiv.style.left = left + -5 + "px";
       });
     },
-    appendDiv(left, top) {
+    appendDiv(left, top,text,className) {
+      this.data_socure = text
       this.ifDrag = true;
       this.$nextTick(() => {
         this.$refs.refData1.style.position = "fixed";
@@ -1004,11 +1009,11 @@ export default {
             if (this.propsSms.ifSms == '') {
               this.propsSms.ifSms = {}
             }
-            this.propsSms.ifSms.contentMag = val.document_text 
+            this.propsSms.ifSms.contentMag = val.document_text
             this.propsSms.ifSms.id = val.id
             console.log(this.propsSms.ifSms)
           }
-         
+
       }
     },
     inputBlur(val, id) {
@@ -1041,7 +1046,7 @@ export default {
       }
       let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
       let objData = {
-        contentMag: this.propsSms.ifSms.contentMag, 
+        contentMag: this.propsSms.ifSms.contentMag,
         sms_channel_id_show:this.propsSms.sendSmsVal,
         sms_channel_id: sms_data[0].id,
         id:this.propsSms.ifSms.id
@@ -1096,7 +1101,6 @@ export default {
       }
     },
     dragInit() {
-      console.log(1111)
       let minleft = $(".imaginary-circle").offset().left;
       let mintop = $(".imaginary-circle").offset().top;
       let maxleft = $(".imaginary-circle").width();
@@ -1112,13 +1116,14 @@ export default {
       $(".marketing-drag").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
+          console.log(ui.draggable[0].title,ui.draggable[0].firstChild.className)
           if (
             minleft <= ui.offset.left &&
             ui.offset.left <= minleft + maxleft &&
             mintop <= ui.offset.top &&
             ui.offset.top < mintop + maxtop
           ) {
-            that.appendDiv(ui.offset.left, ui.offset.top);
+            that.appendDiv(ui.offset.left, ui.offset.top,ui.draggable[0].title,ui.draggable[0].firstChild.className);
           }
         }
       });
