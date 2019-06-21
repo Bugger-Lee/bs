@@ -40,8 +40,7 @@ export default {
       linkUserId:'',
       userInfo:'',
       fullscreenLoading: false,
-      alertIndex:false,
-      urlIndexLogin:''
+      alertIndex:false
     };
   },
   created() {
@@ -58,7 +57,6 @@ export default {
       this.alertIndex = false
       this.$.get('getSsoUrl').then(res=>{
         window.location.href=res.data.data
-        this.urlIndexLogin=res.data.data
       })
     }else if(this.linkUserId != ''){
       this.fullscreenLoading = false
@@ -73,7 +71,6 @@ export default {
         }else{
           this.alertIndex = true
           this.linkUserId = ''
-          console.log(this.urlIndexLogin)
           this.$alert(res.data.msg, '提示', {
             confirmButtonText:'请重新登录',
             showClose:false,
