@@ -95,6 +95,10 @@ export default {
             {
               label: "CLV",
               icon: 'icon-wenjian'
+            },
+            {
+              label: "DMP",
+              icon: 'icon-wenjian'
             }
           ]
         }
