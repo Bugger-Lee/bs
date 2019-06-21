@@ -35,11 +35,11 @@
               </template>
               <el-menu-item-group>
                 <ul class="theme-l-tmp">
-                  <li>
+                  <li v-for="i in propsData.sourcesType" :key="i.id">
                     <span class="crowd-style">
                       <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
                     </span>
-                    <p>CLV Data</p>
+                    <p>{{i.command_name}}</p>
                   </li>
                 </ul>
               </el-menu-item-group>
@@ -227,7 +227,7 @@ export default {
           brandList: [],
           periodList: [],
           registerList: [],
-          orderList:[],
+          sourcesType:[],
           brandVal: '',
           brandId: '',
           periodVal:'',
@@ -331,7 +331,7 @@ export default {
     this.periodLists()
     this.registerLists()
     this.sendSmsLists()
-    this.orderLists()
+    this.sourcesList()
   },
   methods: {
     doneTime() {
@@ -512,7 +512,6 @@ export default {
         this.$.get("rule/updateStatus",{params: { id: this.$route.query.id, status: this.statusTestRunVal }}).then(res=>{
           if(res.data.code == 200) {
             this.$message(res.data.msg)
-            console.log(this.detailUpdate,this.detailRun,this.detailTest)
             if(this.statusTestRunVal == 3) {
               this.detailUpdate = true
               this.detailRun = true
@@ -582,9 +581,11 @@ export default {
       })
     },
     // 调度命令
-    orderLists() {
+    sourcesList() {
       this.$.get('command/getList?commandName=').then(res=>{
-        this.propsData.orderList = res.data.data
+        if(res.data.code=200) {
+          this.propsData.sourcesType = res.data.data
+        }
       })
     },
     // 品牌
@@ -717,7 +718,6 @@ export default {
       this.openSms = true
     },
     smsLists() {
-      console.log(111)
       this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand_id,cycleId:this.ifDataExtension.cycle_id,templateName:this.propsSms.SearchSms}}).then(res=>{
         if(res.data.code == 200) {
           this.propsSms.smsTable = res.data.data
@@ -751,7 +751,6 @@ export default {
       }
     },
     inputBlur(val,id) {
-        console.log(val)
         if(val == '') {
           this.$message('文案不可以为空')
           return false
@@ -781,7 +780,6 @@ export default {
         sms_channel_id: smsObj[0].id,
         sms_channel_content:this.propsSms.sendSmsVal
       }
-      console.log(this.propsSms.dataSelected)
       if(this.propsSms.dataSelected == 2) {
         let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.id)
         this.propsSms.ifSms.template_text = doc_text[0].document_text

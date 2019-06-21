@@ -148,27 +148,42 @@
             </div>
           </el-col>
           <el-col :span="19" class="r-content-r" v-if="propsData.data_socure == '测试人群'">
-                        <div class="select-msg">
+            <div class="select-msg">
               <div class="select-msg-search">
-                <el-input
-                  class="select-msg-search-ipt"
-                  placeholder="Search by coupon"
-                  prefix-icon="el-icon-search"
-                  style="width:45%;"
-                  @keyup.enter.native="searchDmp"
-                  v-model="propsData.SearchDmp">
-                </el-input>
+                <el-col :span="12">
+                  <el-input
+                    class="select-msg-search-ipt"
+                    placeholder="Search by Title"
+                    prefix-icon="el-icon-search"
+                    style="width:85%;"
+                    @keyup.enter.native="searchSmsList"
+                    v-model="propsData.SearchDmp">
+                  </el-input>
+                </el-col>
+                <el-col :span="12">
+                  <div class="ml10">
+                    <span class="redStar">*</span>
+                    <span>Select Brands</span>
+                    <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brands" class="select-option-classify">
+                      <el-option
+                        v-for="item in propsData.brandList"
+                        :key="item.id"
+                        :label="item.brand_name"
+                        :value="item.id"
+                      ></el-option>
+                    </el-select>
+                  </div>
+                </el-col>
               </div>
               <div class="select-msg-table">
-                <el-table :data="salesTable" style="width: 100%" height="220" @selection-change="ifChecked">
+                <el-table :data="dmpTable" style="width: 100%" height="220">
                   <el-table-column type="selection" width="55"></el-table-column>
-                  <el-table-column prop="sal_id" label="Coupon ID" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="coupon_type" label="Type" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="brand" label="Brand" show-overflow-tooltip> </el-table-column>
-                  <el-table-column  label="Content" show-overflow-tooltip>
-                    <template slot-scope="scope">{{scope.row.act_desc}}</template>
-                  </el-table-column>
-                  <el-table-column prop="created_time" label="Created" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="sal_id" label="Crowd Title" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="brand" label="Quantity" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="coupon_type" label="Status" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="brand" label="Creator" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="brand" label="Create Time" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="created_time" label="Update Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
                 </el-table>
               </div>
               <div class="select-msg-page">
@@ -179,10 +194,10 @@
                   class="page-el-pagination"
                   background
                   layout="slot,prev, pager, next"
-                  :total="propsTicket.salesTable.length"
+                  :total="propsData.dmpTable.length"
                   >
                   <slot>
-                    <span>All {{propsTicket.salesTable.length}} Item</span>
+                    <span>All {{propsData.dmpTable.length}} Item</span>
                   </slot>
                 </el-pagination>
               </div>
@@ -215,6 +230,7 @@ export default {
       ifNewPeriod:false,
       ifNewBuy:false,
       ifNewMbmber:false,
+      currentPage:1
     };
   },
   props: ["openData", "openDataContent","propsData","ifDataExtension"],
@@ -234,7 +250,14 @@ export default {
       set(v) {
         this.$emit('sltDataContent', 'close1');
       }
-    }
+    },
+    dmpTable() {
+      let result = [];
+      for(var i=0;i<this.propsData.dmpTable.length;i+=10){
+          result.push(this.propsData.dmpTable.slice(i,i+10));
+      }
+      return result[this.currentPage-1]
+    },
   },
   methods: {
     // 监听
@@ -264,6 +287,9 @@ export default {
         this.ifNewBuy = true
         this.ifNewMbmber = false
       }
+    },
+    handleSizeChange(val) {
+      this.currentPage = val
     }
   }
 };

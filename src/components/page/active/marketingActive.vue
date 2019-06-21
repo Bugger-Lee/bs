@@ -403,6 +403,7 @@ export default {
         brandList: [],
         periodList: [],
         registerList: [],
+        dmpTable:[],
         brandVal: "",
         periodVal: "",
         periodShow: "",
