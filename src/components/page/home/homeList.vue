@@ -37,7 +37,7 @@
         <el-col :span="6" class="list-content-l">
           <p class="list-content-l-tit ml15">Folders</p>
           <div class="list-content-l-tree">
-            <el-tree :data="modelClv" style="font-size:14px;" class="mt10">
+            <el-tree :data="modelClv" style="font-size:14px;" :highlight-current="true" @node-click="treeModes" ref="journeyTree" node-key="journeyId" class="mt10">
               <span  slot-scope="{ node, data }">
                   <span>
                       <i :class="data.icon" class="mr05"></i>{{ node.label }}
@@ -91,14 +91,17 @@ export default {
         {
           label: "All  Journeys",
           icon: 'icon-wenjian',
+          journeyId:1,
           children: [
             {
               label: "CLV",
-              icon: 'icon-wenjian'
+              icon: 'icon-wenjian',
+              journeyId:2
             },
             {
               label: "DMP",
-              icon: 'icon-wenjian'
+              icon: 'icon-wenjian',
+              journeyId:3
             }
           ]
         }
@@ -115,10 +118,19 @@ export default {
   },
   created() {
     this.homeLists()
+    this.treeJourneys()
   },
   methods: {
     newActive() {
       this.$router.push('/marketingActive')
+    },
+    treeJourneys() {
+      this.$nextTick(() => {
+        this.$refs.journeyTree.setCurrentKey(this.modelClv[0].journeyId); 
+      })
+    },
+    treeModes(data) {
+      
     },
     getMoreDate() {
       if (this.showLoading) {

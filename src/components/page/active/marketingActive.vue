@@ -70,7 +70,7 @@
               <el-menu-item-group>
                 <ul class="theme-l-tmp">
                   <li v-for="i in sourcesType" :key="i.id">
-                    <span class="crowd-style" :title ='i.command_name'>
+                    <span class="crowd-style" :title ='i.command_name' :slot='i.command_code'>
                       <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
                     </span>
                     <p>{{i.command_name}}</p>
@@ -413,6 +413,7 @@ export default {
         newBuy: "",
         newMbmber: "",
         data_socure: '',
+        data_code:"",
         SearchDmp:''
       },
       propsTicket:{
@@ -529,8 +530,8 @@ export default {
         purchase_week: this.ifDataExtension.newMbmber,
         purchase_first: this.propsData.newBuy,
         cron_express: this.cron_express,
-        command_name:"CLV人群",
-        command_code: "clv-job",
+        command_name:this.propsData.data_socure,
+        command_code: this.propsData.data_code,
         created_by:getSessionItem.user_info
       };
       this.$.post("rule/insert", data).then(res => {
@@ -561,8 +562,8 @@ export default {
         purchase_week: this.ifDataExtension.newMbmber,
         purchase_first: this.propsData.newBuy,
         cron_express: this.cron_express,
-        command_name:"CLV人群",
-        command_code: "clv-job",
+        command_name:this.propsData.data_socure,
+        command_code:this.propsData.data_code,
         created_by:getSessionItem.user_info
       };
       this.$.post("rule/update", data).then(res => {
@@ -753,7 +754,7 @@ export default {
       this.$.get("template/getTemplate", {
         params: {
           brandId: this.ifDataExtension.brand,
-          cycleId: this.ifDataExtension.period,
+          // cycleId: this.ifDataExtension.period,
           templateName:this.propsSms.SearchSms
         }
       }).then(res => {
@@ -841,8 +842,9 @@ export default {
         this.$refs.newrefDatadiv.style.left = left + -5 + "px";
       });
     },
-    appendDiv(left, top,text,className) {
+    appendDiv(left, top,text,code,className) {
       this.propsData.data_socure = text
+      this.propsData.data_code = code
       this.ifDrag = true;
       this.$nextTick(() => {
         this.$refs.refData1.style.position = "fixed";
@@ -964,7 +966,7 @@ export default {
       }
     },
     sms() {
-      if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0) {
+      if(this.propsData.brandVal == "") {
         this.$message({
           showClose: true,
           message: '请您先将数据源里的必选内容选完',
@@ -1006,14 +1008,12 @@ export default {
       } else if (val.name == "inputBlur") {
         this.inputBlur(val.value, val.id);
       } else if (val.name = "tableIndex") {
-          console.log(val)
           if(val.id) {
             if (this.propsSms.ifSms == '') {
               this.propsSms.ifSms = {}
             }
             this.propsSms.ifSms.contentMag = val.document_text
             this.propsSms.ifSms.id = val.id
-            console.log(this.propsSms.ifSms)
           }
 
       }
@@ -1067,7 +1067,6 @@ export default {
         this.propsSms.ifSms = objData;
         this.openSmsContent = false;
         this.openSms = true;
-        console.log( this.propsSms.ifSms)
       } else if (this.propsSms.dataSelected == 3) {
          if(!this.propsSms.editMsg) {
           this.$message('模板内容不可以为空')
@@ -1089,7 +1088,6 @@ export default {
               id:res.data.data
             };
             this.propsSms.ifSms = objData;
-            console.log(this.propsSms.ifSms)
             this.openSmsContent = false;
             this.openSms = true;
           } else {
@@ -1118,14 +1116,14 @@ export default {
       $(".marketing-drag").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
-          console.log(ui.draggable[0].title,ui.draggable[0].firstChild.className)
+          console.log(ui.draggable[0].slot)
           if (
             minleft <= ui.offset.left &&
             ui.offset.left <= minleft + maxleft &&
             mintop <= ui.offset.top &&
             ui.offset.top < mintop + maxtop
           ) {
-            that.appendDiv(ui.offset.left, ui.offset.top,ui.draggable[0].title,ui.draggable[0].firstChild.className);
+            that.appendDiv(ui.offset.left, ui.offset.top,ui.draggable[0].title,ui.draggable[0].slot,ui.draggable[0].firstChild.className);
           }
         }
       });
