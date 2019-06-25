@@ -111,7 +111,7 @@
                 <div class="select-msg-table">
                   <el-table :data="smsTable" style="width: 100%"  highlight-current-row  @current-change="tableIndex" height="220" setCurrentRow>
                     <el-table-column prop="template_name" label="Template" show-overflow-tooltip></el-table-column>
-                    <el-table-column prop="cycle_type" label="Period" show-overflow-tooltip></el-table-column>
+                    <!-- <el-table-column prop="cycle_type" label="Period" show-overflow-tooltip></el-table-column> -->
                     <el-table-column prop="brand_name" label="Brand" show-overflow-tooltip> </el-table-column>
                     <el-table-column prop="document_text" label="Sms Content" show-overflow-tooltip>
                       <template slot-scope="scope">
@@ -250,12 +250,10 @@ export default {
       }
     },
     tableIndex(value) {
-     console.log(value)
       if(!value) {
         return false
       }
       value.name = 'tableIndex'
-     console.log(value)
      this.$emit('sltSmsContent', value)
     },
     clickText(index) {
