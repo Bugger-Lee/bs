@@ -113,7 +113,8 @@ export default {
       JourneyTotal:'',
       ruleName:'',
       tableHeight: window.innerHeight - 200,
-      showLoading: false
+      showLoading: false,
+      crowdVal:''
     };
   },
   created() {
@@ -130,7 +131,10 @@ export default {
       })
     },
     treeModes(data) {
-      
+      if(data.label == 'CLV' || data.label == 'DMP') {
+        this.crowdVal = data.label
+        this.homeLists()
+      }
     },
     getMoreDate() {
       if (this.showLoading) {
@@ -158,7 +162,7 @@ export default {
       this.tableData = result[0]
     },
     homeLists() {
-      this.$.get("rule/getList",{params:{ruleName:this.ruleName}}).then(res=>{
+      this.$.get("rule/getList",{params:{ruleName:this.ruleName,crowdName:this.crowdVal}}).then(res=>{
         if (res.data.code ==200) {
           this.totalDate = res.data.data
           this.JourneyTotal = res.data.size

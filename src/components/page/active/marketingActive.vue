@@ -445,15 +445,13 @@ export default {
       sourcesType:[],
     };
   },
-  mounted() {
-    // this.dragInit();
-  },
   created() {
     this.brandLists();
     this.periodLists();
     this.registerLists();
     this.sendSmsLists();
     this.sourcesList();
+    this.dmpTables();
     this.currentTimeName =
       this.currentTimeName.getFullYear() +
       "-" +
@@ -649,6 +647,11 @@ export default {
       this.checkedActive = activeData;
       this.checkedDiscounts = discountsData;
     },
+    dmpTables() {
+      this.$.get("http://10.150.33.30:8102/getAllCrowd").then(res=>{
+        this.propsData.dmpTable = res.data.data
+      })
+    },
     promotionSummary() {
       if (this.checkedActive == undefined || this.checkedDiscounts == undefined) {
         this.$message({
@@ -667,32 +670,44 @@ export default {
       this.openTicket = true;
     },
     dataSummary() {
-      if(this.propsData.brandVal == "" ||this.propsData.periodVal === "" ||this.propsData.registerVal.length === 0) {
-        this.$message({
-          showClose: true,
-          message: "请您选择必选项",
-          type: "warning"
-        });
-        return false;
+      if(this.propsData.data_socure == 'CLV-Data') {
+        if(this.propsData.brandVal == "" ||this.propsData.periodVal === "" ||this.propsData.registerVal.length === 0) {
+          this.$message({
+            showClose: true,
+            message: "请您选择必选项",
+            type: "warning"
+          });
+          return false;
+        }
+      }else if(this.propsData.data_socure == 'DMP-Data') {
+        if(this.propsData.brandVal == "" || !this.ifDataExtension.crowdId) {
+          this.$message("请您填写必填项")
+          return false
+        }
       }
-      let registerVal = this.propsData.registerVal.join(",");
       let item_data = this.propsData.brandList.filter(
         item => item.id == this.propsData.brandVal
       );
-      let item2_data = this.propsData.periodList.filter(
-        item => item.id == this.propsData.periodVal
-      );
-      let objData = {
-        brand: this.propsData.brandVal,
-        period: this.propsData.periodVal,
-        register: registerVal,
-        brandShow: item_data[0].brand_name,
-        periodShow: item2_data[0].cycle_type,
-        newPeriod: this.propsData.newPeriod,
-        newBuy: this.propsData.newBuy,
-        newMbmber: this.propsData.newMbmber,
-      };
-      this.ifDataExtension = objData;
+      if(this.propsData.data_socure == 'CLV-Data') {
+        let registerVal = this.propsData.registerVal.join(",");
+        let item2_data = this.propsData.periodList.filter(
+          item => item.id == this.propsData.periodVal
+        );
+        let objData = {
+          brand: this.propsData.brandVal,
+          period: this.propsData.periodVal,
+          register: registerVal,
+          brandShow: item_data[0].brand_name,
+          periodShow: item2_data[0].cycle_type,
+          newPeriod: this.propsData.newPeriod,
+          newBuy: this.propsData.newBuy,
+          newMbmber: this.propsData.newMbmber,
+        };
+        this.ifDataExtension = objData;
+      }else if(this.propsData.data_socure == 'DMP-Data') {
+        this.ifDataExtension.brandShow = item_data[0].brand_name
+        this.ifDataExtension.brand = this.propsData.brandVal
+      }
       this.openDataContent = false;
       this.openData = true;
     },
@@ -754,7 +769,6 @@ export default {
       this.$.get("template/getTemplate", {
         params: {
           brandId: this.ifDataExtension.brand,
-          // cycleId: this.ifDataExtension.period,
           templateName:this.propsSms.SearchSms
         }
       }).then(res => {
@@ -987,6 +1001,10 @@ export default {
         this.openDataContent = false;
       } else if (val == "openNext") {
         this.openDataContent = true;
+      }else if(val.id) {
+        this.ifDataExtension = {}
+        this.ifDataExtension.crowdId = val.id
+        this.ifDataExtension.crowdName = val.name
       }
     },
     sltPromotion(val) {
@@ -1024,7 +1042,6 @@ export default {
         return false;
       }
       let upDate = {
-        cycle_id: this.ifDataExtension.period,
         brand_id: this.ifDataExtension.brand,
         document_text: val,
         id: id
@@ -1073,7 +1090,6 @@ export default {
           return false
         }
         let insertData = {
-          cycle_id: this.ifDataExtension.period,
           brand_id: this.ifDataExtension.brand,
           document_text: this.propsSms.editMsg,
           uuid:(new Date()).valueOf()

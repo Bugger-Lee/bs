@@ -27,12 +27,13 @@
             <el-button class="bth" @click="backlevel('edit')">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P class="pttb"><span>Brands : {{ifDataExtension.brandShow}}</span><span></span></P>
-            <P class="pttb"><span>Periods : {{ifDataExtension.periodShow}}</span><span></span></P>
-            <P class="pttb"><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.newPeriod != ''"><span>New Entry : {{ifDataExtension.newPeriod}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.newBuy != ''"><span>First Purchase : {{ifDataExtension.newBuy}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.newMbmber != ''"><span>No Purchase (within a week) : {{ifDataExtension.newMbmber}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.brandShow"><span>Brands : {{ifDataExtension.brandShow}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.periodShow"><span>Periods : {{ifDataExtension.periodShow}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.crowdName"><span>Crowd Name : {{ifDataExtension.crowdName}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.register"><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.newPeriod"><span>New Entry : {{ifDataExtension.newPeriod}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.newBuy"><span>First Purchase : {{ifDataExtension.newBuy}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.newMbmber"><span>No Purchase (within a week) : {{ifDataExtension.newMbmber}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -85,7 +86,7 @@
           <el-col :span="1" class="r-content-c">
             <span></span>
           </el-col>
-          <el-col :span="19" class="r-content-r" v-if="propsData.data_socure == 'CLV人群'">
+          <el-col :span="19" class="r-content-r" v-if="propsData.data_socure == 'CLV-Data'">
             <div class="select-option">
               <el-col :span="12">
                 <div class="ml10">
@@ -147,7 +148,7 @@
               </el-col>
             </div>
           </el-col>
-          <el-col :span="19" class="r-content-r" v-if="propsData.data_socure == '测试人群'">
+          <el-col :span="19" class="r-content-r" v-if="propsData.data_socure == 'DMP-Data'">
             <div class="select-msg">
               <div class="select-msg-search">
                 <el-col :span="12">
@@ -176,14 +177,13 @@
                 </el-col>
               </div>
               <div class="select-msg-table">
-                <el-table :data="dmpTable" style="width: 100%" height="220">
-                  <el-table-column type="selection" width="55"></el-table-column>
-                  <el-table-column prop="sal_id" label="Crowd Title" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="brand" label="Quantity" show-overflow-tooltip> </el-table-column>
-                  <el-table-column prop="coupon_type" label="Status" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="brand" label="Creator" show-overflow-tooltip> </el-table-column>
-                  <el-table-column prop="brand" label="Create Time" show-overflow-tooltip> </el-table-column>
-                  <el-table-column prop="created_time" label="Update Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
+                <el-table :data="dmpTable" style="width: 100%" highlight-current-row  @current-change="dmpTableIndex" height="220">
+                  <el-table-column prop="name" label="Crowd Title" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="crowdCount" label="Quantity" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="status" label="Status" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="creator" label="Creator" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="create_time" label="Create Time" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="update_time" label="Update Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
                 </el-table>
               </div>
               <div class="select-msg-page">
@@ -267,6 +267,12 @@ export default {
     // 取消  确定
     backlevel(val) {
       this.$emit("backlevel",val)
+    },
+    dmpTableIndex(val) {
+      if(!val) {
+        return false
+      }
+      this.$emit("sltDataContent", val);
     },
     tabSelect(val) {
       if (val == '1') {
