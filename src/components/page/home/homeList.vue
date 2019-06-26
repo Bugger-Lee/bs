@@ -133,8 +133,10 @@ export default {
     treeModes(data) {
       if(data.label == 'CLV' || data.label == 'DMP') {
         this.crowdVal = data.label
-        this.homeLists()
+      }else if(data.label == 'All  Journeys') {
+        this.crowdVal = ''
       }
+      this.homeLists()
     },
     getMoreDate() {
       if (this.showLoading) {
