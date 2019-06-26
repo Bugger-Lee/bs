@@ -1,17 +1,16 @@
 import axios from 'axios'
 // 设置域名
-// let BASEURL = 'http://10.150.33.126:8106/'
 
-let BASEURL = defaultUrl
-let domain = document.domain
-let teamUrl = document.location.pathname.split('/')[1]
-if (domain == 'localhost') {
-  BASEURL ='http://10.150.33.126:8106/'  //本地
-}else if(document.location.origin=='http://bestsellerdmp.bestseller.com.cn') {
-  BASEURL='http://bestsellerdmp.bestseller.com.cn/'+teamUrl
-}else {
-  BASEURL =document.location.origin +'/'
-}
+let BASEURL =defaultUrl
+// let domain = document.domain
+// let teamUrl = document.location.pathname.split('/')[1]
+// if (domain == 'localhost') {
+//   BASEURL ='http://10.150.33.126:8106/'  //本地
+// }else if(document.location.origin=='http://bestsellerdmp.bestseller.com.cn') {
+//   BASEURL='http://bestsellerdmp.bestseller.com.cn/'+teamUrl
+// }else {
+//   BASEURL =document.location.origin +'/'
+// }
 
 // 配置域名、超时时间（10s）
 let $ = axios.create({
