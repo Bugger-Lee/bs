@@ -2,7 +2,7 @@ import axios from 'axios'
 // 设置域名
 // let BASEURL = 'http://10.150.33.126:8106/'
 
-let BASEURL = ''
+let BASEURL = defaultUrl
 let domain = document.domain
 let teamUrl = document.location.pathname.split('/')[1]
 if (domain == 'localhost') {

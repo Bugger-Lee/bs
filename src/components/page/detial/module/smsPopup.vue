@@ -109,7 +109,7 @@
                   </el-col>
                 </div>
                 <div class="select-msg-table">
-                  <el-table :data="smsTable" style="width: 100%"  highlight-current-row  @current-change="tableIndex" height="220" setCurrentRow>
+                  <el-table ref='singleTable' :data="smsTable" style="width: 100%"  highlight-current-row  @current-change="tableIndex" height="220" setCurrentRow>
                     <el-table-column prop="template_name" label="Template" show-overflow-tooltip></el-table-column>
                     <!-- <el-table-column prop="cycle_type" label="Period" show-overflow-tooltip></el-table-column> -->
                     <el-table-column prop="brand_name" label="Brand" show-overflow-tooltip> </el-table-column>
@@ -209,7 +209,8 @@ export default {
       SearchSales:'',
       currentPage:1,
       change_index: -1, //点击的index
-      input_text: ''
+      input_text: '',
+      showChange: true
     }
   },
   computed: {
@@ -247,9 +248,21 @@ export default {
       if(value.name=='inputBlur') {
         this.change_index = -1
         this.input_text = ''
+      } else if( value.name == 'openNext') {
+        this.showChange = true
+        this.setRow()
       }
     },
+    setRow() {
+      if(!this.showChange) {return false}
+      let row = this.smsTable.filter(item => item.id == this.propsSms.ifSms.template_id)
+      if (!row[0]) {return false}
+      this.$nextTick(()=> {
+        this.$refs.singleTable.setCurrentRow(row[0])
+      })
+    },
     tableIndex(value) {
+      this.showChange = false
       if(!value) {
         return false
       }
@@ -280,6 +293,7 @@ export default {
     // 分页
     handleSizeChange(val) {
       this.currentPage = val
+      this.setRow()
     }
   }
 };

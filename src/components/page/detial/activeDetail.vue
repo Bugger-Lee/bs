@@ -512,7 +512,6 @@ export default {
         this.$.get("rule/updateStatus",{params: { id: this.$route.query.id, status: this.statusTestRunVal }}).then(res=>{
           if(res.data.code == 200) {
             this.$message(res.data.msg)
-            console.log(this.detailUpdate,this.detailRun,this.detailTest)
             if(this.statusTestRunVal == 3) {
               this.detailUpdate = true
               this.detailRun = true
@@ -717,7 +716,6 @@ export default {
       this.openSms = true
     },
     smsLists() {
-      console.log(111)
       this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand_id,cycleId:this.ifDataExtension.cycle_id,templateName:this.propsSms.SearchSms}}).then(res=>{
         if(res.data.code == 200) {
           this.propsSms.smsTable = res.data.data
@@ -746,12 +744,11 @@ export default {
       } else if (val.name = "tableIndex") {
         if(val.id) {
           this.propsSms.ifSms.template_text = val.document_text 
-          this.propsSms.ifSms.id = val.id
+          this.propsSms.ifSms.template_id= val.id
         }
       }
     },
     inputBlur(val,id) {
-        console.log(val)
         if(val == '') {
           this.$message('文案不可以为空')
           return false
@@ -781,9 +778,8 @@ export default {
         sms_channel_id: smsObj[0].id,
         sms_channel_content:this.propsSms.sendSmsVal
       }
-      console.log(this.propsSms.dataSelected)
       if(this.propsSms.dataSelected == 2) {
-        let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.id)
+        let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.template_id)
         this.propsSms.ifSms.template_text = doc_text[0].document_text
         this.propsSms.ifSms.sms_channel_content = this.propsSms.sendSmsVal
         this.openSmsContent = false
