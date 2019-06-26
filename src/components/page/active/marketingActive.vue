@@ -275,6 +275,7 @@
         :openDataContent="openDataContent"
         :ifDataExtension="ifDataExtension"
         @backlevel="backlevel"
+        @searchDmpList="searchDmpList"
         @sltDataContent="sltDataContent"
       ></popupDrag>
       <smsPopup
@@ -648,7 +649,7 @@ export default {
       this.checkedDiscounts = discountsData;
     },
     dmpTables() {
-      this.$.get("http://10.150.33.30:8102/getAllCrowd").then(res=>{
+      this.$.get("http://bestsellerdmp.bestseller.com.cn/jbuilder-api/crowd/getCrowdList",{params:{crowdName:this.propsData.SearchDmp}}).then(res=>{
         this.propsData.dmpTable = res.data.data
       })
     },
@@ -784,6 +785,12 @@ export default {
       var keyCode = window.event ? e.keyCode : e.which;
       if (keyCode == 13) {
         this.smsLists();
+      }
+    },
+    searchDmpList(e) {
+      var keyCode = window.event ? e.keyCode : e.which;
+      if (keyCode == 13) {
+        this.dmpTables();
       }
     },
     jsPlumb(ele1, ele2) {
@@ -967,7 +974,7 @@ export default {
       this.openData = true;
     },
     popupTicket() {
-      if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0) {
+      if(this.propsData.brandVal == "") {
         this.$message({
           showClose: true,
           message: '请您先将数据源里的必选内容选完',

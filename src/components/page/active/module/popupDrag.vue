@@ -157,7 +157,7 @@
                     placeholder="Search by Title"
                     prefix-icon="el-icon-search"
                     style="width:85%;"
-                    @keyup.enter.native="searchSmsList"
+                    @keyup.enter.native="searchDmpList"
                     v-model="propsData.SearchDmp">
                   </el-input>
                 </el-col>
@@ -263,6 +263,10 @@ export default {
     // 监听
     clickPopup(value) {
       this.$emit("sltDataContent", value);
+    },
+    // dmp列表搜索
+    searchDmpList(e) {
+      this.$emit('searchDmpList',e)
     },
     // 取消  确定
     backlevel(val) {
