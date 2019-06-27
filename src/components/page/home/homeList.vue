@@ -37,7 +37,7 @@
         <el-col :span="6" class="list-content-l">
           <p class="list-content-l-tit ml15">Folders</p>
           <div class="list-content-l-tree">
-            <el-tree :data="modelClv" style="font-size:14px;" class="mt10">
+            <el-tree :data="modelClv" style="font-size:14px;" :highlight-current="true" @node-click="treeModes" ref="journeyTree" node-key="journeyId" class="mt10">
               <span  slot-scope="{ node, data }">
                   <span>
                       <i :class="data.icon" class="mr05"></i>{{ node.label }}
@@ -91,10 +91,17 @@ export default {
         {
           label: "All  Journeys",
           icon: 'icon-wenjian',
+          journeyId:1,
           children: [
             {
               label: "CLV",
-              icon: 'icon-wenjian'
+              icon: 'icon-wenjian',
+              journeyId:2
+            },
+            {
+              label: "DMP",
+              icon: 'icon-wenjian',
+              journeyId:3
             }
           ]
         }
@@ -106,15 +113,30 @@ export default {
       JourneyTotal:'',
       ruleName:'',
       tableHeight: window.innerHeight - 200,
-      showLoading: false
+      showLoading: false,
+      crowdVal:''
     };
   },
   created() {
     this.homeLists()
+    this.treeJourneys()
   },
   methods: {
     newActive() {
       this.$router.push('/marketingActive')
+    },
+    treeJourneys() {
+      this.$nextTick(() => {
+        this.$refs.journeyTree.setCurrentKey(this.modelClv[0].journeyId); 
+      })
+    },
+    treeModes(data) {
+      if(data.label == 'CLV' || data.label == 'DMP') {
+        this.crowdVal = data.label
+      }else if(data.label == 'All  Journeys') {
+        this.crowdVal = ''
+      }
+      this.homeLists()
     },
     getMoreDate() {
       if (this.showLoading) {
@@ -142,7 +164,7 @@ export default {
       this.tableData = result[0]
     },
     homeLists() {
-      this.$.get("rule/getList",{params:{ruleName:this.ruleName}}).then(res=>{
+      this.$.get("rule/getList",{params:{ruleName:this.ruleName,crowdName:this.crowdVal}}).then(res=>{
         if (res.data.code ==200) {
           this.totalDate = res.data.data
           this.JourneyTotal = res.data.size

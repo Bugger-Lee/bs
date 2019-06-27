@@ -12,7 +12,7 @@
                 <a href>Journeys Dashboard</a>
                 <i>> Journey</i>
               </span>
-                
+
             </p>
             <p>
               <el-input
@@ -69,17 +69,11 @@
               </template>
               <el-menu-item-group>
                 <ul class="theme-l-tmp">
-                  <!-- <li v-for="i in sourcesType" :key="i.id">
-                    <span class="crowd-style">
+                  <li v-for="i in sourcesType" :key="i.id">
+                    <span class="crowd-style" :title ='i.command_name' :slot='i.command_code'>
                       <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
                     </span>
                     <p>{{i.command_name}}</p>
-                  </li> -->
-                  <li>
-                    <span class="crowd-style">
-                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
-                    </span>
-                    <p>CLV Data</p>
                   </li>
                 </ul>
               </el-menu-item-group>
@@ -157,7 +151,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
+            <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
             <div  id="return1" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
@@ -189,7 +183,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
+            <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
             <div  id="newreturn1" ref="newData" v-if="ifProDrag">
               <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
@@ -215,7 +209,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
+            <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
             <div  id="return1111" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
@@ -247,7 +241,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
+            <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
             <div  id="return11" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy"  style="font-size:32px;"></i>
@@ -281,6 +275,7 @@
         :openDataContent="openDataContent"
         :ifDataExtension="ifDataExtension"
         @backlevel="backlevel"
+        @searchDmpList="searchDmpList"
         @sltDataContent="sltDataContent"
       ></popupDrag>
       <smsPopup
@@ -291,7 +286,7 @@
         @searchSmsList="searchSmsList"
         @sltSmsContent="sltSmsContent"
       ></smsPopup>
-      <popupTicket :openData="openTicket" 
+      <popupTicket :openData="openTicket"
       :openDataContent="openTicketContent"
       @searchDate="searchDate"
       :propsTicket = "propsTicket"
@@ -409,6 +404,7 @@ export default {
         brandList: [],
         periodList: [],
         registerList: [],
+        dmpTable:[],
         brandVal: "",
         periodVal: "",
         periodShow: "",
@@ -417,6 +413,9 @@ export default {
         newPeriod: "",
         newBuy: "",
         newMbmber: "",
+        data_socure: '',
+        data_code:"",
+        SearchDmp:''
       },
       propsTicket:{
         salesTable: [],
@@ -444,11 +443,8 @@ export default {
       systemId: "",
       dargSms: false,
       sortDrag: "",
-      sourcesType:[]
+      sourcesType:[],
     };
-  },
-  mounted() {
-    this.dragInit();
   },
   created() {
     this.brandLists();
@@ -456,6 +452,7 @@ export default {
     this.registerLists();
     this.sendSmsLists();
     this.sourcesList();
+    this.dmpTables();
     this.currentTimeName =
       this.currentTimeName.getFullYear() +
       "-" +
@@ -523,18 +520,19 @@ export default {
         sms_channel_id: this.propsSms.ifSms.sms_channel_id,
         template_id: this.propsSms.ifSms.id,
         brand_id: this.ifDataExtension.brand,
-        cycle_id: this.ifDataExtension.period,
-        vip_channel_name: this.ifDataExtension.register,
+        cycle_id: this.ifDataExtension.period || '',
+        vip_channel_name: this.ifDataExtension.register || '',
         schulder_time: this.timeType.timestamp,
         camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id || '',
         coupon_id: this.propsTicket.ifPromotion.coupon_id || '',
-        enter_first: this.ifDataExtension.newPeriod,
-        purchase_week: this.ifDataExtension.newMbmber,
-        purchase_first: this.propsData.newBuy,
+        enter_first: this.ifDataExtension.newPeriod || '',
+        purchase_week: this.ifDataExtension.newMbmber || '',
+        purchase_first: this.propsData.newBuy || '',
         cron_express: this.cron_express,
-        command_name:"CLV人群",
-        command_code: "clv-job",
-        created_by:getSessionItem.user_info
+        command_name:this.propsData.data_socure,
+        command_code: this.propsData.data_code,
+        created_by:getSessionItem.user_info,
+        crowd_id:this.ifDataExtension.crowdId
       };
       this.$.post("rule/insert", data).then(res => {
         if (res.data.code == 200) {
@@ -564,9 +562,10 @@ export default {
         purchase_week: this.ifDataExtension.newMbmber,
         purchase_first: this.propsData.newBuy,
         cron_express: this.cron_express,
-        command_name:"CLV人群",
-        command_code: "clv-job",
-        created_by:getSessionItem.user_info
+        command_name:this.propsData.data_socure,
+        command_code:this.propsData.data_code,
+        created_by:getSessionItem.user_info,
+        crowd_id:this.ifDataExtension.crowdId
       };
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
@@ -595,7 +594,7 @@ export default {
           if (val == "test") {
             this.$message(res.data.msg);
           } else if (val == "runing") {
-            this.saveUpdate = false 
+            this.saveUpdate = false
             this.saveTest = false
             this.saveRunning = false
             this.saveStop = true
@@ -651,6 +650,11 @@ export default {
       this.checkedActive = activeData;
       this.checkedDiscounts = discountsData;
     },
+    dmpTables() {
+      this.$.get("http://bestsellerdmp.bestseller.com.cn/jbuilder-api/crowd/getCrowdList",{params:{crowdName:this.propsData.SearchDmp}}).then(res=>{
+        this.propsData.dmpTable = res.data.data
+      })
+    },
     promotionSummary() {
       if (this.checkedActive == undefined || this.checkedDiscounts == undefined) {
         this.$message({
@@ -669,32 +673,44 @@ export default {
       this.openTicket = true;
     },
     dataSummary() {
-      if(this.propsData.brandVal == "" ||this.propsData.periodVal === "" ||this.propsData.registerVal.length === 0) {
-        this.$message({
-          showClose: true,
-          message: "请您选择必选项",
-          type: "warning"
-        });
-        return false;
+      if(this.propsData.data_socure == 'CLV-Data') {
+        if(this.propsData.brandVal == "" ||this.propsData.periodVal === "" ||this.propsData.registerVal.length === 0) {
+          this.$message({
+            showClose: true,
+            message: "请您选择必选项",
+            type: "warning"
+          });
+          return false;
+        }
+      }else if(this.propsData.data_socure == 'DMP-Data') {
+        if(this.propsData.brandVal == "" || !this.ifDataExtension.crowdId) {
+          this.$message("请您填写必填项")
+          return false
+        }
       }
-      let registerVal = this.propsData.registerVal.join(",");
       let item_data = this.propsData.brandList.filter(
         item => item.id == this.propsData.brandVal
       );
-      let item2_data = this.propsData.periodList.filter(
-        item => item.id == this.propsData.periodVal
-      );
-      let objData = {
-        brand: this.propsData.brandVal,
-        period: this.propsData.periodVal,
-        register: registerVal,
-        brandShow: item_data[0].brand_name,
-        periodShow: item2_data[0].cycle_type,
-        newPeriod: this.propsData.newPeriod,
-        newBuy: this.propsData.newBuy,
-        newMbmber: this.propsData.newMbmber,
-      };
-      this.ifDataExtension = objData;
+      if(this.propsData.data_socure == 'CLV-Data') {
+        let registerVal = this.propsData.registerVal.join(",");
+        let item2_data = this.propsData.periodList.filter(
+          item => item.id == this.propsData.periodVal
+        );
+        let objData = {
+          brand: this.propsData.brandVal,
+          period: this.propsData.periodVal,
+          register: registerVal,
+          brandShow: item_data[0].brand_name,
+          periodShow: item2_data[0].cycle_type,
+          newPeriod: this.propsData.newPeriod,
+          newBuy: this.propsData.newBuy,
+          newMbmber: this.propsData.newMbmber,
+        };
+        this.ifDataExtension = objData;
+      }else if(this.propsData.data_socure == 'DMP-Data') {
+        this.ifDataExtension.brandShow = item_data[0].brand_name
+        this.ifDataExtension.brand = this.propsData.brandVal
+      }
       this.openDataContent = false;
       this.openData = true;
     },
@@ -711,6 +727,9 @@ export default {
       this.$.get("command/getList?commandName=").then(res => {
           if(res.data.code == 200) {
             this.sourcesType  = res.data.data
+            this.$nextTick(()=>{
+              this.dragInit();
+            })
           }
       });
     },
@@ -753,7 +772,6 @@ export default {
       this.$.get("template/getTemplate", {
         params: {
           brandId: this.ifDataExtension.brand,
-          cycleId: this.ifDataExtension.period,
           templateName:this.propsSms.SearchSms
         }
       }).then(res => {
@@ -769,6 +787,12 @@ export default {
       var keyCode = window.event ? e.keyCode : e.which;
       if (keyCode == 13) {
         this.smsLists();
+      }
+    },
+    searchDmpList(e) {
+      var keyCode = window.event ? e.keyCode : e.which;
+      if (keyCode == 13) {
+        this.dmpTables();
       }
     },
     jsPlumb(ele1, ele2) {
@@ -841,7 +865,9 @@ export default {
         this.$refs.newrefDatadiv.style.left = left + -5 + "px";
       });
     },
-    appendDiv(left, top) {
+    appendDiv(left, top,text,code,className) {
+      this.propsData.data_socure = text
+      this.propsData.data_code = code
       this.ifDrag = true;
       this.$nextTick(() => {
         this.$refs.refData1.style.position = "fixed";
@@ -950,7 +976,7 @@ export default {
       this.openData = true;
     },
     popupTicket() {
-      if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0) {
+      if(this.propsData.brandVal == "") {
         this.$message({
           showClose: true,
           message: '请您先将数据源里的必选内容选完',
@@ -963,7 +989,7 @@ export default {
       }
     },
     sms() {
-      if(this.propsData.brandVal == "" || this.propsData.periodVal === "" || this.propsData.registerVal.length === 0) {
+      if(this.propsData.brandVal == "") {
         this.$message({
           showClose: true,
           message: '请您先将数据源里的必选内容选完',
@@ -984,6 +1010,13 @@ export default {
         this.openDataContent = false;
       } else if (val == "openNext") {
         this.openDataContent = true;
+      }else if(val.DmpName == 'dmpTableIndex') {
+        if(!val.id) {
+          return false
+        }
+        this.ifDataExtension = {}
+        this.ifDataExtension.crowdId = val.id
+        this.ifDataExtension.crowdName = val.name
       }
     },
     sltPromotion(val) {
@@ -1005,16 +1038,14 @@ export default {
       } else if (val.name == "inputBlur") {
         this.inputBlur(val.value, val.id);
       } else if (val.name = "tableIndex") {
-          console.log(val)
           if(val.id) {
             if (this.propsSms.ifSms == '') {
               this.propsSms.ifSms = {}
             }
-            this.propsSms.ifSms.contentMag = val.document_text 
+            this.propsSms.ifSms.contentMag = val.document_text
             this.propsSms.ifSms.id = val.id
-            console.log(this.propsSms.ifSms)
           }
-         
+
       }
     },
     inputBlur(val, id) {
@@ -1023,7 +1054,6 @@ export default {
         return false;
       }
       let upDate = {
-        cycle_id: this.ifDataExtension.period,
         brand_id: this.ifDataExtension.brand,
         document_text: val,
         id: id
@@ -1047,7 +1077,7 @@ export default {
       }
       let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
       let objData = {
-        contentMag: this.propsSms.ifSms.contentMag, 
+        contentMag: this.propsSms.ifSms.contentMag,
         sms_channel_id_show:this.propsSms.sendSmsVal,
         sms_channel_id: sms_data[0].id,
         id:this.propsSms.ifSms.id
@@ -1066,14 +1096,12 @@ export default {
         this.propsSms.ifSms = objData;
         this.openSmsContent = false;
         this.openSms = true;
-        console.log( this.propsSms.ifSms)
       } else if (this.propsSms.dataSelected == 3) {
          if(!this.propsSms.editMsg) {
           this.$message('模板内容不可以为空')
           return false
         }
         let insertData = {
-          cycle_id: this.ifDataExtension.period,
           brand_id: this.ifDataExtension.brand,
           document_text: this.propsSms.editMsg,
           uuid:(new Date()).valueOf()
@@ -1088,7 +1116,6 @@ export default {
               id:res.data.data
             };
             this.propsSms.ifSms = objData;
-            console.log(this.propsSms.ifSms)
             this.openSmsContent = false;
             this.openSms = true;
           } else {
@@ -1102,7 +1129,6 @@ export default {
       }
     },
     dragInit() {
-      console.log(1111)
       let minleft = $(".imaginary-circle").offset().left;
       let mintop = $(".imaginary-circle").offset().top;
       let maxleft = $(".imaginary-circle").width();
@@ -1118,13 +1144,14 @@ export default {
       $(".marketing-drag").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
+          console.log(ui.draggable[0].slot)
           if (
             minleft <= ui.offset.left &&
             ui.offset.left <= minleft + maxleft &&
             mintop <= ui.offset.top &&
             ui.offset.top < mintop + maxtop
           ) {
-            that.appendDiv(ui.offset.left, ui.offset.top);
+            that.appendDiv(ui.offset.left, ui.offset.top,ui.draggable[0].title,ui.draggable[0].slot,ui.draggable[0].firstChild.className);
           }
         }
       });

@@ -27,12 +27,12 @@
             <el-button class="bth" @click="backlevel('edit')">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P class="pttb"><span>Brands : {{ifDataExtension.brand_name}}</span><span></span></P>
-            <P class="pttb"><span>Periods : {{ifDataExtension.cycle_type}}</span><span></span></P>
-            <P class="pttb"><span>Registered Channels : {{ifDataExtension.vip_channel_name}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.enter_first != ''"><span>New Entry : {{ifDataExtension.enter_first}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.purchase_first != ''"><span>First Purchase : {{ifDataExtension.purchase_first}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.purchase_week != ''"><span>No Purchase (within a week) : {{ifDataExtension.purchase_week}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.brand_name"><span>Brands : {{ifDataExtension.brand_name}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.cycle_type"><span>Periods : {{ifDataExtension.cycle_type}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.vip_channel_name"><span>Registered Channels : {{ifDataExtension.vip_channel_name}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.enter_first"><span>New Entry : {{ifDataExtension.enter_first}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.purchase_first"><span>First Purchase : {{ifDataExtension.purchase_first}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.purchase_week"><span>No Purchase (within a week) : {{ifDataExtension.purchase_week}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -85,7 +85,7 @@
           <el-col :span="1" class="r-content-c">
             <span></span>
           </el-col>
-          <el-col :span="19" class="r-content-r">
+          <el-col :span="19" class="r-content-r" v-if="this.propsData.defaultData.command_name == 'CLV人群'">
             <div class="select-option">
               <el-col :span="12">
                 <div class="ml10">
@@ -143,6 +143,61 @@
                   <span class="mr15" style="color:red;font-size:10px;">(within a week)</span>  
                 </p>
               </el-col>
+            </div>
+          </el-col>
+          <el-col :span="19" class="r-content-r" v-if="this.propsData.defaultData.command_name == 'DMP-Data'">
+            <div class="select-msg">
+              <div class="select-msg-search">
+                <el-col :span="12">
+                  <el-input
+                    class="select-msg-search-ipt"
+                    placeholder="Search by Title"
+                    prefix-icon="el-icon-search"
+                    style="width:85%;"
+                    @keyup.enter.native="searchDmpList"
+                    v-model="propsData.SearchDmp">
+                  </el-input>
+                </el-col>
+                <el-col :span="12">
+                  <div class="ml10">
+                    <span class="redStar">*</span>
+                    <span>Select Brands</span>
+                    <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brands" class="select-option-classify">
+                      <el-option
+                        v-for="item in propsData.brandList"
+                        :key="item.id"
+                        :label="item.brand_name"
+                        :value="item.id"
+                      ></el-option>
+                    </el-select>
+                  </div>
+                </el-col>
+              </div>
+              <div class="select-msg-table">
+                <el-table :data="dmpTable" style="width: 100%" highlight-current-row  @current-change="dmpTableIndex" height="220">
+                  <el-table-column prop="name" label="Crowd Title" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="crowdCount" label="Quantity" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="status" label="Status" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="creator" label="Creator" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="create_time" label="Create Time" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="update_time" label="Update Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
+                </el-table>
+              </div>
+              <div class="select-msg-page">
+                <el-pagination
+                  @current-change="handleSizeChange"
+                  :current-page.sync="currentPage"
+                  :page-size="10"
+                  class="page-el-pagination"
+                  background
+                  layout="slot,prev, pager, next"
+                  :total="propsData.dmpTable.length"
+                  >
+                  <slot>
+                    <span>All {{propsData.dmpTable.length}} Item</span>
+                  </slot>
+                </el-pagination>
+              </div>
             </div>
           </el-col>
         </div>
@@ -209,6 +264,17 @@ export default {
     // 监听
     clickPopup(value) {
       this.$emit("sltDataContent", value);
+    },
+        // dmp列表搜索
+    searchDmpList(e) {
+      this.$emit('searchDmpList',e)
+    },
+    dmpTableIndex(val) {
+      if(!val) {
+        return false
+      }
+      val.DmpName='dmpTableIndex'
+      this.$emit("sltDataContent", val);
     },
     // 取消  确定
     backlevel(val) {

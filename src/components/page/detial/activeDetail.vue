@@ -35,11 +35,11 @@
               </template>
               <el-menu-item-group>
                 <ul class="theme-l-tmp">
-                  <li>
+                  <li v-for="i in propsData.sourcesType" :key="i.id">
                     <span class="crowd-style">
                       <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
                     </span>
-                    <p>CLV Data</p>
+                    <p>{{i.command_name}}</p>
                   </li>
                 </ul>
               </el-menu-item-group>
@@ -101,7 +101,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
+            <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
             <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
@@ -127,7 +127,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
+            <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
             <div class="window" id="return12" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
@@ -164,6 +164,7 @@
         :ifDataExtension ="ifDataExtension"
         ref="popopenref"
         @backlevel ="backlevel"
+        @searchDmpList="searchDmpList"
         @sltDataContent ="sltDataContent">
     </popupDrag>
     <smsPopup :openData ="openSms"
@@ -227,7 +228,8 @@ export default {
           brandList: [],
           periodList: [],
           registerList: [],
-          orderList:[],
+          sourcesType:[],
+          dmpTable:[],
           brandVal: '',
           brandId: '',
           periodVal:'',
@@ -237,6 +239,8 @@ export default {
           newPeriod:'',
           newBuy:'',
           newMbmber:'',
+          SearchDmp:'',
+          defaultData:''
       },
       propsSms:{
         smsTable:[],
@@ -331,7 +335,8 @@ export default {
     this.periodLists()
     this.registerLists()
     this.sendSmsLists()
-    this.orderLists()
+    this.sourcesList()
+    this.dmpTables()
   },
   methods: {
     doneTime() {
@@ -535,6 +540,7 @@ export default {
           this.ifDataExtension = res.data.data
           this.propsSms.ifSms = res.data.data
           this.ifTicket = res.data.data
+          this.propsData.defaultData = res.data.data
           this.userNameTie = res.data.data.rule_name
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
@@ -581,9 +587,11 @@ export default {
       })
     },
     // 调度命令
-    orderLists() {
+    sourcesList() {
       this.$.get('command/getList?commandName=').then(res=>{
-        this.propsData.orderList = res.data.data
+        if(res.data.code=200) {
+          this.propsData.sourcesType = res.data.data
+        }
       })
     },
     // 品牌
@@ -593,6 +601,18 @@ export default {
           this.propsData.brandList = res.data.data
         }
       })
+    },
+    dmpTables() {
+      this.$.get("http://bestsellerdmp.bestseller.com.cn/jbuilder-api/crowd/getCrowdList",{params:{crowdName:this.propsData.SearchDmp}}).then(res=>{
+        this.propsData.dmpTable = res.data.data
+      })
+    },
+    // dmp
+    searchDmpList(e) {
+      var keyCode = window.event ? e.keyCode : e.which;
+      if (keyCode == 13) {
+        this.dmpTables();
+      }
     },
     // 周期
     periodLists() {
@@ -636,6 +656,13 @@ export default {
         this.openDataContent = false
       } else if (val == 'openNext') {
         this.openDataContent = true
+      }else if(val.DmpName == 'dmpTableIndex') {
+        if(!val.id) {
+          return false
+        }
+        this.ifDataExtension = {}
+        this.ifDataExtension.crowdId = val.id
+        this.ifDataExtension.crowdName = val.name
       }
     },
     backlevel(val) {
@@ -716,7 +743,7 @@ export default {
       this.openSms = true
     },
     smsLists() {
-      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand_id,cycleId:this.ifDataExtension.cycle_id,templateName:this.propsSms.SearchSms}}).then(res=>{
+      this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand_id,templateName:this.propsSms.SearchSms}}).then(res=>{
         if(res.data.code == 200) {
           this.propsSms.smsTable = res.data.data
           this.propsSms.editMsg = res.data.data.document_text

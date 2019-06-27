@@ -27,12 +27,13 @@
             <el-button class="bth" @click="backlevel('edit')">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P class="pttb"><span>Brands : {{ifDataExtension.brandShow}}</span><span></span></P>
-            <P class="pttb"><span>Periods : {{ifDataExtension.periodShow}}</span><span></span></P>
-            <P class="pttb"><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.newPeriod != ''"><span>New Entry : {{ifDataExtension.newPeriod}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.newBuy != ''"><span>First Purchase : {{ifDataExtension.newBuy}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.newMbmber != ''"><span>No Purchase (within a week) : {{ifDataExtension.newMbmber}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.brandShow"><span>Brands : {{ifDataExtension.brandShow}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.periodShow"><span>Periods : {{ifDataExtension.periodShow}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.crowdName"><span>Crowd Name : {{ifDataExtension.crowdName}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.register"><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.newPeriod"><span>New Entry : {{ifDataExtension.newPeriod}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.newBuy"><span>First Purchase : {{ifDataExtension.newBuy}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.newMbmber"><span>No Purchase (within a week) : {{ifDataExtension.newMbmber}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -85,7 +86,7 @@
           <el-col :span="1" class="r-content-c">
             <span></span>
           </el-col>
-          <el-col :span="19" class="r-content-r">
+          <el-col :span="19" class="r-content-r" v-if="propsData.data_socure == 'CLV-Data'">
             <div class="select-option">
               <el-col :span="12">
                 <div class="ml10">
@@ -147,6 +148,61 @@
               </el-col>
             </div>
           </el-col>
+          <el-col :span="19" class="r-content-r" v-if="propsData.data_socure == 'DMP-Data'">
+            <div class="select-msg">
+              <div class="select-msg-search">
+                <el-col :span="12">
+                  <el-input
+                    class="select-msg-search-ipt"
+                    placeholder="Search by Title"
+                    prefix-icon="el-icon-search"
+                    style="width:85%;"
+                    @keyup.enter.native="searchDmpList"
+                    v-model="propsData.SearchDmp">
+                  </el-input>
+                </el-col>
+                <el-col :span="12">
+                  <div class="ml10">
+                    <span class="redStar">*</span>
+                    <span>Select Brands</span>
+                    <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brands" class="select-option-classify">
+                      <el-option
+                        v-for="item in propsData.brandList"
+                        :key="item.id"
+                        :label="item.brand_name"
+                        :value="item.id"
+                      ></el-option>
+                    </el-select>
+                  </div>
+                </el-col>
+              </div>
+              <div class="select-msg-table">
+                <el-table :data="dmpTable" style="width: 100%" highlight-current-row  @current-change="dmpTableIndex" height="220">
+                  <el-table-column prop="name" label="Crowd Title" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="crowdCount" label="Quantity" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="status" label="Status" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="creator" label="Creator" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="create_time" label="Create Time" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="update_time" label="Update Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
+                </el-table>
+              </div>
+              <div class="select-msg-page">
+                <el-pagination
+                  @current-change="handleSizeChange"
+                  :current-page.sync="currentPage"
+                  :page-size="10"
+                  class="page-el-pagination"
+                  background
+                  layout="slot,prev, pager, next"
+                  :total="propsData.dmpTable.length"
+                  >
+                  <slot>
+                    <span>All {{propsData.dmpTable.length}} Item</span>
+                  </slot>
+                </el-pagination>
+              </div>
+            </div>
+          </el-col>
         </div>
       </el-col>
       <span slot="footer">
@@ -174,6 +230,7 @@ export default {
       ifNewPeriod:false,
       ifNewBuy:false,
       ifNewMbmber:false,
+      currentPage:1
     };
   },
   props: ["openData", "openDataContent","propsData","ifDataExtension"],
@@ -193,16 +250,34 @@ export default {
       set(v) {
         this.$emit('sltDataContent', 'close1');
       }
-    }
+    },
+    dmpTable() {
+      let result = [];
+      for(var i=0;i<this.propsData.dmpTable.length;i+=10){
+          result.push(this.propsData.dmpTable.slice(i,i+10));
+      }
+      return result[this.currentPage-1]
+    },
   },
   methods: {
     // 监听
     clickPopup(value) {
       this.$emit("sltDataContent", value);
     },
+    // dmp列表搜索
+    searchDmpList(e) {
+      this.$emit('searchDmpList',e)
+    },
     // 取消  确定
     backlevel(val) {
       this.$emit("backlevel",val)
+    },
+    dmpTableIndex(val) {
+      if(!val) {
+        return false
+      }
+      val.DmpName='dmpTableIndex'
+      this.$emit("sltDataContent", val);
     },
     tabSelect(val) {
       if (val == '1') {
@@ -223,6 +298,9 @@ export default {
         this.ifNewBuy = true
         this.ifNewMbmber = false
       }
+    },
+    handleSizeChange(val) {
+      this.currentPage = val
     }
   }
 };
