@@ -71,7 +71,8 @@
                 <ul class="theme-l-tmp">
                   <li v-for="i in sourcesType" :key="i.id">
                     <span class="crowd-style" :title ='i.command_name' :slot='i.command_code'>
-                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="i.command_name == 'CLV-Data'"></i>
+                      <i class="icon-renqun1" v-if="i.command_name == 'DMP-Data'"></i>
                     </span>
                     <p>{{i.command_name}}</p>
                   </li>
@@ -148,7 +149,8 @@
           <div v-if="showFirst">
             <div  id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
+                <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
@@ -180,7 +182,8 @@
           <div v-if="showSecend">
             <div  id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
+                <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
@@ -206,7 +209,8 @@
           <div v-if="showLast">
             <div  id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
+                <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
@@ -238,7 +242,8 @@
           <div v-if="showFirst1">
             <div  id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
+                <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>

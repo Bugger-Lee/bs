@@ -37,7 +37,8 @@
                 <ul class="theme-l-tmp">
                   <li v-for="i in propsData.sourcesType" :key="i.id">
                     <span class="crowd-style">
-                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="i.command_name == 'CLV-Data'"></i>
+                      <i class="icon-renqun1" v-if="i.command_name == 'DMP-Data'"></i>
                     </span>
                     <p>{{i.command_name}}</p>
                   </li>
@@ -98,7 +99,8 @@
           <div v-if = 'showFirst'>
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV人群'"></i>
+                <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
@@ -124,7 +126,8 @@
           <div v-else>
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV人群'"></i>
+                <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
