@@ -746,7 +746,7 @@ export default {
       } else if (val.name = "tableIndex") {
         if(val.id) {
           this.propsSms.ifSms.template_text = val.document_text 
-          this.propsSms.ifSms.id = val.id
+          this.propsSms.ifSms.template_id= val.id
         }
       }
     },
@@ -781,7 +781,7 @@ export default {
         sms_channel_content:this.propsSms.sendSmsVal
       }
       if(this.propsSms.dataSelected == 2) {
-        let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.id)
+        let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.template_id)
         this.propsSms.ifSms.template_text = doc_text[0].document_text
         this.propsSms.ifSms.sms_channel_content = this.propsSms.sendSmsVal
         this.openSmsContent = false
