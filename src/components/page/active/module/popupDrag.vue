@@ -276,6 +276,7 @@ export default {
       if(!val) {
         return false
       }
+      val.DmpName='dmpTableIndex'
       this.$emit("sltDataContent", val);
     },
     tabSelect(val) {

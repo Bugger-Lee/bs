@@ -101,7 +101,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
+            <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
             <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
@@ -127,7 +127,7 @@
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
               </span>
             </div>
-            <div ref="refData1div" v-if="ifDrag">CLV Data</div>
+            <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
             <div class="window" id="return12" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
@@ -164,6 +164,7 @@
         :ifDataExtension ="ifDataExtension"
         ref="popopenref"
         @backlevel ="backlevel"
+        @searchDmpList="searchDmpList"
         @sltDataContent ="sltDataContent">
     </popupDrag>
     <smsPopup :openData ="openSms"
@@ -228,6 +229,7 @@ export default {
           periodList: [],
           registerList: [],
           sourcesType:[],
+          dmpTable:[],
           brandVal: '',
           brandId: '',
           periodVal:'',
@@ -237,6 +239,8 @@ export default {
           newPeriod:'',
           newBuy:'',
           newMbmber:'',
+          SearchDmp:'',
+          defaultData:''
       },
       propsSms:{
         smsTable:[],
@@ -332,6 +336,7 @@ export default {
     this.registerLists()
     this.sendSmsLists()
     this.sourcesList()
+    this.dmpTables()
   },
   methods: {
     doneTime() {
@@ -535,6 +540,7 @@ export default {
           this.ifDataExtension = res.data.data
           this.propsSms.ifSms = res.data.data
           this.ifTicket = res.data.data
+          this.propsData.defaultData = res.data.data
           this.userNameTie = res.data.data.rule_name
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
@@ -596,6 +602,18 @@ export default {
         }
       })
     },
+    dmpTables() {
+      this.$.get("http://bestsellerdmp.bestseller.com.cn/jbuilder-api/crowd/getCrowdList",{params:{crowdName:this.propsData.SearchDmp}}).then(res=>{
+        this.propsData.dmpTable = res.data.data
+      })
+    },
+    // dmp
+    searchDmpList(e) {
+      var keyCode = window.event ? e.keyCode : e.which;
+      if (keyCode == 13) {
+        this.dmpTables();
+      }
+    },
     // 周期
     periodLists() {
       this.$.get("lifeCycle/getList?cycleType=").then(res=>{
@@ -638,6 +656,13 @@ export default {
         this.openDataContent = false
       } else if (val == 'openNext') {
         this.openDataContent = true
+      }else if(val.DmpName == 'dmpTableIndex') {
+        if(!val.id) {
+          return false
+        }
+        this.ifDataExtension = {}
+        this.ifDataExtension.crowdId = val.id
+        this.ifDataExtension.crowdName = val.name
       }
     },
     backlevel(val) {

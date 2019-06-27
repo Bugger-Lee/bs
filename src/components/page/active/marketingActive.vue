@@ -520,18 +520,19 @@ export default {
         sms_channel_id: this.propsSms.ifSms.sms_channel_id,
         template_id: this.propsSms.ifSms.id,
         brand_id: this.ifDataExtension.brand,
-        cycle_id: this.ifDataExtension.period,
-        vip_channel_name: this.ifDataExtension.register,
+        cycle_id: this.ifDataExtension.period || '',
+        vip_channel_name: this.ifDataExtension.register || '',
         schulder_time: this.timeType.timestamp,
         camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id || '',
         coupon_id: this.propsTicket.ifPromotion.coupon_id || '',
-        enter_first: this.ifDataExtension.newPeriod,
-        purchase_week: this.ifDataExtension.newMbmber,
-        purchase_first: this.propsData.newBuy,
+        enter_first: this.ifDataExtension.newPeriod || '',
+        purchase_week: this.ifDataExtension.newMbmber || '',
+        purchase_first: this.propsData.newBuy || '',
         cron_express: this.cron_express,
         command_name:this.propsData.data_socure,
         command_code: this.propsData.data_code,
-        created_by:getSessionItem.user_info
+        created_by:getSessionItem.user_info,
+        crowd_id:this.ifDataExtension.crowdId
       };
       this.$.post("rule/insert", data).then(res => {
         if (res.data.code == 200) {
@@ -563,7 +564,8 @@ export default {
         cron_express: this.cron_express,
         command_name:this.propsData.data_socure,
         command_code:this.propsData.data_code,
-        created_by:getSessionItem.user_info
+        created_by:getSessionItem.user_info,
+        crowd_id:this.ifDataExtension.crowdId
       };
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
@@ -1008,7 +1010,10 @@ export default {
         this.openDataContent = false;
       } else if (val == "openNext") {
         this.openDataContent = true;
-      }else if(val.id) {
+      }else if(val.DmpName == 'dmpTableIndex') {
+        if(!val.id) {
+          return false
+        }
         this.ifDataExtension = {}
         this.ifDataExtension.crowdId = val.id
         this.ifDataExtension.crowdName = val.name
