@@ -4,7 +4,14 @@
       <p>Select a duration to hold contacts within the Journey</p>
       <div class="time-content">
         <p class="mb10">Duration</p>
-          <div class="mt20 mb20">
+          <div class="mb20 mt20">
+            <span>Execute Mode ： </span>
+            <el-tooltip class="item" effect="dark" content="单次执行开始时间即激活时间" placement="top-start">
+              <el-radio v-model="timeType.executeType" :label="1" :change = "carryOnce(timeType.executeType)">One-Time</el-radio>
+            </el-tooltip>
+            <el-radio v-model="timeType.executeType" :label="2" :change = "carryOnce(timeType.executeType)">On Schedule</el-radio>
+          </div>
+          <div class="mb20">
             <span>Active Time ： </span>
             <el-date-picker
               v-model="timeType.dateTimeVal"
@@ -17,13 +24,6 @@
               format="yyyy-MM-dd HH:mm"
               placeholder="Pls Active Time">
             </el-date-picker>
-          </div>
-          <div class="mb20">
-            <span>Execute Mode ： </span>
-            <el-tooltip class="item" effect="dark" content="单次执行开始时间即激活时间" placement="top-start">
-              <el-radio v-model="timeType.executeType" :label="1" :change = "carryOnce(timeType.executeType)">One-Time</el-radio>
-            </el-tooltip>
-            <el-radio v-model="timeType.executeType" :label="2" :change = "carryOnce(timeType.executeType)">On Schedule</el-radio>
           </div>
           <div>
             <span>Execute Time ： </span>
