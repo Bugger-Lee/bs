@@ -99,7 +99,7 @@
           <div v-if = 'showFirst'>
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV人群'"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
                 <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
               </span>
             </div>
@@ -126,7 +126,7 @@
           <div v-else>
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV人群'"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
                 <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
               </span>
             </div>
@@ -489,7 +489,7 @@ export default {
           sms_channel_id:this.propsSms.ifSms.sms_channel_id,
           template_id:temp_data_id,
           brand_id:this.ifDataExtension.brand_id,
-          cycle_id:this.ifDataExtension.cycle_id,
+          cycle_id:this.ifDataExtension.cycle_id || '',
           vip_channel_name:this.ifDataExtension.vip_channel_name,
           schulder_time:this.timeType.timestamp,
           camp_coupon_id:this.ifTicket.camp_coupon_id,
@@ -498,9 +498,11 @@ export default {
           purchase_first:this.ifDataExtension.purchase_first,
           purchase_week:this.ifDataExtension.purchase_week,
           cron_express:this.cron_express,
-          command_name:"CLV人群",
-          command_code:'clv-job',
-          created_by:getSessionItem.user_info
+          command_name:this.propsData.defaultData.command_name,
+          command_code:this.propsData.defaultData.command_code,
+          created_by:getSessionItem.user_info,
+          crowd_id:this.ifDataExtension.crowd_id || '',
+          crowd_name:this.ifDataExtension.crowd_name || '',
         }
         this.$.post('rule/update',data).then(res=>{
           if(res.data.code == 200) {
@@ -664,8 +666,8 @@ export default {
           return false
         }
         this.ifDataExtension = {}
-        this.ifDataExtension.crowdId = val.id
-        this.ifDataExtension.crowdName = val.name
+        this.ifDataExtension.crowd_id = val.id
+        this.ifDataExtension.crowd_name = val.name
       }
     },
     backlevel(val) {
@@ -724,20 +726,25 @@ export default {
       this.popupTicket.checkedDiscounts = discountsData
     },
     dataSummary() {
-      let reVal = this.propsData.registerVal.join(',')
       let item_data = this.propsData.brandList.filter(item => item.brand_name == this.propsData.brandVal)
-      let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
-      let objData = {
-        brand_id:item_data[0].id,
-        cycle_id:item2_data[0].id,
-        vip_channel_name:reVal,
-        brand_name:this.propsData.brandVal,
-        cycle_type:this.propsData.periodVal,
-        enter_first:this.propsData.newPeriod,
-        purchase_first:this.propsData.newBuy,
-        purchase_week:this.propsData.newMbmber,
+      if(this.propsData.defaultData.command_name == 'CLV-Data') {
+        let reVal = this.propsData.registerVal.join(',')
+        let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
+        let objData = {
+          brand_id:item_data[0].id,
+          cycle_id:item2_data[0].id,
+          vip_channel_name:reVal,
+          brand_name:this.propsData.brandVal,
+          cycle_type:this.propsData.periodVal,
+          enter_first:this.propsData.newPeriod,
+          purchase_first:this.propsData.newBuy,
+          purchase_week:this.propsData.newMbmber,
+        }
+        this.ifDataExtension = objData
+      }else if(this.propsData.defaultData.command_name == 'DMP-Data') {
+        this.ifDataExtension.brand_id = item_data[0].id
+        this.ifDataExtension.brand_name = this.propsData.brandVal
       }
-      this.ifDataExtension = objData
       this.openDataContent = false
       this.openData = true
     },

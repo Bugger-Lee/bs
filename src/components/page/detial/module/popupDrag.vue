@@ -28,6 +28,7 @@
           </p>
           <div class="data-content-apply-content mt10">
             <P class="pttb" v-if="ifDataExtension.brand_name"><span>Brands : {{ifDataExtension.brand_name}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.crowd_name"><span>Crowd Name : {{ifDataExtension.crowd_name}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.cycle_type"><span>Periods : {{ifDataExtension.cycle_type}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.vip_channel_name"><span>Registered Channels : {{ifDataExtension.vip_channel_name}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.enter_first"><span>New Entry : {{ifDataExtension.enter_first}}</span><span></span></P>
@@ -85,7 +86,7 @@
           <el-col :span="1" class="r-content-c">
             <span></span>
           </el-col>
-          <el-col :span="19" class="r-content-r" v-if="this.propsData.defaultData.command_name == 'CLV人群'">
+          <el-col :span="19" class="r-content-r" v-if="this.propsData.defaultData.command_name == 'CLV-Data'">
             <div class="select-option">
               <el-col :span="12">
                 <div class="ml10">
@@ -166,18 +167,16 @@
                       <el-option
                         v-for="item in propsData.brandList"
                         :key="item.id"
-                        :label="item.brand_name"
-                        :value="item.id"
+                        :value="item.brand_name"
                       ></el-option>
                     </el-select>
                   </div>
                 </el-col>
               </div>
               <div class="select-msg-table">
-                <el-table :data="dmpTable" style="width: 100%" highlight-current-row  @current-change="dmpTableIndex" height="220">
+                <el-table  ref='singleTable' setCurrentRow :data="dmpTable" style="width: 100%" highlight-current-row  @current-change="dmpTableIndex" height="220">
                   <el-table-column prop="name" label="Crowd Title" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="crowdCount" label="Quantity" show-overflow-tooltip> </el-table-column>
-                  <el-table-column prop="status" label="Status" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="crowd_count" label="Quantity" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="creator" label="Creator" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="create_time" label="Create Time" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="update_time" label="Update Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
@@ -227,6 +226,8 @@ export default {
       ifNewPeriod:false,
       ifNewBuy:false,
       ifNewMbmber:false,
+      currentPage:1,
+      showChange: true
     };
   },
   props: ["openData", "openDataContent","propsData","ifDataExtension"],
@@ -246,7 +247,14 @@ export default {
       set(v) {
         this.$emit('sltDataContent', 'close1');
       }
-    }
+    },
+    dmpTable() {
+      let result = [];
+      for(var i=0;i<this.propsData.dmpTable.length;i+=10){
+          result.push(this.propsData.dmpTable.slice(i,i+10));
+      }
+      return result[this.currentPage-1]
+    },
   },
   created() {
     if(this.propsData.periodVal != '') {
@@ -265,20 +273,33 @@ export default {
     clickPopup(value) {
       this.$emit("sltDataContent", value);
     },
-        // dmp列表搜索
+    // dmp列表搜索
     searchDmpList(e) {
       this.$emit('searchDmpList',e)
     },
     dmpTableIndex(val) {
+      this.showChange = false
       if(!val) {
         return false
       }
       val.DmpName='dmpTableIndex'
       this.$emit("sltDataContent", val);
     },
+    setRow() {
+      if(!this.showChange) {return false}
+      let row = this.dmpTable.filter(item => item.id == this.ifDataExtension.crowd_id)
+      if (!row[0]) {return false}
+      this.$nextTick(()=> {
+        this.$refs.singleTable.setCurrentRow(row[0])
+      })
+    },
     // 取消  确定
     backlevel(val) {
       this.$emit("backlevel",val)
+      if(val == 'edit') {
+        this.showChange = true
+        this.setRow()
+      }
     },
     tabSelect(val) {
       if (val == '1') {
@@ -300,6 +321,10 @@ export default {
         this.ifNewMbmber = false
       }
     },
+    handleSizeChange(val) {
+      this.setRow()
+      this.currentPage = val
+    }
   }
 };
 </script>

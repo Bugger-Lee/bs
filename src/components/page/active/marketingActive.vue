@@ -537,7 +537,8 @@ export default {
         command_name:this.propsData.data_socure,
         command_code: this.propsData.data_code,
         created_by:getSessionItem.user_info,
-        crowd_id:this.ifDataExtension.crowdId
+        crowd_id:this.ifDataExtension.crowd_id || '',
+        crowd_name:this.ifDataExtension.crowd_name || ''
       };
       this.$.post("rule/insert", data).then(res => {
         if (res.data.code == 200) {
@@ -570,7 +571,8 @@ export default {
         command_name:this.propsData.data_socure,
         command_code:this.propsData.data_code,
         created_by:getSessionItem.user_info,
-        crowd_id:this.ifDataExtension.crowdId
+        crowd_id:this.ifDataExtension.crowd_id || '',
+        crowd_name:this.ifDataExtension.crowd_name || ''
       };
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
@@ -688,7 +690,7 @@ export default {
           return false;
         }
       }else if(this.propsData.data_socure == 'DMP-Data') {
-        if(this.propsData.brandVal == "" || !this.ifDataExtension.crowdId) {
+        if(this.propsData.brandVal == "" || !this.ifDataExtension.crowd_id) {
           this.$message("请您填写必填项")
           return false
         }
@@ -1020,8 +1022,8 @@ export default {
           return false
         }
         this.ifDataExtension = {}
-        this.ifDataExtension.crowdId = val.id
-        this.ifDataExtension.crowdName = val.name
+        this.ifDataExtension.crowd_id = val.id
+        this.ifDataExtension.crowd_name = val.name
       }
     },
     sltPromotion(val) {

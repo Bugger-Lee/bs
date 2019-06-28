@@ -29,7 +29,7 @@
           <div class="data-content-apply-content mt10">
             <P class="pttb" v-if="ifDataExtension.brandShow"><span>Brands : {{ifDataExtension.brandShow}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.periodShow"><span>Periods : {{ifDataExtension.periodShow}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.crowdName"><span>Crowd Name : {{ifDataExtension.crowdName}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.crowd_name"><span>Crowd Name : {{ifDataExtension.crowd_name}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.register"><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.newPeriod"><span>New Entry : {{ifDataExtension.newPeriod}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.newBuy"><span>First Purchase : {{ifDataExtension.newBuy}}</span><span></span></P>
@@ -179,8 +179,8 @@
               <div class="select-msg-table">
                 <el-table :data="dmpTable" style="width: 100%" highlight-current-row  @current-change="dmpTableIndex" height="220">
                   <el-table-column prop="name" label="Crowd Title" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="crowdCount" label="Quantity" show-overflow-tooltip> </el-table-column>
-                  <el-table-column prop="status" label="Status" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="crowd_count" label="Quantity" show-overflow-tooltip> </el-table-column>
+                  <!-- <el-table-column prop="status" label="Status" show-overflow-tooltip></el-table-column> -->
                   <el-table-column prop="creator" label="Creator" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="create_time" label="Create Time" show-overflow-tooltip> </el-table-column>
                   <el-table-column prop="update_time" label="Update Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>

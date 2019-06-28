@@ -62,7 +62,6 @@
                 </template>
               </el-table-column>
               <el-table-column prop="status_name" label="Status" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="cycle_type" label="Period" show-overflow-tooltip></el-table-column>
               <el-table-column prop="command_name" label="Crowd Type" show-overflow-tooltip></el-table-column>
               <el-table-column prop="created_by" label="Creator" show-overflow-tooltip></el-table-column>
               <div style="text-align:center; padding: 10px 0" slot="append" v-if="showLoading"><i class="el-icon-loading" style="color:#1589ee;font-size:35px;"></i></div>
@@ -92,18 +91,7 @@ export default {
           label: "All  Journeys",
           icon: 'icon-wenjian',
           journeyId:1,
-          children: [
-            {
-              label: "CLV",
-              icon: 'icon-wenjian',
-              journeyId:2
-            },
-            {
-              label: "DMP",
-              icon: 'icon-wenjian',
-              journeyId:3
-            }
-          ]
+          children: []
         }
       ],
       tableData: [],
@@ -119,6 +107,7 @@ export default {
   },
   created() {
     this.homeLists()
+    this.orderLists()
     this.treeJourneys()
   },
   methods: {
@@ -131,10 +120,10 @@ export default {
       })
     },
     treeModes(data) {
-      if(data.label == 'CLV' || data.label == 'DMP') {
-        this.crowdVal = data.label
-      }else if(data.label == 'All  Journeys') {
+      if(data.label == 'All  Journeys') {
         this.crowdVal = ''
+      }else{
+        this.crowdVal = data.label
       }
       this.homeLists()
     },
@@ -164,11 +153,25 @@ export default {
       this.tableData = result[0]
     },
     homeLists() {
-      this.$.get("rule/getList",{params:{ruleName:this.ruleName,crowdName:this.crowdVal}}).then(res=>{
+      this.$.get("rule/getList",{params:{ruleName:this.ruleName,crowdType:this.crowdVal}}).then(res=>{
         if (res.data.code ==200) {
           this.totalDate = res.data.data
           this.JourneyTotal = res.data.size
           this.splitDate()
+        }
+      })
+    },
+    // 调度命令
+    orderLists() {
+      this.$.get("command/getList?commandName=").then(res=>{
+        let data = res.data.data
+        for (var i=0; i<data.length; i++) {
+          let item = {
+            label: data[i].command_name,
+            icon: 'icon-wenjian',
+            journeyId: i+2
+          }
+          this.modelClv[0].children.push(item)
         }
       })
     },
