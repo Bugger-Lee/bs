@@ -14,6 +14,7 @@
           <div class="mb20">
             <span>Active Time ： </span>
             <el-date-picker
+              style="width:30%;"
               v-model="timeType.dateTimeVal"
               size="small"
               type="datetime"
@@ -23,6 +24,20 @@
               }"
               format="yyyy-MM-dd HH:mm"
               placeholder="Pls Active Time">
+            </el-date-picker>
+            <span class="ml10">End Time ： </span>
+            <el-date-picker
+              style="width:30%;"
+              v-model="timeType.dateEndVal"
+              size="small"
+              type="datetime"
+              :disabled = ifDisabled
+              :picker-options="{
+                selectableRange: selectRange,
+                disabledDate:disabledDate
+              }"
+              format="yyyy-MM-dd HH:mm"
+              placeholder="Pls End Time">
             </el-date-picker>
           </div>
           <div>

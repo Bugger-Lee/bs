@@ -356,7 +356,9 @@ export default {
         timeVal: "Days",
         executeType: 2,
         dateTimeVal: "",
+        dateEndVal:'',
         timestamp:'',
+        timestampEnd:'',
         time: [
           {
             id: 1,
@@ -504,6 +506,13 @@ export default {
       }
       if(this.timeType.dateTimeVal == '') {this.$message('请您选择激活时间')}
       let timestamp = new Date(this.timeType.dateTimeVal)
+      if(this.timeType.dateEndVal && this.timeType.executeType == 2) {
+        let timestampEnd = new Date(this.timeType.dateEndVal)
+        this.timeType.timestampEnd = timestampEnd.getFullYear() + '-' + (timestampEnd.getMonth() + 1) + '-' + timestampEnd.getDate() + ' ' + timestampEnd.getHours() + ':' + timestampEnd.getMinutes() + ':' + timestampEnd.getSeconds()
+      }else{
+        this.timeType.dateEndVal = ''
+        this.timeType.timestampEnd = ''
+      }
       this.timeType.timestamp = timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       let datas = {
         loopType: this.timeType.timeVal,
@@ -538,8 +547,11 @@ export default {
         command_code: this.propsData.data_code,
         created_by:getSessionItem.user_info,
         crowd_id:this.ifDataExtension.crowd_id || '',
-        crowd_name:this.ifDataExtension.crowd_name || ''
+        crowd_name:this.ifDataExtension.crowd_name || '',
       };
+      if (this.timeType.timestampEnd) {
+        data.retired_time = this.timeType.timestampEnd
+      }
       this.$.post("rule/insert", data).then(res => {
         if (res.data.code == 200) {
           this.$message(res.data.msg);
@@ -557,7 +569,7 @@ export default {
         id:this.systemId,
         rule_name: this.currentTimeVal,
         sms_channel_id: this.propsSms.ifSms.sms_channel_id,
-        template_id: this.propsSms.smsTable.id,
+        template_id: this.propsSms.ifSms.id,
         brand_id: this.ifDataExtension.brand,
         cycle_id: this.ifDataExtension.period || '',
         vip_channel_name: this.ifDataExtension.register || '',
@@ -572,8 +584,11 @@ export default {
         command_code:this.propsData.data_code,
         created_by:getSessionItem.user_info,
         crowd_id:this.ifDataExtension.crowd_id || '',
-        crowd_name:this.ifDataExtension.crowd_name || ''
+        crowd_name:this.ifDataExtension.crowd_name || '',
       };
+      if (this.timeType.timestampEnd) {
+        data.retired_time = this.timeType.timestampEnd
+      }
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
           this.$message(res.data.msg);

@@ -261,6 +261,8 @@ export default {
         dateTimeVal:'',
         executeType:'',
         timestamp:'',
+        timestampEnd:'',
+        dateEndVal:'',
         time:[
           {
             id:1,
@@ -483,6 +485,13 @@ export default {
         } else {
           temp_data_id = temp_id[0].id
         }
+        if(this.timeType.dateEndVal && this.timeType.executeType == 2) {
+          let timestampEnd = new Date(this.timeType.dateEndVal)
+          this.timeType.timestampEnd = timestampEnd.getFullYear() + '-' + (timestampEnd.getMonth() + 1) + '-' + timestampEnd.getDate() + ' ' + timestampEnd.getHours() + ':' + timestampEnd.getMinutes() + ':' + timestampEnd.getSeconds()
+        }else{
+          this.timeType.dateEndVal = ''
+          this.timeType.timestampEnd = ''
+        }
         let data = {
           id:this.$route.query.id,
           rule_name:this.userNameTie,
@@ -502,7 +511,10 @@ export default {
           command_code:this.propsData.defaultData.command_code,
           created_by:getSessionItem.user_info,
           crowd_id:this.ifDataExtension.crowd_id || '',
-          crowd_name:this.ifDataExtension.crowd_name || '',
+          crowd_name:this.ifDataExtension.crowd_name || ''
+        }
+        if(this.timeType.timestampEnd) {
+          data.retired_time = this.timeType.timestampEnd
         }
         this.$.post('rule/update',data).then(res=>{
           if(res.data.code == 200) {
@@ -569,6 +581,12 @@ export default {
             this.timeType.executeType = 2
           }
           let timestamp = new Date(res.data.data.schulder_time)
+          if(res.data.data.retired_time === null) {
+            this.timeType.dateEndVal = ''
+          }else{
+            let timestampEnd = new Date(res.data.data.retired_time)
+            this.timeType.dateEndVal = timestampEnd.getFullYear() + '-' + (timestampEnd.getMonth() + 1) + '-' + timestampEnd.getDate() + ' ' + timestampEnd.getHours() + ':' + timestampEnd.getMinutes() + ':' + timestampEnd.getSeconds()
+          }
           this.timeType.dateTimeVal  = timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
           if(this.ifDataExtension.vip_channel_name.length > 0) {
             this.propsData.registerVal = this.ifDataExtension.vip_channel_name.split(',')
