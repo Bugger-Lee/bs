@@ -206,7 +206,7 @@
 <script>
 import jsplumb from "jsplumb";
 import "@/assets/css/part.less";
-import smsPopup from "./module/smsPopup.vue"
+import smsPopup from "@/components/public/smsPopup.vue"
 import popupTicket from "./module/popupTicket.vue"
 import popupOpenTime from "@/components/public/popupOpenTime.vue"
 import popupDrag from "./module/popupDrag.vue"

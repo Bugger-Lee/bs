@@ -322,7 +322,7 @@ import "@/assets/css/part.less";
 import jsplumb from "jsplumb";
 import $ from "jquery";
 import popupDrag from "./module/popupDrag.vue";
-import smsPopup from "./module/smsPopup.vue";
+import smsPopup from "@/components/public/smsPopup.vue";
 import popupTicket from "./module/popupTicket.vue";
 import popupOpenTime from "@/components/public/popupOpenTime.vue";
 import { constants } from 'fs';
@@ -1068,7 +1068,7 @@ export default {
             if (this.propsSms.ifSms == '') {
               this.propsSms.ifSms = {}
             }
-            this.propsSms.ifSms.contentMag = val.document_text
+            this.propsSms.ifSms.template_text = val.document_text
             this.propsSms.ifSms.id = val.id
           }
 
@@ -1103,8 +1103,8 @@ export default {
       }
       let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
       let objData = {
-        contentMag: this.propsSms.ifSms.contentMag,
-        sms_channel_id_show:this.propsSms.sendSmsVal,
+        template_text: this.propsSms.ifSms.template_text,
+        sms_channel_content:this.propsSms.sendSmsVal,
         sms_channel_id: sms_data[0].id,
         id:this.propsSms.ifSms.id
       };
@@ -1118,7 +1118,7 @@ export default {
       }
       if (this.propsSms.dataSelected == 2) {
         let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.id)
-        objData.contentMag = doc_text[0].document_text
+        objData.template_text = doc_text[0].document_text
         this.propsSms.ifSms = objData;
         this.openSmsContent = false;
         this.openSms = true;
@@ -1136,8 +1136,8 @@ export default {
           if (res.data.code == 200) {
             this.smsLists();
             let objData = {
-              contentMag: this.propsSms.editMsg,
-              sms_channel_id_show:this.propsSms.sendSmsVal,
+              template_text: this.propsSms.editMsg,
+              sms_channel_content:this.propsSms.sendSmsVal,
               sms_channel_id: sms_data[0].id,
               id:res.data.data
             };

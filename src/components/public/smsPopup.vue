@@ -12,7 +12,7 @@
           <span class="redStar">*</span>Message Definition
         </p>
         <div class="data-content-c" v-if="propsSms.ifSms == ''">
-          <img src="../../../../assets/img/noneData2.png" style="height:240px;">
+          <img src="../../assets/img/noneData2.png" style="height:240px;">
           <p class="c-explain-one">Let's get started!</p>
           <p>Select or create a message</p>
           <el-button
@@ -153,7 +153,7 @@
               <p class="sms-edit-l-tit">CONTENT</p>
               <div class="sms-edit-l-content">
                 <p><i class="el-icon-edit"></i>Edit message template</p>
-                <textarea rows="6" placeholder="请编辑短信模板" v-model="propsSms.editMsg">
+                <textarea rows="6" placeholder="Edit message template" v-model="propsSms.editMsg">
 
                 </textarea>
               </div>
