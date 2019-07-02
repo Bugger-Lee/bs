@@ -503,6 +503,10 @@ export default {
             return false;
           }
         }
+        if(this.timeType.dateTimeVal > this.timeType.dateEndVal) {
+          this.$message('结束时间必须大于开始时间')
+          return false
+        }
       }
       if(this.timeType.dateTimeVal == '') {this.$message('请您选择激活时间')}
       let timestamp = new Date(this.timeType.dateTimeVal)

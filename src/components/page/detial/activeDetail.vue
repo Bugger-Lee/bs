@@ -355,6 +355,11 @@ export default {
       this.cron_express = this.dateChangeCron(datas)
       if(this.timeType.executeType == 1) {
         this.cron_express = ''
+      }else{
+        if(this.timeType.dateTimeVal > this.timeType.dateEndVal) {
+          this.$message('结束时间必须大于开始时间')
+          return false
+        }
       }
       this.openTime = false
     },
