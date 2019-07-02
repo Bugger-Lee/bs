@@ -100,7 +100,7 @@
                   <el-table-column  label="Content" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.act_desc}}</template>
                   </el-table-column>
-                  <el-table-column prop="created_time" label="Created" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
+                  <el-table-column prop="created_time" label="Create Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
                 </el-table>
               </div>
               <div class="select-msg-page">
