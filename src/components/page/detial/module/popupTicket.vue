@@ -11,7 +11,7 @@
         <p>
           <span class="redStar">*</span>Promotion
         </p>
-        <div class="data-content-c" v-if="propsTicket.ifTicket == ''">
+        <div class="data-content-c" v-if="ifTicket.camp_coupon_id == '' && ifTicket.coupon_id == ''">
           <img src="../../../../assets/img/noneData.png">
           <p class="c-explain-one">Let's get going!</p>
           <p>Select the data extension whose contacts should enter this journey</p>
@@ -21,10 +21,10 @@
             @click="clickPopup('openNext')"
           >Select Promotion</el-button>
         </div>
-        <div v-if="propsTicket.ifTicket != ''" class="data-content-apply" style="min-height:100px;">
+        <div v-if="ifTicket.camp_coupon_id != '' || ifTicket.coupon_id != ''" class="data-content-apply" style="min-height:100px;">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">DATA EXTENSION PROPERTIES</span>
-            <el-button class="bth" @click="PromotionLevel('edit')">Edit</el-button>
+            <el-button class="bth" @click="PromotionLevel('edit')" v-if="this.statusTestRunVal != 2">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
             <P class="pttb" v-if="ifTicket.camp_coupon_id != ''"><span>Promotion ID : {{ifTicket.camp_coupon_id}}</span><span></span></P>
@@ -148,7 +148,7 @@ export default {
       currentPage: 1
     };
   },
-  props: ["openData", "openDataContent","propsTicket","ifTicket"],
+  props: ["openData", "openDataContent","propsTicket","ifTicket","statusTestRunVal"],
   computed: {
     openDataProps: {
       get() {

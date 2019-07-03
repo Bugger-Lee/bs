@@ -40,15 +40,18 @@
             >Update</el-button>
             <el-button
               type="primary"
-               v-if="this.saveTest==true"
-              class="pd-btn pd-back ifColor"
+              v-if="this.saveTest==true"
+              :disabled="this.testDis"
+              class="pd-btn pd-back"
+              :class="{'ifColor':this.testDis == false}"
               @click="testRunJourney('test')"
             >Test</el-button>
           </el-button-group>
           <el-button
             type="primary"
-            class="pd-btn mr15"
-             v-if="this.saveRunning==true"
+            class="disBtn mr15"
+            v-if="this.saveRunning==true"
+            :disabled="this.runDis"
             @click="testRunJourney('runing')"
           >Run</el-button>
           <el-button
@@ -279,6 +282,7 @@
         :propsData="propsData"
         :openDataContent="openDataContent"
         :ifDataExtension="ifDataExtension"
+        :statusTestRunVal="statusTestRunVal"
         @backlevel="backlevel"
         @searchDmpList="searchDmpList"
         @sltDataContent="sltDataContent"
@@ -287,12 +291,14 @@
         :openData="openSms"
         :propsSms="propsSms"
         :openDataContent="openSmsContent"
+        :statusTestRunVal="statusTestRunVal"
         @backlevelSms="backlevelSms"
         @searchSmsList="searchSmsList"
         @sltSmsContent="sltSmsContent"
       ></smsPopup>
       <popupTicket :openData="openTicket"
       :openDataContent="openTicketContent"
+      :statusTestRunVal="statusTestRunVal"
       @searchDate="searchDate"
       :propsTicket = "propsTicket"
       @ifCheckedVal="ifCheckedVal"
@@ -312,7 +318,10 @@
           <el-button @click="openTime = false">Cancel</el-button>
           <el-button type="primary" @click="doneTime()">Done</el-button>
         </span>
-        <popupOpenTime :timeType="timeType"></popupOpenTime>
+        <popupOpenTime :timeType="timeType" 
+        :ifDisabled="ifDisabled" 
+        :ifActiveDis="ifActiveDis"
+        @timeCarryOnce="timeCarryOnce"></popupOpenTime>
       </el-dialog>
     </div>
   </div>
@@ -335,6 +344,8 @@ export default {
       saveTest:true,
       saveRunning:true,
       saveStop:false,
+      testDis:true,
+      runDis:true,
       ifDrag: false,
       ifSmsDrag: false,
       ifProDrag: false,
@@ -450,6 +461,8 @@ export default {
       systemId: "",
       dargSms: false,
       sortDrag: "",
+      ifDisabled:false,
+      ifActiveDis:false,
       sourcesType:[],
     };
   },
@@ -503,12 +516,21 @@ export default {
             return false;
           }
         }
-        if(this.timeType.dateTimeVal > this.timeType.dateEndVal) {
-          this.$message('结束时间必须大于开始时间')
+        if(this.timeType.dateTimeVal == '' || this.timeType.dateTimeVal == null ||
+          this.timeType.dateEndVal == '' || this.timeType.dateEndVal == null) {
+            this.$message("请完善时间信息");
+            return false
+        }
+        // if(this.timeType.dateTimeVal < this.timeType.dateEndVal) {
+        //   this.$message('结束时间必须大于开始时间')
+        //   return false
+        // }
+      }else if(this.timeType.executeType == 1) {
+        if(this.timeType.dateTimeVal == '' || this.timeType.dateTimeVal == null) {
+          this.$message('请选择激活时间')
           return false
         }
       }
-      if(this.timeType.dateTimeVal == '') {this.$message('请您选择激活时间')}
       let timestamp = new Date(this.timeType.dateTimeVal)
       if(this.timeType.dateEndVal && this.timeType.executeType == 2) {
         let timestampEnd = new Date(this.timeType.dateEndVal)
@@ -532,6 +554,31 @@ export default {
       this.openTime = false;
     },
     saveJourney() {
+      if(this.propsData.data_socure == 'CLV-Data' || this.propsData.data_socure == '') {
+        if(this.ifDataExtension.period == undefined ||this.ifDataExtension.register == undefined) {
+          this.$message('请您选择必选项')
+          return false
+        }
+      }else if(this.propsData.data_socure == 'DMP-Data' || this.propsData.data_socure == '') {
+        if(this.ifDataExtension.crowd_id == '' || this.ifDataExtension.crowd_id == undefined) {
+          this.$message('请您选择必选项')
+          return false
+        }
+      }
+      if(this.currentTimeVal == '' ||
+        this.propsSms.ifSms.sms_channel_id == 'undefined' ||
+        this.propsSms.ifSms.id == 'undefined' || 
+        !this.ifDataExtension.brand ||
+        this.timeType.timestamp == '') {
+          this.$message('请您选择必选项')
+          return false
+      }
+      if(this.ifProDrag == true) {
+        if(this.propsTicket.ifPromotion.camp_coupon_id == undefined && this.propsTicket.ifPromotion.coupon_id == undefined) {
+          this.$message('请您选择必选项')
+          return false
+        }
+      }
       let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
       let data = {
         rule_name: this.currentTimeVal,
@@ -549,7 +596,8 @@ export default {
         cron_express: this.cron_express,
         command_name:this.propsData.data_socure,
         command_code: this.propsData.data_code,
-        created_by:getSessionItem.user_info,
+        // created_by:getSessionItem.user_info,
+        created_by:'hmy',
         crowd_id:this.ifDataExtension.crowd_id || '',
         crowd_name:this.ifDataExtension.crowd_name || '',
       };
@@ -562,12 +610,19 @@ export default {
           this.systemId = res.data.data;
           this.saveSave = false
           this.saveUpdate = true
+          this.testDis = false
         } else {
           this.$message(res.data.msg);
         }
       });
     },
     updateJorney() {
+      if(this.ifProDrag == true) {
+        if(this.propsTicket.ifPromotion.camp_coupon_id == undefined && this.propsTicket.ifPromotion.coupon_id == undefined) {
+          this.$message('请您选择必选项')
+          return false
+        }
+      }
       let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
       let data = {
         id:this.systemId,
@@ -586,7 +641,8 @@ export default {
         cron_express: this.cron_express,
         command_name:this.propsData.data_socure,
         command_code:this.propsData.data_code,
-        created_by:getSessionItem.user_info,
+        // created_by:getSessionItem.user_info,
+        created_by:'hmy',
         crowd_id:this.ifDataExtension.crowd_id || '',
         crowd_name:this.ifDataExtension.crowd_name || '',
       };
@@ -602,10 +658,6 @@ export default {
       });
     },
     testRunJourney(val) {
-      if(this.saveSave == true) {
-        this.$message("请您先Save")
-        return false
-      }
       if (val == "test") {
         this.statusTestRunVal = 1;
       } else if (val == "runing") {
@@ -618,7 +670,8 @@ export default {
       }).then(res => {
         if (res.data.code == 200) {
           if (val == "test") {
-            this.$message(res.data.msg);
+            this.$message('Processing');
+            this.runDis = false
           } else if (val == "runing") {
             this.saveUpdate = false
             this.saveTest = false
@@ -631,10 +684,10 @@ export default {
               this.$router.push("./");
             });
           }else if(val == "stop") {
-            this.$message(res.data.msg);
+            this.$message('Processing');
           }
         } else {
-          this.$message(res.data.msg);
+          this.$message('Processing');
         }
       });
     },
@@ -1029,6 +1082,22 @@ export default {
     },
     selectTime() {
       this.openTime = true;
+      if(this.statusTestRunVal == 2) {
+        this.ifDisabled = true
+        this.ifActiveDis = true
+      }else{
+        this.ifActiveDis = false
+        this.timeCarryOnce(this.timeType.executeType)
+      }
+    },
+    timeCarryOnce(val) {
+      if(val != '') {
+        if(val == 1) {
+          this.ifDisabled = true
+        }else{
+          this.ifDisabled = false
+        }
+      }
     },
     sltDataContent(val) {
       this.openData = false;
@@ -1170,7 +1239,6 @@ export default {
       $(".marketing-drag").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
-          console.log(ui.draggable[0].slot)
           if (
             minleft <= ui.offset.left &&
             ui.offset.left <= minleft + maxleft &&
@@ -1342,6 +1410,10 @@ export default {
         .pd-btn {
           padding: 6px 12px;
           background-color: #0070d2;
+          border: none;
+        }
+        .disBtn{
+          padding: 6px 12px;
           border: none;
         }
         .pd-back {

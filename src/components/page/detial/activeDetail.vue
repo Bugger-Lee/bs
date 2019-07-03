@@ -162,6 +162,7 @@
     </div>
     <popupDrag :openData ="openData"
         :propsData="propsData"
+        :statusTestRunVal="statusTestRunVal"
         :openDataContent ="openDataContent"
         v-if="this.propsData.periodVal != ''"
         :ifDataExtension ="ifDataExtension"
@@ -173,12 +174,14 @@
     <smsPopup :openData ="openSms"
         :propsSms = "propsSms"
         :openDataContent ="openSmsContent"
+        :statusTestRunVal="statusTestRunVal"
         @backlevelSms ="backlevelSms"
         @searchSmsList ="searchSmsList"
         @sltSmsContent ="sltSmsContent">
     </smsPopup>
     <popupTicket :openData="openTicket" 
       :propsTicket="propsTicket"
+      :statusTestRunVal="statusTestRunVal"
       :openDataContent="openTicketContent"
       :ifTicket = "ifTicket"
       @searchDate = "searchDate"
@@ -198,19 +201,23 @@
         <el-button @click="openTime = false">Cancel</el-button>
         <el-button type="primary" @click="doneTime()">Done</el-button>
       </span>
-      <popupOpenTime :timeType = "timeType"></popupOpenTime>
+      <popupOpenTime :timeType = "timeType" 
+      :ifDisabled="ifDisabled" 
+      :ifActiveDis="ifActiveDis"
+      @timeCarryOnce="timeCarryOnce"></popupOpenTime>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import jsplumb from "jsplumb";
+import $ from "jquery";
 import "@/assets/css/part.less";
 import smsPopup from "@/components/public/smsPopup.vue"
 import popupTicket from "./module/popupTicket.vue"
 import popupOpenTime from "@/components/public/popupOpenTime.vue"
 import popupDrag from "./module/popupDrag.vue"
-import { constants } from 'fs';
+import { constants, truncate } from 'fs';
 export default {
   data() {
     return {
@@ -325,7 +332,9 @@ export default {
       datedrag: 2,
       showFirst: true,
       statusTestRunVal:'',
-      userNameTie:''
+      userNameTie:'',
+      ifDisabled:false,
+      ifActiveDis:false
     };
   },
   components: {
@@ -355,11 +364,34 @@ export default {
       this.cron_express = this.dateChangeCron(datas)
       if(this.timeType.executeType == 1) {
         this.cron_express = ''
-      }else{
-        if(this.timeType.dateTimeVal > this.timeType.dateEndVal) {
-          this.$message('结束时间必须大于开始时间')
-          return false
+      }else if(this.timeType.executeType == 2){
+        if (this.timeType.timeVal == "Days") {
+          if (this.timeType.timePicker == "") {
+            this.$message("请您完善时间信息");
+            return false;
+          }
         }
+        if (this.timeType.timeVal == "months") {
+          if (this.timeType.timePicker == "" || this.timeType.timeMonths == "") {
+            this.$message("请您完善时间信息");
+            return false;
+          }
+        }
+        if (this.timeType.timeVal == "weeks") {
+          if (this.timeType.timePicker == "" || this.timeType.timeWeek == "") {
+            this.$message("请您完善时间信息");
+            return false;
+          }
+        }
+        if(this.timeType.dateTimeVal == '' || this.timeType.dateTimeVal == null ||
+          this.timeType.dateEndVal == '' || this.timeType.dateEndVal == null) {
+            this.$message("请您完善时间信息");
+            return false
+        }
+        // if(this.timeType.dateTimeVal  < this.timeType.dateEndVal) {
+        //   this.$message('结束时间必须大于开始时间')
+        //   return false
+        // }
       }
       this.openTime = false
     },
@@ -400,6 +432,7 @@ export default {
         this.jsPlumb("data1", "return1");
         this.jsPlumb("return1", "return2");
         this.jsPlumb("return2", "return3");
+        this.dragInit()
       });
     },
     dragInit2(top, left) {
@@ -474,6 +507,32 @@ export default {
         });
       });
     },
+    // 拖拽
+    dragInit() {
+      let that = this;
+      $(".crowds-style").draggable({
+        zIndex: 999,
+        helper: "clone",
+        scope: "dragflag",
+        appendTo: "body",
+        containment: "parent"
+      });
+      $(".marketing-drag").droppable({
+        scope: "dragflag",
+        drop: function(event, ui) {
+          console.log(event, ui)
+          if (
+            350 <= ui.offset.left &&
+            ui.offset.left <= 450 &&
+            180 <= ui.offset.top &&
+            ui.offset.top < 230
+          ) {
+            that.showFirst = true
+            that.dragInit2(200, 320);
+          }
+        }
+      });
+    },
     popupTicket() {
       this.openTicket = true
       this.discountLists()
@@ -538,7 +597,7 @@ export default {
         }
         this.$.get("rule/updateStatus",{params: { id: this.$route.query.id, status: this.statusTestRunVal }}).then(res=>{
           if(res.data.code == 200) {
-            this.$message(res.data.msg)
+            this.$message('Processing')
             if(this.statusTestRunVal == 3) {
               this.detailUpdate = true
               this.detailRun = true
@@ -574,6 +633,7 @@ export default {
             this.showFirst = true
             this.dragInit1(200, 320);
           }
+          this.statusTestRunVal = res.data.data.status
           if(res.data.data.status == 2) {
             this.detailStop = true
             this.detailUpdate = false
@@ -582,8 +642,10 @@ export default {
           }
           if(res.data.data.cron_express == '') {
             this.timeType.executeType = 1
+            this.ifDisabled = true
           }else{
             this.timeType.executeType = 2
+            this.ifDisabled = false
           }
           let timestamp = new Date(res.data.data.schulder_time)
           if(res.data.data.retired_time === null) {
@@ -885,7 +947,23 @@ export default {
     },
     selectTime() {
       this.openTime = true
-    }
+      if(this.statusTestRunVal == 2) {
+        this.ifDisabled = true
+        this.ifActiveDis = true
+      }else{
+        this.ifActiveDis = false
+        this.timeCarryOnce(this.timeType.executeType)
+      }
+    },
+    timeCarryOnce(val) {
+      if(val != '') {
+        if(val == 1) {
+          this.ifDisabled = true
+        }else{
+          this.ifDisabled = false
+        }
+      }
+    },
   },
   beforeRouteLeave (to,from,next) {
     let allconn = jsplumb.jsPlumb.getAllConnections()

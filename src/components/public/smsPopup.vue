@@ -24,7 +24,7 @@
         <div v-if="propsSms.ifSms != ''" class="data-content-apply" style="min-height:100px;">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">Message Definition</span>
-            <el-button class="bth" @click="clickPopup({name:'openNext'})">Edit</el-button>
+            <el-button class="bth" @click="clickPopup({name:'openNext'})" v-if="this.statusTestRunVal != 2">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
             <P class="pttb"><span>Content : {{propsSms.ifSms.template_text}}</span><span></span></P>
@@ -241,7 +241,7 @@ export default {
       return result[this.currentPage-1]
     }
   },
-  props: ["openData", "openDataContent","propsSms"],
+  props: ["openData", "openDataContent","propsSms","statusTestRunVal"],
   methods: {
     clickPopup(value) {
       this.$emit("sltSmsContent", value);
