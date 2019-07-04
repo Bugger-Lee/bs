@@ -695,7 +695,7 @@ export default {
       })
     },
     dmpTables() {
-      this.$.get("http://bestsellerdmp.bestseller.com.cn/jbuilder-api/crowd/getCrowdList",{params:{crowdName:this.propsData.SearchDmp}}).then(res=>{
+      this.$.get("crowd/getCrowdList",{params:{crowdName:this.propsData.SearchDmp}}).then(res=>{
         this.propsData.dmpTable = res.data.data
       })
     },
