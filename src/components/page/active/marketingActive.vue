@@ -521,10 +521,10 @@ export default {
             this.$message("请完善时间信息");
             return false
         }
-        // if(this.timeType.dateTimeVal < this.timeType.dateEndVal) {
-        //   this.$message('结束时间必须大于开始时间')
-        //   return false
-        // }
+        if(new Date(this.timeType.dateTimeVal).getTime()  >= new Date(this.timeType.dateEndVal).getTime()) {
+          this.$message('结束时间必须大于开始时间')
+          return false
+        }
       }else if(this.timeType.executeType == 1) {
         if(this.timeType.dateTimeVal == '' || this.timeType.dateTimeVal == null) {
           this.$message('请选择激活时间')
@@ -596,8 +596,7 @@ export default {
         cron_express: this.cron_express,
         command_name:this.propsData.data_socure,
         command_code: this.propsData.data_code,
-        // created_by:getSessionItem.user_info,
-        created_by:'hmy',
+        created_by:getSessionItem.user_info,
         crowd_id:this.ifDataExtension.crowd_id || '',
         crowd_name:this.ifDataExtension.crowd_name || '',
       };
@@ -641,8 +640,7 @@ export default {
         cron_express: this.cron_express,
         command_name:this.propsData.data_socure,
         command_code:this.propsData.data_code,
-        // created_by:getSessionItem.user_info,
-        created_by:'hmy',
+        created_by:getSessionItem.user_info,
         crowd_id:this.ifDataExtension.crowd_id || '',
         crowd_name:this.ifDataExtension.crowd_name || '',
       };

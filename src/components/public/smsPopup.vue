@@ -157,6 +157,17 @@
 
                 </textarea>
               </div>
+              <div style="margin-top:30px;">
+                <span class="redStar">*</span>
+                <span>Sms Channel</span>
+                <el-select v-model="propsSms.sendSmsVal" clearable placeholder="Pls Sms Channel" style="display:inline-block;"  class="select-option-classify">
+                  <el-option
+                    v-for="item in propsSms.sendSmsList"
+                    :key="item.id"
+                    :value="item.channel_content"
+                  ></el-option>
+                </el-select>
+            </div>
             </el-col>
             <el-col :span="16" class="sms-edit-r">
               <p class="sms-edit-r-tit">LOOK OVER</p>

@@ -388,10 +388,10 @@ export default {
             this.$message("请您完善时间信息");
             return false
         }
-        // if(this.timeType.dateTimeVal  < this.timeType.dateEndVal) {
-        //   this.$message('结束时间必须大于开始时间')
-        //   return false
-        // }
+        if(new Date(this.timeType.dateTimeVal).getTime()  >= new Date(this.timeType.dateEndVal).getTime()) {
+          this.$message('结束时间必须大于开始时间')
+          return false
+        }
       }
       this.openTime = false
     },
@@ -432,7 +432,9 @@ export default {
         this.jsPlumb("data1", "return1");
         this.jsPlumb("return1", "return2");
         this.jsPlumb("return2", "return3");
-        this.dragInit()
+        if(this.statusTestRunVal != 2) {
+          this.dragInit()
+        }
       });
     },
     dragInit2(top, left) {
@@ -520,7 +522,6 @@ export default {
       $(".marketing-drag").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
-          console.log(event, ui)
           if (
             350 <= ui.offset.left &&
             ui.offset.left <= 450 &&
@@ -529,6 +530,7 @@ export default {
           ) {
             that.showFirst = true
             that.dragInit2(200, 320);
+            that.$message('journey有变动，请检查数据')
           }
         }
       });
@@ -894,16 +896,12 @@ export default {
         })
     },
     saveMessage() {
-      let smsObj = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
-      let objData = {
-        template_text:this.propsSms.editMsg,
-        sms_channel_id: smsObj[0].id,
-        sms_channel_content:this.propsSms.sendSmsVal
-      }
       if(this.propsSms.dataSelected == 2) {
         let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.template_id)
+        let smsObj = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
         this.propsSms.ifSms.template_text = doc_text[0].document_text
         this.propsSms.ifSms.sms_channel_content = this.propsSms.sendSmsVal
+        this.propsSms.ifSms.sms_channel_id = smsObj[0].id
         this.openSmsContent = false
         this.openSms = true
       }else if(this.propsSms.dataSelected == 3){
