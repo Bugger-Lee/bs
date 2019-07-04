@@ -31,6 +31,7 @@
             <P class="pttb" v-if="ifDataExtension.crowd_name"><span>Crowd Name : {{ifDataExtension.crowd_name}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.cycle_type"><span>Periods : {{ifDataExtension.cycle_type}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.vip_channel_name"><span>Registered Channels : {{ifDataExtension.vip_channel_name}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.reg_brand_name"><span>Registered Brands : {{ifDataExtension.reg_brand_name}}</span><span></span></P>                 
             <P class="pttb" v-if="ifDataExtension.enter_first"><span>New Entry : {{ifDataExtension.enter_first}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.purchase_first"><span>First Purchase : {{ifDataExtension.purchase_first}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.purchase_week"><span>No Purchase (within a week) : {{ifDataExtension.purchase_week}}</span><span></span></P>
@@ -123,6 +124,16 @@
                     ></el-option>
                   </el-select>
                 </div>
+                <div class="ml10">
+                  <span>Registered Brands</span>
+                  <el-select v-model="propsData.regBrandVal" clearable placeholder="Pls select brands" class="select-option-classify">
+                    <el-option
+                      v-for="item in propsData.brandList"
+                      :key="item.id"
+                      :value="item.brand_name"
+                    ></el-option>
+                  </el-select>
+                </div>
               </el-col>
               <el-col :span="12">
                 <div class="select-option-ipt" v-if="ifNewPeriod">
@@ -143,6 +154,11 @@
                 <p v-if="ifNewMbmber">
                   <span class="mr15" style="color:red;font-size:10px;">(within a week)</span>  
                 </p>
+                <div class="select-option-ipt">
+                  <span class="mr15">是否导购:</span>
+                  <el-radio label="Y" v-model="propsData.shoppings">Yes</el-radio>
+                  <el-radio label="N" v-model="propsData.shoppings">No</el-radio>
+                </div>
               </el-col>
             </div>
           </el-col>
@@ -298,7 +314,9 @@ export default {
       this.$emit("backlevel",val)
       if(val == 'edit') {
         this.showChange = true
-        this.setRow()
+        if(this.dmpTable) {
+          this.setRow()
+        }
       }
     },
     tabSelect(val) {
@@ -319,11 +337,14 @@ export default {
       }else{
         this.ifNewBuy = true
         this.ifNewMbmber = false
+        this.propsData.newMbmber = ''
       }
     },
     handleSizeChange(val) {
-      this.setRow()
       this.currentPage = val
+      if(this.dmpTable) {
+        this.setRow()
+      }
     }
   }
 };

@@ -261,7 +261,9 @@ export default {
         this.input_text = ''
       } else if( value.name == 'openNext') {
         this.showChange = true
-        this.setRow()
+        if(this.smsTable) {
+          this.setRow()
+        }
       }
     },
     setRow() {
@@ -304,7 +306,9 @@ export default {
     // 分页
     handleSizeChange(val) {
       this.currentPage = val
-      this.setRow()
+      if(this.smsTable) {
+        this.setRow()
+      }
     }
   }
 };

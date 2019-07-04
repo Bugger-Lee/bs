@@ -433,7 +433,9 @@ export default {
         newMbmber: "",
         data_socure: '',
         data_code:"",
-        SearchDmp:''
+        SearchDmp:"",
+        shoppings:"",
+        regBrandVal:""
       },
       propsTicket:{
         salesTable: [],
@@ -592,13 +594,15 @@ export default {
         coupon_id: this.propsTicket.ifPromotion.coupon_id || '',
         enter_first: this.ifDataExtension.newPeriod || '',
         purchase_week: this.ifDataExtension.newMbmber || '',
-        purchase_first: this.propsData.newBuy || '',
+        purchase_first: this.ifDataExtension.newBuy || '',
         cron_express: this.cron_express,
         command_name:this.propsData.data_socure,
         command_code: this.propsData.data_code,
         created_by:getSessionItem.user_info,
         crowd_id:this.ifDataExtension.crowd_id || '',
         crowd_name:this.ifDataExtension.crowd_name || '',
+        excluded_guide:this.ifDataExtension.excluded_guide || '',
+        reg_brand_id:this.ifDataExtension.reg_brand_id || ''
       };
       if (this.timeType.timestampEnd) {
         data.retired_time = this.timeType.timestampEnd
@@ -636,13 +640,15 @@ export default {
         coupon_id: this.propsTicket.ifPromotion.coupon_id || '',
         enter_first: this.ifDataExtension.newPeriod || '',
         purchase_week: this.ifDataExtension.newMbmber || '',
-        purchase_first: this.propsData.newBuy || '',
+        purchase_first: this.ifDataExtension.newBuy || '',
         cron_express: this.cron_express,
         command_name:this.propsData.data_socure,
         command_code:this.propsData.data_code,
         created_by:getSessionItem.user_info,
         crowd_id:this.ifDataExtension.crowd_id || '',
         crowd_name:this.ifDataExtension.crowd_name || '',
+        excluded_guide:this.ifDataExtension.excluded_guide || '',
+        reg_brand_id:this.ifDataExtension.reg_brand_id || ''
       };
       if (this.timeType.timestampEnd) {
         data.retired_time = this.timeType.timestampEnd
@@ -765,14 +771,11 @@ export default {
           return false
         }
       }
-      let item_data = this.propsData.brandList.filter(
-        item => item.id == this.propsData.brandVal
-      );
+      let item_data = this.propsData.brandList.filter(item => item.id == this.propsData.brandVal);
       if(this.propsData.data_socure == 'CLV-Data') {
         let registerVal = this.propsData.registerVal.join(",");
-        let item2_data = this.propsData.periodList.filter(
-          item => item.id == this.propsData.periodVal
-        );
+        let item2_data = this.propsData.periodList.filter(item => item.id == this.propsData.periodVal);
+        let regBrand = this.propsData.brandList.filter(item => item.id == this.propsData.regBrandVal);
         let objData = {
           brand: this.propsData.brandVal,
           period: this.propsData.periodVal,
@@ -782,6 +785,9 @@ export default {
           newPeriod: this.propsData.newPeriod,
           newBuy: this.propsData.newBuy,
           newMbmber: this.propsData.newMbmber,
+          excluded_guide: this.propsData.shoppings,
+          reg_brand_id: this.propsData.regBrandVal,
+          reg_brand_id_show:regBrand[0].brand_name
         };
         this.ifDataExtension = objData;
       }else if(this.propsData.data_socure == 'DMP-Data') {

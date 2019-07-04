@@ -15,6 +15,7 @@
               <p>{{this.userNameTie}}</p>
             </div>
           </div>
+          <span class="l-status" v-if="this.propsData.defaultData.task_status">{{this.propsData.defaultData.task_status}}</span>
         </el-col>
         <el-col :span="12" class="marketing-header-r">
           <el-button-group class="mr05">
@@ -250,7 +251,9 @@ export default {
           newBuy:'',
           newMbmber:'',
           SearchDmp:'',
-          defaultData:''
+          defaultData:'',
+          shoppings:'',
+          regBrandVal:''
       },
       propsSms:{
         smsTable:[],
@@ -577,7 +580,9 @@ export default {
           command_code:this.propsData.defaultData.command_code,
           created_by:getSessionItem.user_info,
           crowd_id:this.ifDataExtension.crowd_id || '',
-          crowd_name:this.ifDataExtension.crowd_name || ''
+          crowd_name:this.ifDataExtension.crowd_name || '',
+          excluded_guide:this.ifDataExtension.excluded_guide || '',
+          reg_brand_id:this.ifDataExtension.reg_brand_id || ''
         }
         if(this.timeType.timestampEnd) {
           data.retired_time = this.timeType.timestampEnd
@@ -626,6 +631,7 @@ export default {
           this.propsData.defaultData = res.data.data
           this.userNameTie = res.data.data.rule_name
           this.propsData.brandVal = this.ifDataExtension.brand_name
+          this.propsData.regBrandVal = this.ifDataExtension.reg_brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
           this.propsSms.sendSmsVal =  this.propsSms.ifSms.sms_channel_content
           if(res.data.data.camp_coupon_id || res.data.data.coupon_id) {
@@ -663,6 +669,7 @@ export default {
           this.propsData.newBuy = this.ifDataExtension.purchase_first
           this.propsData.newPeriod = this.ifDataExtension.enter_first
           this.propsData.newMbmber = this.ifDataExtension.purchase_week
+          this.propsData.shoppings = this.ifDataExtension.excluded_guide
           if (res.data.data.cron_express) {
           this.cronChangeDate(res.data.data)
           this.timeType.timeVal = this.cronChangeDate(res.data.data).loopType
@@ -817,6 +824,7 @@ export default {
       if(this.propsData.defaultData.command_name == 'CLV-Data') {
         let reVal = this.propsData.registerVal.join(',')
         let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
+        let regBrand = this.propsData.brandList.filter(item => item.brand_name == this.propsData.regBrandVal)
         let objData = {
           brand_id:item_data[0].id,
           cycle_id:item2_data[0].id,
@@ -826,6 +834,9 @@ export default {
           enter_first:this.propsData.newPeriod,
           purchase_first:this.propsData.newBuy,
           purchase_week:this.propsData.newMbmber,
+          excluded_guide:this.propsData.shoppings,
+          reg_brand_name:this.propsData.regBrandVal,
+          reg_brand_id:regBrand[0].id
         }
         this.ifDataExtension = objData
       }else if(this.propsData.defaultData.command_name == 'DMP-Data') {
@@ -910,7 +921,6 @@ export default {
           return false
         }
         let insertData = {
-          cycle_id:this.ifDataExtension.cycle_id,
           brand_id:this.ifDataExtension.brand_id,
           document_text:this.propsSms.editMsg,
           uuid:(new Date()).valueOf()
@@ -1020,6 +1030,16 @@ export default {
             font-size: 15px;
             font-weight: 600;
           }
+        }
+        .l-status{
+          margin-left: 30px;
+          color: #fff;
+          font-style: italic;
+          background: gray;
+          opacity: 0.4;
+          padding: 6px 12px;
+          border-radius: 15px;
+          font-size: 10px;
         }
       }
       .marketing-header-r {
