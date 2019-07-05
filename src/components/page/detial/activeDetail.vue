@@ -835,10 +835,13 @@ export default {
           purchase_first:this.propsData.newBuy,
           purchase_week:this.propsData.newMbmber,
           excluded_guide:this.propsData.shoppings,
-          reg_brand_name:this.propsData.regBrandVal,
-          reg_brand_id:regBrand[0].id
+          reg_brand_name:this.propsData.regBrandVal
         }
         this.ifDataExtension = objData
+        if(this.propsData.regBrandVal != null && this.propsData.regBrandVal != '' && regBrand != []) {
+          console.log(this.propsData.regBrandVal,regBrand)
+          this.ifDataExtension.reg_brand_id = regBrand[0].id
+        }
       }else if(this.propsData.defaultData.command_name == 'DMP-Data') {
         this.ifDataExtension.brand_id = item_data[0].id
         this.ifDataExtension.brand_name = this.propsData.brandVal
@@ -907,9 +910,9 @@ export default {
         })
     },
     saveMessage() {
+      let smsObj = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
       if(this.propsSms.dataSelected == 2) {
         let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.template_id)
-        let smsObj = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
         this.propsSms.ifSms.template_text = doc_text[0].document_text
         this.propsSms.ifSms.sms_channel_content = this.propsSms.sendSmsVal
         this.propsSms.ifSms.sms_channel_id = smsObj[0].id

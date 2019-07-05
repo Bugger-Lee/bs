@@ -786,10 +786,12 @@ export default {
           newBuy: this.propsData.newBuy,
           newMbmber: this.propsData.newMbmber,
           excluded_guide: this.propsData.shoppings,
-          reg_brand_id: this.propsData.regBrandVal,
-          reg_brand_id_show:regBrand[0].brand_name
+          reg_brand_id: this.propsData.regBrandVal
         };
         this.ifDataExtension = objData;
+        if(this.propsData.regBrandVal != '') {
+          this.ifDataExtension.reg_brand_id_show = regBrand[0].brand_name
+        }
       }else if(this.propsData.data_socure == 'DMP-Data') {
         this.ifDataExtension.brandShow = item_data[0].brand_name
         this.ifDataExtension.brand = this.propsData.brandVal

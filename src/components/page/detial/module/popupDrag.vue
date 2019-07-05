@@ -92,8 +92,8 @@
               <el-col :span="12">
                 <div class="ml10">
                   <span class="redStar">*</span>
-                  <span>Select Brands</span>
-                  <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brands" class="select-option-classify">
+                  <span>Select Brand</span>&nbsp;
+                  <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brand" class="select-option-classify">
                     <el-option
                       v-for="item in propsData.brandList"
                       :key="item.id"
@@ -103,8 +103,8 @@
                 </div>
                 <div class="ml10">
                   <span class="redStar">*</span>
-                  <span>Select Periods</span>
-                  <el-select v-model="propsData.periodVal"  clearable placeholder="Pls select periods" class="select-option-classify">
+                  <span>Select Period</span>
+                  <el-select v-model="propsData.periodVal"  clearable placeholder="Pls select period" class="select-option-classify">
                     <el-option
                       @click.native="periodChange()"
                       v-for="item in propsData.periodList"
@@ -125,8 +125,8 @@
                   </el-select>
                 </div>
                 <div class="ml10">
-                  <span>Registered Brands</span>
-                  <el-select v-model="propsData.regBrandVal" clearable placeholder="Pls select brands" class="select-option-classify">
+                  <span class="ml15">&nbsp;Registered Brand</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <el-select v-model="propsData.regBrandVal" clearable placeholder="Pls select registered brand" class="select-option-classify">
                     <el-option
                       v-for="item in propsData.brandList"
                       :key="item.id"
@@ -137,12 +137,12 @@
               </el-col>
               <el-col :span="12">
                 <div class="select-option-ipt" v-if="ifNewPeriod">
-                  <span class="mr15">New Entry:</span>
+                  <span class="mr15">New Entry:</span>&nbsp;&nbsp;&nbsp;
                   <el-radio v-model="propsData.newPeriod" label="Y">Yes</el-radio>
                   <el-radio v-model="propsData.newPeriod" label="N">No</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewBuy">
-                  <span class="mr15">First Purchase:</span>
+                  <span class="mr05">First Purchase:</span>
                   <el-radio v-model="propsData.newBuy" label="Y">Yes</el-radio>
                   <el-radio v-model="propsData.newBuy" label="N">No</el-radio>
                 </div>
@@ -155,7 +155,7 @@
                   <span class="mr15" style="color:red;font-size:10px;">(within a week)</span>  
                 </p>
                 <div class="select-option-ipt">
-                  <span class="mr15">是否导购:</span>
+                  <span class="mr15">Exclude Staff:</span>
                   <el-radio label="Y" v-model="propsData.shoppings">Yes</el-radio>
                   <el-radio label="N" v-model="propsData.shoppings">No</el-radio>
                 </div>
@@ -178,8 +178,8 @@
                 <el-col :span="12">
                   <div class="ml10">
                     <span class="redStar">*</span>
-                    <span>Select Brands</span>
-                    <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brands" class="select-option-classify">
+                    <span>Select Brand</span>
+                    <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brand" class="select-option-classify">
                       <el-option
                         v-for="item in propsData.brandList"
                         :key="item.id"
