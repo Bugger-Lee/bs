@@ -688,7 +688,7 @@ export default {
               this.$router.push("./");
             });
           }else if(val == "stop") {
-            this.$message('Processing');
+            this.$message('Stop');
           }
         } else {
           this.$message('Processing');

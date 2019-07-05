@@ -604,8 +604,11 @@ export default {
         }
         this.$.get("rule/updateStatus",{params: { id: this.$route.query.id, status: this.statusTestRunVal }}).then(res=>{
           if(res.data.code == 200) {
-            this.$message('Processing')
+            if(this.statusTestRunVal == 1 || this.statusTestRunVal == 2) {
+              this.$message('Processing')
+            }
             if(this.statusTestRunVal == 3) {
+              this.$message('Stop')
               this.detailUpdate = true
               this.detailRun = true
               this.detailTest = true
