@@ -400,31 +400,31 @@ export default {
     },
     dragInit1(top, left) {
       this.$nextTick(() => {
-        this.$refs.refData1.style.position = "fixed";
+        this.$refs.refData1.style.position = "absolute";
         this.$refs.refData1.style.top = top + "px";
         this.$refs.refData1.style.left = left + "px";
-        this.$refs.refData1div.style.position = "fixed";
+        this.$refs.refData1div.style.position = "absolute";
         this.$refs.refData1div.style.top = top + 50 + "px";
         this.$refs.refData1div.style.left = left + -5 + "px";
 
-        this.$refs.refData2.style.position = "fixed";
+        this.$refs.refData2.style.position = "absolute";
         this.$refs.refData2.style.top = top + "px";
         this.$refs.refData2.style.left = left + 150 + "px";
-        this.$refs.refData2div.style.position = "fixed";
+        this.$refs.refData2div.style.position = "absolute";
         this.$refs.refData2div.style.top = top + 50 + "px";
         this.$refs.refData2div.style.left = left + 155 + "px";
 
-        this.$refs.refData3.style.position = "fixed";
+        this.$refs.refData3.style.position = "absolute";
         this.$refs.refData3.style.top = top + "px";
         this.$refs.refData3.style.left = left + 300 + "px";
-        this.$refs.refData3div.style.position = "fixed";
+        this.$refs.refData3div.style.position = "absolute";
         this.$refs.refData3div.style.top = top + 50 + "px";
         this.$refs.refData3div.style.left = left + 300 + 5 + "px";
 
-        this.$refs.refData4.style.position = "fixed";
+        this.$refs.refData4.style.position = "absolute";
         this.$refs.refData4.style.top = top + "px";
         this.$refs.refData4.style.left = left + 450 + "px";
-        this.$refs.refData4div.style.position = "fixed";
+        this.$refs.refData4div.style.position = "absolute";
         this.$refs.refData4div.style.top = top + 50 + "px";
         this.$refs.refData4div.style.left = left + 450 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
@@ -443,38 +443,38 @@ export default {
     dragInit2(top, left) {
       this.showFirst = false
       this.$nextTick(() => {
-        this.$refs.refData1.style.position = "fixed";
+        this.$refs.refData1.style.position = "absolute";
         this.$refs.refData1.style.top = top + "px";
         this.$refs.refData1.style.left = left + "px";
-        this.$refs.refData1div.style.position = "fixed";
+        this.$refs.refData1div.style.position = "absolute";
         this.$refs.refData1div.style.top = top + 50 + "px";
         this.$refs.refData1div.style.left = left + -5 + "px";
 
-        this.$refs.newData.style.position = "fixed";
+        this.$refs.newData.style.position = "absolute";
         this.$refs.newData.style.top = top + "px";
         this.$refs.newData.style.left = left + 150 + "px";
-        this.$refs.newrefDatadiv.style.position = "fixed";
+        this.$refs.newrefDatadiv.style.position = "absolute";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
         this.$refs.newrefDatadiv.style.left = left + 147 + "px";
 
-        this.$refs.refData2.style.position = "fixed";
+        this.$refs.refData2.style.position = "absolute";
         this.$refs.refData2.style.top = top + "px";
         this.$refs.refData2.style.left = left + 300 + "px";
-        this.$refs.refData2div.style.position = "fixed";
+        this.$refs.refData2div.style.position = "absolute";
         this.$refs.refData2div.style.top = top + 50 + "px";
         this.$refs.refData2div.style.left = left + 305 + "px";
 
-        this.$refs.refData3.style.position = "fixed";
+        this.$refs.refData3.style.position = "absolute";
         this.$refs.refData3.style.top = top + "px";
         this.$refs.refData3.style.left = left + 450 + "px";
-        this.$refs.refData3div.style.position = "fixed";
+        this.$refs.refData3div.style.position = "absolute";
         this.$refs.refData3div.style.top = top + 50 + "px";
         this.$refs.refData3div.style.left = left + 450 + 5 + "px";
 
-        this.$refs.refData4.style.position = "fixed";
+        this.$refs.refData4.style.position = "absolute";
         this.$refs.refData4.style.top = top + "px";
         this.$refs.refData4.style.left = left + 600 + "px";
-        this.$refs.refData4div.style.position = "fixed";
+        this.$refs.refData4div.style.position = "absolute";
         this.$refs.refData4div.style.top = top + 50 + "px";
         this.$refs.refData4div.style.left = left + 600 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
