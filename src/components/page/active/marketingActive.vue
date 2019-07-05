@@ -973,31 +973,31 @@ export default {
       this.$nextTick(() => {
         this.$refs.newData.style.position = "absolute";
         this.$refs.newData.style.top = top + "px";
-        this.$refs.newData.style.left = left + 80 + "px";
+        this.$refs.newData.style.left = left + 50 + "px";
         this.$refs.newrefDatadiv.style.position = "absolute";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + 75 + "px";
+        this.$refs.newrefDatadiv.style.left = left + 45 + "px";
 
         this.$refs.refData2.style.position = "absolute";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 230 + "px";
+        this.$refs.refData2.style.left = left + 170 + "px";
         this.$refs.refData2div.style.position = "absolute";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 235 + "px";
+        this.$refs.refData2div.style.left = left + 175 + "px";
 
         this.$refs.refData3.style.position = "absolute";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 380 + "px";
+        this.$refs.refData3.style.left = left + 295 + "px";
         this.$refs.refData3div.style.position = "absolute";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 380 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 300 + "px";
 
         this.$refs.refData4.style.position = "absolute";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 530 + "px";
+        this.$refs.refData4.style.left = left + 430 + "px";
         this.$refs.refData4div.style.position = "absolute";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 530 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 435 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
@@ -1020,31 +1020,31 @@ export default {
       this.$nextTick(() => {
         this.$refs.newData.style.position = "absolute";
         this.$refs.newData.style.top = top + "px";
-        this.$refs.newData.style.left = left + -20 + "px";
+        this.$refs.newData.style.left = left + -80 + "px";
         this.$refs.newrefDatadiv.style.position = "absolute";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + -25 + "px";
+        this.$refs.newrefDatadiv.style.left = left + -85 + "px";
 
         this.$refs.refData2.style.position = "absolute";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 150 + "px";
+        this.$refs.refData2.style.left = left + 60 + "px";
         this.$refs.refData2div.style.position = "absolute";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 155 + "px";
+        this.$refs.refData2div.style.left = left + 65 + "px";
 
         this.$refs.refData3.style.position = "absolute";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 300 + "px";
+        this.$refs.refData3.style.left = left + 180 + "px";
         this.$refs.refData3div.style.position = "absolute";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 300 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 185 + "px";
 
         this.$refs.refData4.style.position = "absolute";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 450 + "px";
+        this.$refs.refData4.style.left = left + 320 + "px";
         this.$refs.refData4div.style.position = "absolute";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 450 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 325 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
