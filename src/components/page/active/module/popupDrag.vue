@@ -35,7 +35,7 @@
             <P class="pttb" v-if="ifDataExtension.newPeriod"><span>New Entry : {{ifDataExtension.newPeriod}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.newBuy"><span>First Purchase : {{ifDataExtension.newBuy}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.newMbmber"><span>No Purchase (within a week) : {{ifDataExtension.newMbmber}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.excluded_guide"><span>是否排除导购 : {{ifDataExtension.excluded_guide}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.excluded_guide"><span>Exclude Staff : {{ifDataExtension.excluded_guide}}</span><span></span></P>
           </div>
         </div>
       </div>

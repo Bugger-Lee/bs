@@ -35,6 +35,7 @@
             <P class="pttb" v-if="ifDataExtension.enter_first"><span>New Entry : {{ifDataExtension.enter_first}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.purchase_first"><span>First Purchase : {{ifDataExtension.purchase_first}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.purchase_week"><span>No Purchase (within a week) : {{ifDataExtension.purchase_week}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.excluded_guide"><span>Exclude Staff : {{ifDataExtension.excluded_guide}}</span><span></span></P>
           </div>
         </div>
       </div>

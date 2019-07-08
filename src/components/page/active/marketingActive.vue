@@ -34,7 +34,7 @@
             >Save</el-button>
             <el-button
               type="primary"
-               v-if="this.saveUpdate==true"
+              v-if="this.saveUpdate==true"
               class="pd-btn pd-back ifColor"
               @click="updateJorney()"
             >Update</el-button>
@@ -370,6 +370,7 @@ export default {
         dateEndVal:'',
         timestamp:'',
         timestampEnd:'',
+        timeTypeData:'',
         time: [
           {
             id: 1,
@@ -435,7 +436,8 @@ export default {
         data_code:"",
         SearchDmp:"",
         shoppings:"",
-        regBrandVal:""
+        regBrandVal:"",
+        crowdDmp:""
       },
       propsTicket:{
         salesTable: [],
@@ -453,6 +455,7 @@ export default {
         tableSelectVal: "",
         dataSelected: 2,
         ifSms: '',
+        ifSmsDmp:'',
         sendSmsVal: ""
       },
       couponName: "",
@@ -482,6 +485,41 @@ export default {
       "-" +
       this.currentTimeName.getDate();
     this.currentTimeVal = "New Journey -- May  " + this.currentTimeName;
+  },
+  computed: {
+    ifChange() {
+      if(this.saveUpdate == true) {
+        let saveData = JSON.parse(sessionStorage.getItem("saveData"))
+        let schulder_time = parseInt(new Date(this.timeType.timeTypeData.schulder_time).getTime()/1000)
+        let def_schulder_time = parseInt(new Date(saveData.schulder_time).getTime()/1000)
+        let retired_time = parseInt(new Date(this.timeType.timeTypeData.retired_time).getTime()/1000)
+        let def_retired_time = parseInt(new Date(saveData.retired_time).getTime()/1000)
+        if(
+        saveData.sms_channel_id == this.propsSms.ifSms.sms_channel_id &&
+        saveData.template_id == this.propsSms.ifSms.id &&
+        saveData.brand_id == this.ifDataExtension.brand &&
+        saveData.cycle_id == this.ifDataExtension.period &&
+        saveData.vip_channel_name ==  this.ifDataExtension.register &&
+        saveData.enter_first ==  this.ifDataExtension.newPeriod &&
+        saveData.purchase_week == this.ifDataExtension.newMbmber &&
+        saveData.purchase_first == this.ifDataExtension.newBuy &&
+        saveData.excluded_guide == this.ifDataExtension.excluded_guide &&
+        saveData.reg_brand_id == this.ifDataExtension.reg_brand_id &&
+        saveData.crowd_id == this.ifDataExtension.crowd_id &&
+        saveData.camp_coupon_id == this.propsTicket.ifPromotion.camp_coupon_id &&
+        saveData.coupon_id == this.propsTicket.ifPromotion.coupon_id &&
+        saveData.cron_express == this.timeType.timeTypeData.crotabData &&
+        def_schulder_time == schulder_time &&
+        def_retired_time == retired_time
+        ) {
+          return true
+          }else{
+            this.testDis = true
+            this.runDis = true
+            return false
+          }
+        }
+    }
   },
   components: {
     popupDrag,
@@ -553,6 +591,12 @@ export default {
       if(this.timeType.executeType == 1) {
         this.cron_express = ''
       }
+      let objData = {
+        crotabData:this.cron_express,
+        schulder_time:this.timeType.dateTimeVal,
+        retired_time:this.timeType.dateEndVal
+      }
+      this.timeType.timeTypeData = objData
       this.openTime = false;
     },
     saveJourney() {
@@ -614,6 +658,25 @@ export default {
           this.saveSave = false
           this.saveUpdate = true
           this.testDis = false
+          let saveData = {
+            sms_channel_id: this.propsSms.ifSms.sms_channel_id,
+            template_id: this.propsSms.ifSms.id,
+            brand_id: this.ifDataExtension.brand,
+            cycle_id: this.ifDataExtension.period,
+            vip_channel_name: this.ifDataExtension.register,
+            enter_first: this.ifDataExtension.newPeriod,
+            purchase_week: this.ifDataExtension.newMbmber,
+            purchase_first: this.ifDataExtension.newBuy,
+            excluded_guide:this.ifDataExtension.excluded_guide,
+            reg_brand_id:this.ifDataExtension.reg_brand_id,
+            crowd_id:this.ifDataExtension.crowd_id,
+            camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id,
+            coupon_id: this.propsTicket.ifPromotion.coupon_id,
+            cron_express:this.timeType.timeTypeData.crotabData,
+            schulder_time:this.timeType.timeTypeData.schulder_time,
+            retired_time:this.timeType.timeTypeData.retired_time
+          }
+          sessionStorage.setItem("saveData", JSON.stringify(saveData));
         } else {
           this.$message(res.data.msg);
         }
@@ -656,6 +719,26 @@ export default {
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
           this.$message(res.data.msg);
+          this.testDis = false
+          let saveData = {
+            sms_channel_id: this.propsSms.ifSms.sms_channel_id,
+            template_id: this.propsSms.ifSms.id,
+            brand_id: this.ifDataExtension.brand,
+            cycle_id: this.ifDataExtension.period,
+            vip_channel_name: this.ifDataExtension.register,
+            enter_first: this.ifDataExtension.newPeriod,
+            purchase_week: this.ifDataExtension.newMbmber,
+            purchase_first: this.ifDataExtension.newBuy,
+            excluded_guide:this.ifDataExtension.excluded_guide,
+            reg_brand_id:this.ifDataExtension.reg_brand_id,
+            crowd_id:this.ifDataExtension.crowd_id,
+            camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id,
+            coupon_id: this.propsTicket.ifPromotion.coupon_id,
+            cron_express:this.timeType.timeTypeData.crotabData,
+            schulder_time:this.timeType.timeTypeData.schulder_time,
+            retired_time:this.timeType.timeTypeData.retired_time
+          }
+          sessionStorage.setItem("saveData", JSON.stringify(saveData));
         } else {
           this.$message(res.data.msg);
         }
@@ -688,6 +771,10 @@ export default {
               this.$router.push("./");
             });
           }else if(val == "stop") {
+            this.saveUpdate = true
+            this.saveTest = true
+            this.saveRunning = true
+            this.saveStop = false
             this.$message('Stop');
           }
         } else {
@@ -766,7 +853,7 @@ export default {
           return false;
         }
       }else if(this.propsData.data_socure == 'DMP-Data') {
-        if(this.propsData.brandVal == "" || !this.ifDataExtension.crowd_id) {
+        if(this.propsData.brandVal == "" || !this.propsData.crowdDmp.crowd_id) {
           this.$message("请您填写必填项")
           return false
         }
@@ -793,8 +880,13 @@ export default {
           this.ifDataExtension.reg_brand_id_show = regBrand[0].brand_name
         }
       }else if(this.propsData.data_socure == 'DMP-Data') {
-        this.ifDataExtension.brandShow = item_data[0].brand_name
-        this.ifDataExtension.brand = this.propsData.brandVal
+        let dmpObjData = {
+          brandShow:item_data[0].brand_name,
+          brand:this.propsData.brandVal,
+          crowd_id:this.propsData.crowdDmp.crowd_id,
+          crowd_name:this.propsData.crowdDmp.crowd_name
+        }
+        this.ifDataExtension = dmpObjData
       }
       this.openDataContent = false;
       this.openData = true;
@@ -1115,9 +1207,9 @@ export default {
         if(!val.id) {
           return false
         }
-        this.ifDataExtension = {}
-        this.ifDataExtension.crowd_id = val.id
-        this.ifDataExtension.crowd_name = val.name
+        this.propsData.crowdDmp = {}
+        this.propsData.crowdDmp.crowd_id = val.id
+        this.propsData.crowdDmp.crowd_name = val.name
       }
     },
     sltPromotion(val) {
@@ -1139,14 +1231,13 @@ export default {
       } else if (val.name == "inputBlur") {
         this.inputBlur(val.value, val.id);
       } else if (val.name = "tableIndex") {
-          if(val.id) {
-            if (this.propsSms.ifSms == '') {
-              this.propsSms.ifSms = {}
-            }
-            this.propsSms.ifSms.template_text = val.document_text
-            this.propsSms.ifSms.id = val.id
+        if(val.id) {
+          if (this.propsSms.ifSmsDmp == '') {
+            this.propsSms.ifSmsDmp = {}
           }
-
+          this.propsSms.ifSmsDmp.template_text = val.document_text
+          this.propsSms.ifSmsDmp.id = val.id
+        }
       }
     },
     inputBlur(val, id) {
@@ -1177,23 +1268,17 @@ export default {
         return false
       }
       let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
-      let objData = {
-        template_text: this.propsSms.ifSms.template_text,
-        sms_channel_content:this.propsSms.sendSmsVal,
-        sms_channel_id: sms_data[0].id,
-        id:this.propsSms.ifSms.id
-      };
-      if (this.propsSms.editMsg == "") {
-        this.$message({
-          showClose: true,
-          message: "请您新建文案内容",
-          type: "warning"
-        });
-        return false;
-      }
       if (this.propsSms.dataSelected == 2) {
-        let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.id)
-        objData.template_text = doc_text[0].document_text
+        if(this.propsSms.ifSmsDmp.template_text == undefined) {
+          this.$message('请填写必填项')
+          return false
+        }
+        let objData = {
+          template_text: this.propsSms.ifSmsDmp.template_text,
+          sms_channel_content:this.propsSms.sendSmsVal,
+          sms_channel_id: sms_data[0].id,
+          id:this.propsSms.ifSmsDmp.id
+        }
         this.propsSms.ifSms = objData;
         this.openSmsContent = false;
         this.openSms = true;
@@ -1210,13 +1295,13 @@ export default {
         this.$.post("template/insert", insertData).then(res => {
           if (res.data.code == 200) {
             this.smsLists();
-            let objData = {
+            let objDataThree = {
               template_text: this.propsSms.editMsg,
               sms_channel_content:this.propsSms.sendSmsVal,
               sms_channel_id: sms_data[0].id,
               id:res.data.data
             };
-            this.propsSms.ifSms = objData;
+            this.propsSms.ifSms = objDataThree;
             this.openSmsContent = false;
             this.openSms = true;
           } else {

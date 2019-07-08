@@ -20,8 +20,8 @@
         <el-col :span="12" class="marketing-header-r">
           <el-button-group class="mr05">
             <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailUpdate == true" @click="detailStatus('update')">Update</el-button>
-            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailTest == true" @click="detailStatus('test')">Test</el-button>
-            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailRun == true" @click="detailStatus('run')">Run</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.testDis == false}" v-if="this.detailTest == true" :disabled="testDis" @click="detailStatus('test')">Test</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.runDis == false}" v-if="this.detailRun == true" :disabled="runDis" @click="detailStatus('run')">Run</el-button>
             <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">Stop</el-button>
           </el-button-group>
         </el-col>
@@ -235,6 +235,8 @@ export default {
       openDataContent:false,
       openSmsContent:false,
       openTime:false,
+      testDis:false,
+      runDis:false,
       propsData:{
           brandList: [],
           periodList: [],
@@ -253,7 +255,8 @@ export default {
           SearchDmp:'',
           defaultData:'',
           shoppings:'',
-          regBrandVal:''
+          regBrandVal:'',
+          crowdDmp:''
       },
       propsSms:{
         smsTable:[],
@@ -264,7 +267,8 @@ export default {
         ifShowInput:false,
         tableSelectVal:'',
         dataSelected: 2,
-        ifSms:''
+        ifSms:'',
+        ifSmsDmp:''
       },
       timeType:{
         timeVal:'Days',
@@ -273,6 +277,7 @@ export default {
         timestamp:'',
         timestampEnd:'',
         dateEndVal:'',
+        timeTypeData:'',
         time:[
           {
             id:1,
@@ -355,6 +360,36 @@ export default {
     this.sourcesList()
     this.dmpTables()
   },
+  computed: {
+    ifChange() {
+      let saveDatas = JSON.parse(sessionStorage.getItem("saveDataDetail"));
+      let schulder_time = parseInt(new Date(this.timeType.timeTypeData.schulder_time).getTime()/1000)
+      let def_schulder_time = parseInt(new Date(saveDatas.saveDataDetail.schulder_time).getTime()/1000)
+      let retired_time = parseInt(new Date(this.timeType.timeTypeData.retired_time).getTime()/1000)
+      let def_retired_time = parseInt(new Date(saveDatas.saveDataDetail.retired_time).getTime()/1000)
+      if(this.ifDataExtension.brand_name == saveDatas.saveDataDetail.brand_name && 
+        this.ifDataExtension.vip_channel_name == saveDatas.saveDataDetail.vip_channel_name &&
+        this.ifDataExtension.crowd_name == saveDatas.saveDataDetail.crowd_name &&
+        this.ifDataExtension.cycle_type == saveDatas.saveDataDetail.cycle_type &&
+        this.ifDataExtension.enter_first == saveDatas.saveDataDetail.enter_first &&
+        this.ifDataExtension.purchase_first == saveDatas.saveDataDetail.purchase_first &&
+        this.ifDataExtension.purchase_week == saveDatas.saveDataDetail.purchase_week &&
+        this.propsSms.ifSms.template_text == saveDatas.saveDataDetail.template_text && 
+        this.propsSms.ifSms.sms_channel_content == saveDatas.saveDataDetail.sms_channel_content &&
+        this.timeType.timeTypeData.cron_express == saveDatas.saveDataDetail.cron_express &&
+        schulder_time == def_schulder_time &&
+        retired_time == def_retired_time &&
+        this.ifTicket.camp_coupon_id == saveDatas.saveDataDetail.camp_coupon_id &&
+        this.ifTicket.coupon_id == saveDatas.saveDataDetail.coupon_id
+      ) {
+        return true
+      }else{
+        this.testDis = true
+        this.runDis = true
+        return false
+      }
+    }
+  },
   methods: {
     doneTime() {
       let datas = {
@@ -396,6 +431,12 @@ export default {
           return false
         }
       }
+      let objData = {
+        cron_express:this.cron_express,
+        schulder_time:this.timeType.dateTimeVal,
+        retired_time:this.timeType.dateEndVal
+      }
+      this.timeType.timeTypeData = objData
       this.openTime = false
     },
     dragInit1(top, left) {
@@ -589,7 +630,27 @@ export default {
         }
         this.$.post('rule/update',data).then(res=>{
           if(res.data.code == 200) {
+            this.testDis = false
             this.$message(res.data.msg)
+            let saveDataDetail = {
+              saveDataDetail:{
+                brand_name:this.ifDataExtension.brand_name,
+                vip_channel_name:this.ifDataExtension.vip_channel_name,
+                crowd_name:this.ifDataExtension.crowd_name,
+                cycle_type:this.ifDataExtension.cycle_type,
+                enter_first:this.ifDataExtension.enter_first,
+                purchase_first:this.ifDataExtension.purchase_first,
+                purchase_week:this.ifDataExtension.purchase_week,
+                template_text:this.propsSms.ifSms.template_text,
+                sms_channel_content:this.propsSms.ifSms.sms_channel_content,
+                cron_express:this.timeType.timeTypeData.cron_express,
+                schulder_time:this.timeType.timeTypeData.schulder_time,
+                retired_time:this.timeType.timeTypeData.retired_time,
+                camp_coupon_id:this.ifTicket.camp_coupon_id,
+                coupon_id:this.ifTicket.coupon_id
+              }
+            }
+            sessionStorage.setItem("saveDataDetail", JSON.stringify(saveDataDetail))
           }else{
             this.$message(res.data.msg)
           }
@@ -618,6 +679,8 @@ export default {
               this.detailRun = false
               this.detailTest = false
               this.detailStop = true
+            }else if(this.statusTestRunVal == 1) {
+              this.runDis = false
             }
           }else{
             this.$message(res.data.msg)
@@ -631,12 +694,17 @@ export default {
           this.ifDataExtension = res.data.data
           this.propsSms.ifSms = res.data.data
           this.ifTicket = res.data.data
+          this.timeType.timeTypeData = res.data.data
           this.propsData.defaultData = res.data.data
           this.userNameTie = res.data.data.rule_name
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.regBrandVal = this.ifDataExtension.reg_brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
           this.propsSms.sendSmsVal =  this.propsSms.ifSms.sms_channel_content
+          let saveDataDetail = {
+            saveDataDetail:this.propsData.defaultData
+          }
+          sessionStorage.setItem("saveDataDetail", JSON.stringify(saveDataDetail));
           if(res.data.data.camp_coupon_id || res.data.data.coupon_id) {
             this.showFirst = true
             this.dragInit2(200, 320);
@@ -651,6 +719,7 @@ export default {
             this.detailTest = false
             this.detailRun = false
           }
+          this.cron_express = res.data.data.cron_express
           if(res.data.data.cron_express == '') {
             this.timeType.executeType = 1
             this.ifDisabled = true
@@ -762,9 +831,9 @@ export default {
         if(!val.id) {
           return false
         }
-        this.ifDataExtension = {}
-        this.ifDataExtension.crowd_id = val.id
-        this.ifDataExtension.crowd_name = val.name
+        this.propsData.crowdDmp = {}
+        this.propsData.crowdDmp.crowd_id = val.id
+        this.propsData.crowdDmp.crowd_name = val.name
       }
     },
     backlevel(val) {
@@ -841,13 +910,19 @@ export default {
           reg_brand_name:this.propsData.regBrandVal
         }
         this.ifDataExtension = objData
+        console.log(this.ifDataExtension)
         if(this.propsData.regBrandVal != null && this.propsData.regBrandVal != '' && regBrand != []) {
           console.log(this.propsData.regBrandVal,regBrand)
           this.ifDataExtension.reg_brand_id = regBrand[0].id
         }
       }else if(this.propsData.defaultData.command_name == 'DMP-Data') {
-        this.ifDataExtension.brand_id = item_data[0].id
-        this.ifDataExtension.brand_name = this.propsData.brandVal
+        let objDataDmp = {
+          brand_id:item_data[0].id,
+          brand_name:this.propsData.brandVal,
+          crowd_id:this.propsData.crowdDmp.crowd_id,
+          crowd_name:this.propsData.crowdDmp.crowd_name
+        }
+        this.ifDataExtension = objDataDmp
       }
       this.openDataContent = false
       this.openData = true
@@ -884,8 +959,9 @@ export default {
         this.inputBlur(val.value,val.id)
       } else if (val.name = "tableIndex") {
         if(val.id) {
-          this.propsSms.ifSms.template_text = val.document_text 
-          this.propsSms.ifSms.template_id= val.id
+          this.propsSms.ifSmsDmp = {}
+          this.propsSms.ifSmsDmp.template_text = val.document_text
+          this.propsSms.ifSmsDmp.template_id = val.id
         }
       }
     },
@@ -915,10 +991,13 @@ export default {
     saveMessage() {
       let smsObj = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
       if(this.propsSms.dataSelected == 2) {
-        let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.template_id)
-        this.propsSms.ifSms.template_text = doc_text[0].document_text
-        this.propsSms.ifSms.sms_channel_content = this.propsSms.sendSmsVal
-        this.propsSms.ifSms.sms_channel_id = smsObj[0].id
+        let objDataTwo = {
+          template_text:this.propsSms.ifSmsDmp.template_text,
+          sms_channel_content:this.propsSms.sendSmsVal,
+          sms_channel_id:smsObj[0].id,
+          template_id:this.propsSms.ifSmsDmp.template_id
+        }
+        this.propsSms.ifSms = objDataTwo
         this.openSmsContent = false
         this.openSms = true
       }else if(this.propsSms.dataSelected == 3){
@@ -937,7 +1016,8 @@ export default {
             let objData = {
               template_text:this.propsSms.editMsg,
               sms_channel_id: smsObj[0].id,
-              sms_channel_content:this.propsSms.sendSmsVal
+              sms_channel_content:this.propsSms.sendSmsVal,
+              template_id:res.data.data
             }
             this.propsSms.ifSms = objData
             this.openSmsContent = false

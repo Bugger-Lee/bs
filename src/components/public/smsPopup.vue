@@ -27,8 +27,8 @@
             <el-button class="bth" @click="clickPopup({name:'openNext'})" v-if="this.statusTestRunVal != 2">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P class="pttb"><span>Content : {{propsSms.ifSms.template_text}}</span><span></span></P>
-            <P class="pttb"><span>Sms Channel : {{propsSms.ifSms.sms_channel_content}}</span><span></span></P>
+            <P class="pttb" v-if="propsSms.ifSms.template_text"><span>Content : {{propsSms.ifSms.template_text}}</span><span></span></P>
+            <P class="pttb" v-if="propsSms.ifSms.sms_channel_content"><span>Sms Channel : {{propsSms.ifSms.sms_channel_content}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -110,8 +110,7 @@
                 </div>
                 <div class="select-msg-table">
                   <el-table ref='singleTable' :data="smsTable" style="width: 100%"  highlight-current-row  @current-change="tableIndex" height="220" setCurrentRow>
-                    <el-table-column prop="template_name" label="Template" show-overflow-tooltip></el-table-column>
-                    <!-- <el-table-column prop="cycle_type" label="Period" show-overflow-tooltip></el-table-column> -->
+                    <el-table-column prop="template_name" label="Title" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="brand_name" label="Brand" show-overflow-tooltip> </el-table-column>
                     <el-table-column prop="document_text" label="Sms Content" show-overflow-tooltip>
                       <template slot-scope="scope">
@@ -120,6 +119,7 @@
                       </template>  
                     </el-table-column>
                     <el-table-column prop="created_time" label="Created Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
+                    <el-table-column prop="created_by" label="Creator" show-overflow-tooltip></el-table-column>
                   </el-table>
                 </div>
                 <div class="select-msg-page">

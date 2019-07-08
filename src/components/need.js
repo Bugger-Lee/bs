@@ -106,7 +106,7 @@ const formatDate = (row, column, created_time ,index) =>{
     let h = date.getHours() < 10 ? '0' + date.getHours() + ':' : date.getHours() + ':';
     let m = date.getMinutes()  < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':';
     let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-    return Y + M + D ;
+    return Y + M + D + h + m + s;
 }
 Vue.prototype.dateChangeCron = dateChangeCron
 Vue.prototype.cronChangeDate = cronChangeDate
