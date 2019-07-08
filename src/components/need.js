@@ -25,7 +25,6 @@ const dateChangeCron = (dates) =>{
     } else if (loopType === 'Months') { // 1-31
         cron = 0 + '' + s + ' ' + m + ' ' + h + ' ' + mo.join(',') + ' * ?'
     }
-    console.log(cron)
     return cron 
 }
 // 将crontab表达式转化为定时任务
