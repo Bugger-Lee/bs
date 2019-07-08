@@ -268,7 +268,8 @@ export default {
         tableSelectVal:'',
         dataSelected: 2,
         ifSms:'',
-        ifSmsDmp:''
+        ifSmsDmp:'',
+        editTitleVal:""
       },
       timeType:{
         timeVal:'Days',
@@ -910,9 +911,7 @@ export default {
           reg_brand_name:this.propsData.regBrandVal
         }
         this.ifDataExtension = objData
-        console.log(this.ifDataExtension)
         if(this.propsData.regBrandVal != null && this.propsData.regBrandVal != '' && regBrand != []) {
-          console.log(this.propsData.regBrandVal,regBrand)
           this.ifDataExtension.reg_brand_id = regBrand[0].id
         }
       }else if(this.propsData.defaultData.command_name == 'DMP-Data') {
@@ -956,7 +955,7 @@ export default {
       }else if(val.name == 'saveMsg') {
         this.saveMessage()
       }else if(val.name == 'inputBlur') {
-        this.inputBlur(val.value,val.id)
+        this.inputBlur(val.value,val.id,val.templt)
       } else if (val.name = "tableIndex") {
         if(val.id) {
           this.propsSms.ifSmsDmp = {}
@@ -965,19 +964,20 @@ export default {
         }
       }
     },
-    inputBlur(val,id) {
+    inputBlur(val,id,templt) {
         if(val == '') {
           this.$message('文案不可以为空')
           return false
         }
         let upDate = {
-          cycle_id:this.ifDataExtension.cycle_id,
           brand_id:this.ifDataExtension.brand_id,
+          template_name:templt,
           document_text:val,
           id:id
         }
         this.$.post("template/update",upDate).then(res=>{
           if(res.data.code == 200) {
+            this.$message(res.data.msg)
             this.smsLists()
           }else{
             this.$message({
@@ -1005,13 +1005,19 @@ export default {
           this.$message('模板内容不可以为空')
           return false
         }
+        if(!this.propsSms.editTitleVal) {
+          this.$message('请输入title')
+          return false
+        }
         let insertData = {
           brand_id:this.ifDataExtension.brand_id,
+          template_name:this.propsSms.editTitleVal,
           document_text:this.propsSms.editMsg,
           uuid:(new Date()).valueOf()
         }
         this.$.post("template/insert",insertData).then(res=>{
           if(res.data.code == 200) {
+            this.$message(res.data.msg)
             this.smsLists()
             let objData = {
               template_text:this.propsSms.editMsg,
@@ -1023,11 +1029,7 @@ export default {
             this.openSmsContent = false
             this.openSms = true
           }else{
-            this.$message({
-              showClose: true,
-              message: res.data.msg,
-              type: 'warning'
-            });
+            this.$message(res.data.msg)
           }
         })
       }

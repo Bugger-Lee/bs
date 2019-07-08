@@ -88,7 +88,7 @@
                   <el-col :span="12">
                     <el-input
                       class="select-msg-search-ipt"
-                      placeholder="Search by Template"
+                      placeholder="Search by Title"
                       prefix-icon="el-icon-search"
                       @keyup.enter.native="searchSmsList"
                       v-model="propsSms.SearchSms">
@@ -115,7 +115,7 @@
                     <el-table-column prop="document_text" label="Sms Content" show-overflow-tooltip>
                       <template slot-scope="scope">
                         <span v-if="scope.$index != change_index" @click="clickText(scope.$index)">{{scope.row.document_text}}</span>
-                        <el-input v-else :placeholder="scope.row.document_text" v-model="input_text" @blur="clickPopup({name:'inputBlur',value:input_text,id:scope.row.id})"></el-input>
+                        <el-input v-else :placeholder="scope.row.document_text" v-model="input_text" @blur="clickPopup({name:'inputBlur',value:input_text,id:scope.row.id,templt:scope.row.template_name})"></el-input>
                       </template>  
                     </el-table-column>
                     <el-table-column prop="created_time" label="Created Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
@@ -159,6 +159,15 @@
               </div>
               <div style="margin-top:30px;">
                 <span class="redStar">*</span>
+                <span>Edit Title</span>
+                <el-input
+                    style="width:67%;"
+                    placeholder="pls Edit Title"
+                    v-model="propsSms.editTitleVal">
+                </el-input>
+              </div>
+              <div class="mt10">
+                <span class="redStar">*</span>
                 <span>Sms Channel</span>
                 <el-select v-model="propsSms.sendSmsVal" clearable placeholder="Pls Sms Channel" style="display:inline-block;"  class="select-option-classify">
                   <el-option
@@ -167,7 +176,7 @@
                     :value="item.channel_content"
                   ></el-option>
                 </el-select>
-            </div>
+              </div>
             </el-col>
             <el-col :span="16" class="sms-edit-r">
               <p class="sms-edit-r-tit">LOOK OVER</p>

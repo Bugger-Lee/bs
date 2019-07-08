@@ -456,7 +456,8 @@ export default {
         dataSelected: 2,
         ifSms: '',
         ifSmsDmp:'',
-        sendSmsVal: ""
+        sendSmsVal: "",
+        editTitleVal:""
       },
       couponName: "",
       ifDataExtension: "",
@@ -1229,7 +1230,7 @@ export default {
       } else if (val.name == "saveMsg") {
         this.saveMessage();
       } else if (val.name == "inputBlur") {
-        this.inputBlur(val.value, val.id);
+        this.inputBlur(val.value, val.id , val.templt);
       } else if (val.name = "tableIndex") {
         if(val.id) {
           if (this.propsSms.ifSmsDmp == '') {
@@ -1240,25 +1241,23 @@ export default {
         }
       }
     },
-    inputBlur(val, id) {
+    inputBlur(val, id,templt) {
       if (val == "") {
         this.$message("请您输入文案内容");
         return false;
       }
       let upDate = {
         brand_id: this.ifDataExtension.brand,
+        template_name:templt,
         document_text: val,
         id: id
       };
       this.$.post("template/update", upDate).then(res => {
         if (res.data.code == 200) {
+          this.$message(res.data.msg)
           this.smsLists();
         } else {
-          this.$message({
-            showClose: true,
-            message: res.data.msg,
-            type: "warning"
-          });
+          this.$message(res.data.msg)
         }
       });
     },
@@ -1287,13 +1286,19 @@ export default {
           this.$message('模板内容不可以为空')
           return false
         }
+        if(!this.propsSms.editTitleVal) {
+          this.$message('请输入title')
+          return false
+        }
         let insertData = {
           brand_id: this.ifDataExtension.brand,
+          template_name:this.propsSms.editTitleVal,
           document_text: this.propsSms.editMsg,
           uuid:(new Date()).valueOf()
         };
         this.$.post("template/insert", insertData).then(res => {
           if (res.data.code == 200) {
+            this.$message(res.data.msg)
             this.smsLists();
             let objDataThree = {
               template_text: this.propsSms.editMsg,
