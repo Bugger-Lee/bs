@@ -449,6 +449,7 @@ export default {
       propsSms: {
         smsTable: [],
         sendSmsList: [],
+        couponShow:false,
         SearchSms: "",
         editMsg: "",
         ifShowInput: false,
@@ -1167,6 +1168,7 @@ export default {
       }
     },
     sms() {
+      this.propsSms.couponShow = this.ifProDrag
       if(this.propsData.brandVal == "") {
         this.$message({
           showClose: true,
@@ -1282,12 +1284,17 @@ export default {
         this.openSmsContent = false;
         this.openSms = true;
       } else if (this.propsSms.dataSelected == 3) {
-         if(!this.propsSms.editMsg) {
+        if(!this.propsSms.editTitleVal) {
+          this.$message('请输入title')
+          return false
+        }
+        if(!this.propsSms.editMsg) {
           this.$message('模板内容不可以为空')
           return false
         }
-        if(!this.propsSms.editTitleVal) {
-          this.$message('请输入title')
+        let reg = this.propsSms.editMsg
+        if(reg.indexOf(" $XXX$ ")==-1 && this.propsSms.couponShow == true) {
+          this.$message('模板内容格式不正确')
           return false
         }
         let insertData = {

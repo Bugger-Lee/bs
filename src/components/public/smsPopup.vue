@@ -97,7 +97,7 @@
                   <el-col :span="12">
                     <div class="ml10">
                       <span class="redStar">*</span>
-                      <span>Sms Channel</span>
+                      <span>SMS Channel</span>
                       <el-select v-model="propsSms.sendSmsVal" clearable placeholder="Pls Sms Channel" style="display:inline-block;"  class="select-option-classify">
                         <el-option
                           v-for="item in propsSms.sendSmsList"
@@ -151,24 +151,18 @@
           <div class="sms-edit">
             <el-col :span="8" class="sms-edit-l">
               <p class="sms-edit-l-tit">CONTENT</p>
-              <div class="sms-edit-l-content">
-                <p><i class="el-icon-edit"></i>Edit message template</p>
-                <textarea rows="6" placeholder="Edit message template" v-model="propsSms.editMsg">
-
-                </textarea>
-              </div>
               <div style="margin-top:30px;">
                 <span class="redStar">*</span>
-                <span>Edit Title</span>
+                <span>Title</span>
                 <el-input
-                    style="width:67%;"
-                    placeholder="pls Edit Title"
+                    style="width:76%;"
+                    placeholder="Pls Edit Title"
                     v-model="propsSms.editTitleVal">
                 </el-input>
               </div>
               <div class="mt10">
                 <span class="redStar">*</span>
-                <span>Sms Channel</span>
+                <span>SMS Channel</span>
                 <el-select v-model="propsSms.sendSmsVal" clearable placeholder="Pls Sms Channel" style="display:inline-block;"  class="select-option-classify">
                   <el-option
                     v-for="item in propsSms.sendSmsList"
@@ -176,6 +170,15 @@
                     :value="item.channel_content"
                   ></el-option>
                 </el-select>
+              </div>
+              <div class="sms-edit-l-content">
+                <p><span class="redStar">*</span><i class="el-icon-edit"></i>Edit message template</p>
+                <textarea v-if="propsSms.couponShow == true" rows="6" placeholder="Edit message template (塞劵文案格式包含 $XXX$ )" v-model="propsSms.editMsg">
+
+                </textarea>
+                <textarea v-else rows="6" placeholder="Edit message template(普通文案)" v-model="propsSms.editMsg">
+
+                </textarea>
               </div>
             </el-col>
             <el-col :span="16" class="sms-edit-r">

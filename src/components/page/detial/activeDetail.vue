@@ -269,7 +269,8 @@ export default {
         dataSelected: 2,
         ifSms:'',
         ifSmsDmp:'',
-        editTitleVal:""
+        editTitleVal:"",
+        couponShow:false
       },
       timeType:{
         timeVal:'Days',
@@ -343,7 +344,7 @@ export default {
       statusTestRunVal:'',
       userNameTie:'',
       ifDisabled:false,
-      ifActiveDis:false
+      ifActiveDis:false,
     };
   },
   components: {
@@ -574,6 +575,7 @@ export default {
             ui.offset.top < 230
           ) {
             that.showFirst = true
+            that.propsSms.couponShow = true
             that.dragInit2(200, 320);
             that.$message('journey有变动，请检查数据')
           }
@@ -708,9 +710,11 @@ export default {
           sessionStorage.setItem("saveDataDetail", JSON.stringify(saveDataDetail));
           if(res.data.data.camp_coupon_id || res.data.data.coupon_id) {
             this.showFirst = true
+            this.propsSms.couponShow = true
             this.dragInit2(200, 320);
           }else{
             this.showFirst = true
+            this.propsSms.couponShow = false
             this.dragInit1(200, 320);
           }
           this.statusTestRunVal = res.data.data.status
@@ -1001,12 +1005,17 @@ export default {
         this.openSmsContent = false
         this.openSms = true
       }else if(this.propsSms.dataSelected == 3){
+        if(!this.propsSms.editTitleVal) {
+          this.$message('请输入title')
+          return false
+        }
         if(!this.propsSms.editMsg) {
           this.$message('模板内容不可以为空')
           return false
         }
-        if(!this.propsSms.editTitleVal) {
-          this.$message('请输入title')
+        let reg = this.propsSms.editMsg
+        if(reg.indexOf(" $XXX$ ")==-1 && this.propsSms.couponShow == true) {
+          this.$message('模板内容格式不正确')
           return false
         }
         let insertData = {
