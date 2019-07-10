@@ -18,6 +18,10 @@
   content: "\e602";
 }
 
+.icon-weixin:before {
+  content: "\e606";
+}
+
 .icon-paixujiantoushang:before {
   content: "\e7fe";
 }
@@ -62,6 +66,10 @@
   content: "\e639";
 }
 
+.icon-p_router:before {
+  content: "\e654";
+}
+
 .icon-gongrezhouqi:before {
   content: "\e600";
 }
@@ -72,6 +80,10 @@
 
 .icon-shijian:before {
   content: "\e675";
+}
+
+.icon-youjian1:before {
+  content: "\e610";
 }
 
 .icon-icon-test:before {
@@ -120,6 +132,10 @@
 
 .icon-icon-liucheng:before {
   content: "\e62e";
+}
+
+.icon-tiaojian:before {
+  content: "\e796";
 }
 
 .icon-duanxin:before {
