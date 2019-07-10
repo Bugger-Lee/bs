@@ -1011,8 +1011,8 @@ export default {
         }
         this.smsCreatedMessage()
       }
-      if(this.propsSms.ifSms.template_id == this.getSaveDataDetail.saveDataDetail.template_id || 
-        this.propsSms.ifSms.sms_channel_id == this.getSaveDataDetail.saveDataDetail.sms_channel_id) {
+      if(this.propsSms.ifSms.template_id != this.getSaveDataDetail.saveDataDetail.template_id || 
+        this.propsSms.ifSms.sms_channel_id != this.getSaveDataDetail.saveDataDetail.sms_channel_id) {
           this.testDis = true
           this.runDis = true
       }

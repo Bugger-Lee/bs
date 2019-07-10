@@ -471,6 +471,7 @@ export default {
       ifDisabled:false,
       ifActiveDis:false,
       sourcesType:[],
+      getSaveData:''
     };
   },
   created() {
@@ -487,41 +488,6 @@ export default {
       "-" +
       this.currentTimeName.getDate();
     this.currentTimeVal = "New Journey -- May  " + this.currentTimeName;
-  },
-  computed: {
-    ifChange() {
-      if(this.saveUpdate == true) {
-        let saveData = JSON.parse(sessionStorage.getItem("saveData"))
-        let schulder_time = parseInt(new Date(this.timeType.timeTypeData.schulder_time).getTime()/1000)
-        let def_schulder_time = parseInt(new Date(saveData.schulder_time).getTime()/1000)
-        let retired_time = parseInt(new Date(this.timeType.timeTypeData.retired_time).getTime()/1000)
-        let def_retired_time = parseInt(new Date(saveData.retired_time).getTime()/1000)
-        if(
-        saveData.sms_channel_id == this.propsSms.ifSms.sms_channel_id &&
-        saveData.template_id == this.propsSms.ifSms.id &&
-        saveData.brand_id == this.ifDataExtension.brand &&
-        saveData.cycle_id == this.ifDataExtension.period &&
-        saveData.vip_channel_name ==  this.ifDataExtension.register &&
-        saveData.enter_first ==  this.ifDataExtension.newPeriod &&
-        saveData.purchase_week == this.ifDataExtension.newMbmber &&
-        saveData.purchase_first == this.ifDataExtension.newBuy &&
-        saveData.excluded_guide == this.ifDataExtension.excluded_guide &&
-        saveData.reg_brand_id == this.ifDataExtension.reg_brand_id &&
-        saveData.crowd_id == this.ifDataExtension.crowd_id &&
-        saveData.camp_coupon_id == this.propsTicket.ifPromotion.camp_coupon_id &&
-        saveData.coupon_id == this.propsTicket.ifPromotion.coupon_id &&
-        saveData.cron_express == this.timeType.timeTypeData.crotabData &&
-        def_schulder_time == schulder_time &&
-        def_retired_time == retired_time
-        ) {
-          return true
-          }else{
-            this.testDis = true
-            this.runDis = true
-            return false
-          }
-        }
-    }
   },
   components: {
     popupDrag,
@@ -599,6 +565,14 @@ export default {
         retired_time:this.timeType.dateEndVal
       }
       this.timeType.timeTypeData = objData
+      if(this.saveUpdate == true) {
+        if(this.timeType.timeTypeData.crotabData != this.getSaveDataDetail.saveDataDetail.cron_express ||
+          parseInt(new Date(this.timeType.timeTypeData.schulder_time).getTime()) != parseInt(new Date(this.getSaveData.saveData.schulder_time).getTime()) ||
+          parseInt(new Date(this.timeType.timeTypeData.retired_time).getTime()) != parseInt(new Date(this.getSaveData.saveData.retired_time).getTime())) {
+            this.testDis = true
+            this.runDis = true
+        }
+      }
       this.openTime = false;
     },
     saveJourney() {
@@ -660,25 +634,8 @@ export default {
           this.saveSave = false
           this.saveUpdate = true
           this.testDis = false
-          let saveData = {
-            sms_channel_id: this.propsSms.ifSms.sms_channel_id,
-            template_id: this.propsSms.ifSms.id,
-            brand_id: this.ifDataExtension.brand,
-            cycle_id: this.ifDataExtension.period,
-            vip_channel_name: this.ifDataExtension.register,
-            enter_first: this.ifDataExtension.newPeriod,
-            purchase_week: this.ifDataExtension.newMbmber,
-            purchase_first: this.ifDataExtension.newBuy,
-            excluded_guide:this.ifDataExtension.excluded_guide,
-            reg_brand_id:this.ifDataExtension.reg_brand_id,
-            crowd_id:this.ifDataExtension.crowd_id,
-            camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id,
-            coupon_id: this.propsTicket.ifPromotion.coupon_id,
-            cron_express:this.timeType.timeTypeData.crotabData,
-            schulder_time:this.timeType.timeTypeData.schulder_time,
-            retired_time:this.timeType.timeTypeData.retired_time
-          }
-          sessionStorage.setItem("saveData", JSON.stringify(saveData));
+          sessionStorage.setItem("saveData", JSON.stringify(data))
+          this.getSaveData = JSON.parse(sessionStorage.getItem("saveData"))
         } else {
           this.$message(res.data.msg);
         }
@@ -720,27 +677,10 @@ export default {
       }
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
-          this.$message(res.data.msg);
+          this.$message(res.data.msg)
           this.testDis = false
-          let saveData = {
-            sms_channel_id: this.propsSms.ifSms.sms_channel_id,
-            template_id: this.propsSms.ifSms.id,
-            brand_id: this.ifDataExtension.brand,
-            cycle_id: this.ifDataExtension.period,
-            vip_channel_name: this.ifDataExtension.register,
-            enter_first: this.ifDataExtension.newPeriod,
-            purchase_week: this.ifDataExtension.newMbmber,
-            purchase_first: this.ifDataExtension.newBuy,
-            excluded_guide:this.ifDataExtension.excluded_guide,
-            reg_brand_id:this.ifDataExtension.reg_brand_id,
-            crowd_id:this.ifDataExtension.crowd_id,
-            camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id,
-            coupon_id: this.propsTicket.ifPromotion.coupon_id,
-            cron_express:this.timeType.timeTypeData.crotabData,
-            schulder_time:this.timeType.timeTypeData.schulder_time,
-            retired_time:this.timeType.timeTypeData.retired_time
-          }
-          sessionStorage.setItem("saveData", JSON.stringify(saveData));
+          sessionStorage.setItem("saveData", JSON.stringify(data))
+          this.getSaveData = JSON.parse(sessionStorage.getItem("saveData"))
         } else {
           this.$message(res.data.msg);
         }
@@ -841,6 +781,13 @@ export default {
         coupon_id: this.checkedDiscounts
       }
       this.propsTicket.ifPromotion = obj
+      if(this.saveUpdate == true) {
+        if(this.propsTicket.ifPromotion.camp_coupon_id != this.getSaveData.saveData.camp_coupon_id ||
+        this.propsTicket.ifPromotion.coupon_id != this.getSaveData.saveData.coupon_id) {
+          this.testDis = true
+          this.runDis = true
+        }
+      }
       this.openTicketContent = false;
       this.openTicket = true;
     },
@@ -889,6 +836,21 @@ export default {
           crowd_name:this.propsData.crowdDmp.crowd_name
         }
         this.ifDataExtension = dmpObjData
+      }
+      if(this.saveUpdate == true) {
+        if(this.ifDataExtension.brand != this.getSaveData.saveData.brand_id || 
+        this.ifDataExtension.register != this.getSaveData.saveData.vip_channel_name ||
+        this.ifDataExtension.crowd_name != this.getSaveData.saveData.crowd_name ||
+        this.ifDataExtension.period != this.getSaveData.saveData.cycle_id ||
+        this.ifDataExtension.newPeriod != this.getSaveData.saveData.enter_first ||
+        this.ifDataExtension.newBuy != this.getSaveData.saveData.purchase_first ||
+        this.ifDataExtension.newMbmber != this.getSaveData.saveData.purchase_week ||
+        this.ifDataExtension.reg_brand_id != this.getSaveData.saveData.reg_brand_id ||
+        this.ifDataExtension.excluded_guide != this.getSaveData.saveData.excluded_guide){
+          this.testDis = true
+          this.runDis = true
+        }
+      console.log(this.ifDataExtension.crowd_name,this.getSaveData.saveData.crowd_name)
       }
       this.openDataContent = false;
       this.openData = true;
@@ -1309,6 +1271,13 @@ export default {
           return false
         }
         this.smsCreatedMessage()
+      }
+      if(this.saveUpdate == true) {
+        if(this.propsSms.ifSms.id != this.getSaveData.saveData.template_id || 
+        this.propsSms.ifSms.sms_channel_id != this.getSaveData.saveData.sms_channel_id) {
+          this.testDis = true
+          this.runDis = true
+        }
       }
     },
     smsCreatedMessage() {
