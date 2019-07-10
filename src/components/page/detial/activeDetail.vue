@@ -37,7 +37,8 @@
                 <ul class="theme-l-tmp">
                   <li v-for="i in propsData.sourcesType" :key="i.id">
                     <span class="crowd-style">
-                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="i.command_name == 'CLV-Data'"></i>
+                      <i class="icon-renqun1" v-if="i.command_name == 'DMP-Data'"></i>
                     </span>
                     <p>{{i.command_name}}</p>
                   </li>
@@ -98,7 +99,8 @@
           <div v-if = 'showFirst'>
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
+                <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
@@ -124,7 +126,8 @@
           <div v-else>
             <div class="window" id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
+                <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
@@ -258,6 +261,8 @@ export default {
         dateTimeVal:'',
         executeType:'',
         timestamp:'',
+        timestampEnd:'',
+        dateEndVal:'',
         time:[
           {
             id:1,
@@ -350,6 +355,11 @@ export default {
       this.cron_express = this.dateChangeCron(datas)
       if(this.timeType.executeType == 1) {
         this.cron_express = ''
+      }else{
+        if(this.timeType.dateTimeVal > this.timeType.dateEndVal) {
+          this.$message('结束时间必须大于开始时间')
+          return false
+        }
       }
       this.openTime = false
     },
@@ -480,24 +490,36 @@ export default {
         } else {
           temp_data_id = temp_id[0].id
         }
+        if(this.timeType.dateEndVal && this.timeType.executeType == 2) {
+          let timestampEnd = new Date(this.timeType.dateEndVal)
+          this.timeType.timestampEnd = timestampEnd.getFullYear() + '-' + (timestampEnd.getMonth() + 1) + '-' + timestampEnd.getDate() + ' ' + timestampEnd.getHours() + ':' + timestampEnd.getMinutes() + ':' + timestampEnd.getSeconds()
+        }else{
+          this.timeType.dateEndVal = ''
+          this.timeType.timestampEnd = ''
+        }
         let data = {
           id:this.$route.query.id,
           rule_name:this.userNameTie,
           sms_channel_id:this.propsSms.ifSms.sms_channel_id,
           template_id:temp_data_id,
           brand_id:this.ifDataExtension.brand_id,
-          cycle_id:this.ifDataExtension.cycle_id,
-          vip_channel_name:this.ifDataExtension.vip_channel_name,
+          cycle_id:this.ifDataExtension.cycle_id || '',
+          vip_channel_name:this.ifDataExtension.vip_channel_name || '',
           schulder_time:this.timeType.timestamp,
-          camp_coupon_id:this.ifTicket.camp_coupon_id,
-          coupon_id:this.ifTicket.coupon_id,
-          enter_first:this.ifDataExtension.enter_first,
-          purchase_first:this.ifDataExtension.purchase_first,
-          purchase_week:this.ifDataExtension.purchase_week,
+          camp_coupon_id:this.ifTicket.camp_coupon_id || '',
+          coupon_id:this.ifTicket.coupon_id || '',
+          enter_first:this.ifDataExtension.enter_first || '',
+          purchase_first:this.ifDataExtension.purchase_first || '',
+          purchase_week:this.ifDataExtension.purchase_week || '',
           cron_express:this.cron_express,
-          command_name:"CLV人群",
-          command_code:'clv-job',
-          created_by:getSessionItem.user_info
+          command_name:this.propsData.defaultData.command_name,
+          command_code:this.propsData.defaultData.command_code,
+          created_by:getSessionItem.user_info,
+          crowd_id:this.ifDataExtension.crowd_id || '',
+          crowd_name:this.ifDataExtension.crowd_name || ''
+        }
+        if(this.timeType.timestampEnd) {
+          data.retired_time = this.timeType.timestampEnd
         }
         this.$.post('rule/update',data).then(res=>{
           if(res.data.code == 200) {
@@ -564,6 +586,12 @@ export default {
             this.timeType.executeType = 2
           }
           let timestamp = new Date(res.data.data.schulder_time)
+          if(res.data.data.retired_time === null) {
+            this.timeType.dateEndVal = ''
+          }else{
+            let timestampEnd = new Date(res.data.data.retired_time)
+            this.timeType.dateEndVal = timestampEnd.getFullYear() + '-' + (timestampEnd.getMonth() + 1) + '-' + timestampEnd.getDate() + ' ' + timestampEnd.getHours() + ':' + timestampEnd.getMinutes() + ':' + timestampEnd.getSeconds()
+          }
           this.timeType.dateTimeVal  = timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
           if(this.ifDataExtension.vip_channel_name.length > 0) {
             this.propsData.registerVal = this.ifDataExtension.vip_channel_name.split(',')
@@ -661,8 +689,8 @@ export default {
           return false
         }
         this.ifDataExtension = {}
-        this.ifDataExtension.crowdId = val.id
-        this.ifDataExtension.crowdName = val.name
+        this.ifDataExtension.crowd_id = val.id
+        this.ifDataExtension.crowd_name = val.name
       }
     },
     backlevel(val) {
@@ -721,20 +749,25 @@ export default {
       this.popupTicket.checkedDiscounts = discountsData
     },
     dataSummary() {
-      let reVal = this.propsData.registerVal.join(',')
       let item_data = this.propsData.brandList.filter(item => item.brand_name == this.propsData.brandVal)
-      let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
-      let objData = {
-        brand_id:item_data[0].id,
-        cycle_id:item2_data[0].id,
-        vip_channel_name:reVal,
-        brand_name:this.propsData.brandVal,
-        cycle_type:this.propsData.periodVal,
-        enter_first:this.propsData.newPeriod,
-        purchase_first:this.propsData.newBuy,
-        purchase_week:this.propsData.newMbmber,
+      if(this.propsData.defaultData.command_name == 'CLV-Data') {
+        let reVal = this.propsData.registerVal.join(',')
+        let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
+        let objData = {
+          brand_id:item_data[0].id,
+          cycle_id:item2_data[0].id,
+          vip_channel_name:reVal,
+          brand_name:this.propsData.brandVal,
+          cycle_type:this.propsData.periodVal,
+          enter_first:this.propsData.newPeriod,
+          purchase_first:this.propsData.newBuy,
+          purchase_week:this.propsData.newMbmber,
+        }
+        this.ifDataExtension = objData
+      }else if(this.propsData.defaultData.command_name == 'DMP-Data') {
+        this.ifDataExtension.brand_id = item_data[0].id
+        this.ifDataExtension.brand_name = this.propsData.brandVal
       }
-      this.ifDataExtension = objData
       this.openDataContent = false
       this.openData = true
     },

@@ -98,6 +98,10 @@
   content: "\e6e0";
 }
 
+.icon-renqun1:before {
+  content: "\e603";
+}
+
 .icon-weibiaoti-:before {
   content: "\e616";
 }
@@ -188,5 +192,9 @@
 
 .icon-duanxin2-copy:before {
   content: "\e8b4";
+}
+
+.icon-xinxi1-copy-copy-copy:before {
+  content: "\e8b5";
 }
 

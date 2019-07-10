@@ -4,9 +4,17 @@
       <p>Select a duration to hold contacts within the Journey</p>
       <div class="time-content">
         <p class="mb10">Duration</p>
-          <div class="mt20 mb20">
+          <div class="mb20 mt20">
+            <span>Execute Mode ： </span>
+            <el-tooltip class="item" effect="dark" content="单次执行开始时间即激活时间" placement="top-start">
+              <el-radio v-model="timeType.executeType" :label="1" :change = "carryOnce(timeType.executeType)">One-Time</el-radio>
+            </el-tooltip>
+            <el-radio v-model="timeType.executeType" :label="2" :change = "carryOnce(timeType.executeType)">On Schedule</el-radio>
+          </div>
+          <div class="mb20">
             <span>Active Time ： </span>
             <el-date-picker
+              style="width:32%;"
               v-model="timeType.dateTimeVal"
               size="small"
               type="datetime"
@@ -14,16 +22,21 @@
                 selectableRange: selectRange,
                 disabledDate:disabledDate
               }"
-              format="yyyy-MM-dd HH:mm"
               placeholder="Pls Active Time">
             </el-date-picker>
-          </div>
-          <div class="mb20">
-            <span>Execute Mode ： </span>
-            <el-tooltip class="item" effect="dark" content="单次执行开始时间即激活时间" placement="top-start">
-              <el-radio v-model="timeType.executeType" :label="1" :change = "carryOnce(timeType.executeType)">One-Time</el-radio>
-            </el-tooltip>
-            <el-radio v-model="timeType.executeType" :label="2" :change = "carryOnce(timeType.executeType)">On Schedule</el-radio>
+            <span class="ml10">End Time ： </span>
+            <el-date-picker
+              style="width:32%;"
+              v-model="timeType.dateEndVal"
+              size="small"
+              type="datetime"
+              :disabled = ifDisabled
+              :picker-options="{
+                selectableRange: selectRange,
+                disabledDate:disabledDate
+              }"
+              placeholder="Pls End Time">
+            </el-date-picker>
           </div>
           <div>
             <span>Execute Time ： </span>

@@ -71,7 +71,8 @@
                 <ul class="theme-l-tmp">
                   <li v-for="i in sourcesType" :key="i.id">
                     <span class="crowd-style" :title ='i.command_name' :slot='i.command_code'>
-                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="i.command_name == 'CLV-Data'"></i>
+                      <i class="icon-renqun1" v-if="i.command_name == 'DMP-Data'"></i>
                     </span>
                     <p>{{i.command_name}}</p>
                   </li>
@@ -148,7 +149,8 @@
           <div v-if="showFirst">
             <div  id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
+                <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
@@ -180,7 +182,8 @@
           <div v-if="showSecend">
             <div  id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
+                <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
@@ -206,7 +209,8 @@
           <div v-if="showLast">
             <div  id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
+                <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
@@ -238,7 +242,8 @@
           <div v-if="showFirst1">
             <div  id="data1" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
+                <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
@@ -351,7 +356,9 @@ export default {
         timeVal: "Days",
         executeType: 2,
         dateTimeVal: "",
+        dateEndVal:'',
         timestamp:'',
+        timestampEnd:'',
         time: [
           {
             id: 1,
@@ -496,9 +503,20 @@ export default {
             return false;
           }
         }
+        if(this.timeType.dateTimeVal > this.timeType.dateEndVal) {
+          this.$message('结束时间必须大于开始时间')
+          return false
+        }
       }
       if(this.timeType.dateTimeVal == '') {this.$message('请您选择激活时间')}
       let timestamp = new Date(this.timeType.dateTimeVal)
+      if(this.timeType.dateEndVal && this.timeType.executeType == 2) {
+        let timestampEnd = new Date(this.timeType.dateEndVal)
+        this.timeType.timestampEnd = timestampEnd.getFullYear() + '-' + (timestampEnd.getMonth() + 1) + '-' + timestampEnd.getDate() + ' ' + timestampEnd.getHours() + ':' + timestampEnd.getMinutes() + ':' + timestampEnd.getSeconds()
+      }else{
+        this.timeType.dateEndVal = ''
+        this.timeType.timestampEnd = ''
+      }
       this.timeType.timestamp = timestamp.getFullYear() + '-' + (timestamp.getMonth() + 1) + '-' + timestamp.getDate() + ' ' + timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds()
       let datas = {
         loopType: this.timeType.timeVal,
@@ -532,8 +550,12 @@ export default {
         command_name:this.propsData.data_socure,
         command_code: this.propsData.data_code,
         created_by:getSessionItem.user_info,
-        crowd_id:this.ifDataExtension.crowdId
+        crowd_id:this.ifDataExtension.crowd_id || '',
+        crowd_name:this.ifDataExtension.crowd_name || '',
       };
+      if (this.timeType.timestampEnd) {
+        data.retired_time = this.timeType.timestampEnd
+      }
       this.$.post("rule/insert", data).then(res => {
         if (res.data.code == 200) {
           this.$message(res.data.msg);
@@ -551,22 +573,26 @@ export default {
         id:this.systemId,
         rule_name: this.currentTimeVal,
         sms_channel_id: this.propsSms.ifSms.sms_channel_id,
-        template_id: this.propsSms.smsTable.id,
+        template_id: this.propsSms.ifSms.id,
         brand_id: this.ifDataExtension.brand,
-        cycle_id: this.ifDataExtension.period,
-        vip_channel_name: this.ifDataExtension.register,
+        cycle_id: this.ifDataExtension.period || '',
+        vip_channel_name: this.ifDataExtension.register || '',
         schulder_time: this.timeType.timestamp,
-        camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id,
-        coupon_id: this.propsTicket.ifPromotion.coupon_id,
-        enter_first: this.ifDataExtension.newPeriod,
-        purchase_week: this.ifDataExtension.newMbmber,
-        purchase_first: this.propsData.newBuy,
+        camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id || '',
+        coupon_id: this.propsTicket.ifPromotion.coupon_id || '',
+        enter_first: this.ifDataExtension.newPeriod || '',
+        purchase_week: this.ifDataExtension.newMbmber || '',
+        purchase_first: this.propsData.newBuy || '',
         cron_express: this.cron_express,
         command_name:this.propsData.data_socure,
         command_code:this.propsData.data_code,
         created_by:getSessionItem.user_info,
-        crowd_id:this.ifDataExtension.crowdId
+        crowd_id:this.ifDataExtension.crowd_id || '',
+        crowd_name:this.ifDataExtension.crowd_name || '',
       };
+      if (this.timeType.timestampEnd) {
+        data.retired_time = this.timeType.timestampEnd
+      }
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
           this.$message(res.data.msg);
@@ -683,7 +709,7 @@ export default {
           return false;
         }
       }else if(this.propsData.data_socure == 'DMP-Data') {
-        if(this.propsData.brandVal == "" || !this.ifDataExtension.crowdId) {
+        if(this.propsData.brandVal == "" || !this.ifDataExtension.crowd_id) {
           this.$message("请您填写必填项")
           return false
         }
@@ -1015,8 +1041,8 @@ export default {
           return false
         }
         this.ifDataExtension = {}
-        this.ifDataExtension.crowdId = val.id
-        this.ifDataExtension.crowdName = val.name
+        this.ifDataExtension.crowd_id = val.id
+        this.ifDataExtension.crowd_name = val.name
       }
     },
     sltPromotion(val) {
