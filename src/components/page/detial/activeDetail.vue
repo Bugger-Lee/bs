@@ -15,12 +15,13 @@
               <p>{{this.userNameTie}}</p>
             </div>
           </div>
+          <span class="l-status" v-if="this.propsData.defaultData.task_status">{{this.propsData.defaultData.task_status}}</span>
         </el-col>
         <el-col :span="12" class="marketing-header-r">
           <el-button-group class="mr05">
             <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailUpdate == true" @click="detailStatus('update')">Update</el-button>
-            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailTest == true" @click="detailStatus('test')">Test</el-button>
-            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailRun == true" @click="detailStatus('run')">Run</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.testDis == false}" v-if="this.detailTest == true" :disabled="testDis" @click="detailStatus('test')">Test</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.runDis == false}" v-if="this.detailRun == true" :disabled="runDis" @click="detailStatus('run')">Run</el-button>
             <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">Stop</el-button>
           </el-button-group>
         </el-col>
@@ -162,6 +163,7 @@
     </div>
     <popupDrag :openData ="openData"
         :propsData="propsData"
+        :statusTestRunVal="statusTestRunVal"
         :openDataContent ="openDataContent"
         v-if="this.propsData.periodVal != ''"
         :ifDataExtension ="ifDataExtension"
@@ -173,12 +175,14 @@
     <smsPopup :openData ="openSms"
         :propsSms = "propsSms"
         :openDataContent ="openSmsContent"
+        :statusTestRunVal="statusTestRunVal"
         @backlevelSms ="backlevelSms"
         @searchSmsList ="searchSmsList"
         @sltSmsContent ="sltSmsContent">
     </smsPopup>
     <popupTicket :openData="openTicket" 
       :propsTicket="propsTicket"
+      :statusTestRunVal="statusTestRunVal"
       :openDataContent="openTicketContent"
       :ifTicket = "ifTicket"
       @searchDate = "searchDate"
@@ -198,19 +202,23 @@
         <el-button @click="openTime = false">Cancel</el-button>
         <el-button type="primary" @click="doneTime()">Done</el-button>
       </span>
-      <popupOpenTime :timeType = "timeType"></popupOpenTime>
+      <popupOpenTime :timeType = "timeType" 
+      :ifDisabled="ifDisabled" 
+      :ifActiveDis="ifActiveDis"
+      @timeCarryOnce="timeCarryOnce"></popupOpenTime>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import jsplumb from "jsplumb";
+import $ from "jquery";
 import "@/assets/css/part.less";
-import smsPopup from "./module/smsPopup.vue"
+import smsPopup from "@/components/public/smsPopup.vue"
 import popupTicket from "./module/popupTicket.vue"
 import popupOpenTime from "@/components/public/popupOpenTime.vue"
 import popupDrag from "./module/popupDrag.vue"
-import { constants } from 'fs';
+import { constants, truncate } from 'fs';
 export default {
   data() {
     return {
@@ -227,6 +235,8 @@ export default {
       openDataContent:false,
       openSmsContent:false,
       openTime:false,
+      testDis:false,
+      runDis:false,
       propsData:{
           brandList: [],
           periodList: [],
@@ -243,7 +253,10 @@ export default {
           newBuy:'',
           newMbmber:'',
           SearchDmp:'',
-          defaultData:''
+          defaultData:'',
+          shoppings:'',
+          regBrandVal:'',
+          crowdDmp:''
       },
       propsSms:{
         smsTable:[],
@@ -254,7 +267,10 @@ export default {
         ifShowInput:false,
         tableSelectVal:'',
         dataSelected: 2,
-        ifSms:''
+        ifSms:'',
+        ifSmsDmp:'',
+        editTitleVal:"",
+        couponShow:false
       },
       timeType:{
         timeVal:'Days',
@@ -263,6 +279,7 @@ export default {
         timestamp:'',
         timestampEnd:'',
         dateEndVal:'',
+        timeTypeData:'',
         time:[
           {
             id:1,
@@ -325,7 +342,10 @@ export default {
       datedrag: 2,
       showFirst: true,
       statusTestRunVal:'',
-      userNameTie:''
+      userNameTie:'',
+      ifDisabled:false,
+      ifActiveDis:false,
+      getSaveDataDetail:''
     };
   },
   components: {
@@ -355,41 +375,76 @@ export default {
       this.cron_express = this.dateChangeCron(datas)
       if(this.timeType.executeType == 1) {
         this.cron_express = ''
-      }else{
-        if(this.timeType.dateTimeVal > this.timeType.dateEndVal) {
+      }else if(this.timeType.executeType == 2){
+        if (this.timeType.timeVal == "Days") {
+          if (this.timeType.timePicker == "") {
+            this.$message("请您完善时间信息");
+            return false;
+          }
+        }
+        if (this.timeType.timeVal == "months") {
+          if (this.timeType.timePicker == "" || this.timeType.timeMonths == "") {
+            this.$message("请您完善时间信息");
+            return false;
+          }
+        }
+        if (this.timeType.timeVal == "weeks") {
+          if (this.timeType.timePicker == "" || this.timeType.timeWeek == "") {
+            this.$message("请您完善时间信息");
+            return false;
+          }
+        }
+        if(this.timeType.dateTimeVal == '' || this.timeType.dateTimeVal == null ||
+          this.timeType.dateEndVal == '' || this.timeType.dateEndVal == null) {
+            this.$message("请您完善时间信息");
+            return false
+        }
+        if(new Date(this.timeType.dateTimeVal).getTime()  >= new Date(this.timeType.dateEndVal).getTime()) {
           this.$message('结束时间必须大于开始时间')
           return false
         }
+      }
+      let objData = {
+        cron_express:this.cron_express,
+        schulder_time:this.timeType.dateTimeVal,
+        retired_time:this.timeType.dateEndVal
+      }
+      this.timeType.timeTypeData = objData
+      if(this.timeType.timeTypeData.cron_express != this.getSaveDataDetail.saveDataDetail.cron_express ||
+        parseInt(new Date(this.timeType.timeTypeData.schulder_time).getTime()) != parseInt(new Date(this.getSaveDataDetail.saveDataDetail.schulder_time).getTime()) ||
+        parseInt(new Date(this.timeType.timeTypeData.retired_time).getTime()) != parseInt(new Date(this.getSaveDataDetail.saveDataDetail.retired_time).getTime())) {
+          this.testDis = true
+          this.runDis = true
       }
       this.openTime = false
     },
     dragInit1(top, left) {
       this.$nextTick(() => {
-        this.$refs.refData1.style.position = "fixed";
+        this.$refs.refData1.style.position = "absolute";
         this.$refs.refData1.style.top = top + "px";
         this.$refs.refData1.style.left = left + "px";
-        this.$refs.refData1div.style.position = "fixed";
+        this.$refs.refData1div.style.position = "absolute";
         this.$refs.refData1div.style.top = top + 50 + "px";
         this.$refs.refData1div.style.left = left + -5 + "px";
 
-        this.$refs.refData2.style.position = "fixed";
+        this.$refs.refData2.style.position = "absolute";
         this.$refs.refData2.style.top = top + "px";
         this.$refs.refData2.style.left = left + 150 + "px";
-        this.$refs.refData2div.style.position = "fixed";
+        this.$refs.refData2div.style.position = "absolute";
         this.$refs.refData2div.style.top = top + 50 + "px";
         this.$refs.refData2div.style.left = left + 155 + "px";
 
-        this.$refs.refData3.style.position = "fixed";
+        this.$refs.refData3.style.position = "absolute";
         this.$refs.refData3.style.top = top + "px";
         this.$refs.refData3.style.left = left + 300 + "px";
-        this.$refs.refData3div.style.position = "fixed";
+        this.$refs.refData3div.style.position = "absolute";
         this.$refs.refData3div.style.top = top + 50 + "px";
         this.$refs.refData3div.style.left = left + 300 + 5 + "px";
 
-        this.$refs.refData4.style.position = "fixed";
+        this.$refs.refData4.style.position = "absolute";
         this.$refs.refData4.style.top = top + "px";
         this.$refs.refData4.style.left = left + 450 + "px";
-        this.$refs.refData4div.style.position = "fixed";
+        this.$refs.refData4div.style.position = "absolute";
         this.$refs.refData4div.style.top = top + 50 + "px";
         this.$refs.refData4div.style.left = left + 450 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
@@ -400,43 +455,46 @@ export default {
         this.jsPlumb("data1", "return1");
         this.jsPlumb("return1", "return2");
         this.jsPlumb("return2", "return3");
+        if(this.statusTestRunVal != 2) {
+          this.dragInit()
+        }
       });
     },
     dragInit2(top, left) {
       this.showFirst = false
       this.$nextTick(() => {
-        this.$refs.refData1.style.position = "fixed";
+        this.$refs.refData1.style.position = "absolute";
         this.$refs.refData1.style.top = top + "px";
         this.$refs.refData1.style.left = left + "px";
-        this.$refs.refData1div.style.position = "fixed";
+        this.$refs.refData1div.style.position = "absolute";
         this.$refs.refData1div.style.top = top + 50 + "px";
         this.$refs.refData1div.style.left = left + -5 + "px";
 
-        this.$refs.newData.style.position = "fixed";
+        this.$refs.newData.style.position = "absolute";
         this.$refs.newData.style.top = top + "px";
         this.$refs.newData.style.left = left + 150 + "px";
-        this.$refs.newrefDatadiv.style.position = "fixed";
+        this.$refs.newrefDatadiv.style.position = "absolute";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
         this.$refs.newrefDatadiv.style.left = left + 147 + "px";
 
-        this.$refs.refData2.style.position = "fixed";
+        this.$refs.refData2.style.position = "absolute";
         this.$refs.refData2.style.top = top + "px";
         this.$refs.refData2.style.left = left + 300 + "px";
-        this.$refs.refData2div.style.position = "fixed";
+        this.$refs.refData2div.style.position = "absolute";
         this.$refs.refData2div.style.top = top + 50 + "px";
         this.$refs.refData2div.style.left = left + 305 + "px";
 
-        this.$refs.refData3.style.position = "fixed";
+        this.$refs.refData3.style.position = "absolute";
         this.$refs.refData3.style.top = top + "px";
         this.$refs.refData3.style.left = left + 450 + "px";
-        this.$refs.refData3div.style.position = "fixed";
+        this.$refs.refData3div.style.position = "absolute";
         this.$refs.refData3div.style.top = top + 50 + "px";
         this.$refs.refData3div.style.left = left + 450 + 5 + "px";
 
-        this.$refs.refData4.style.position = "fixed";
+        this.$refs.refData4.style.position = "absolute";
         this.$refs.refData4.style.top = top + "px";
         this.$refs.refData4.style.left = left + 600 + "px";
-        this.$refs.refData4div.style.position = "fixed";
+        this.$refs.refData4div.style.position = "absolute";
         this.$refs.refData4div.style.top = top + 50 + "px";
         this.$refs.refData4div.style.left = left + 600 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
@@ -472,6 +530,33 @@ export default {
           //   ["Label", { label: "", id: "label" }]
           // ]
         });
+      });
+    },
+    // 拖拽
+    dragInit() {
+      let that = this;
+      $(".crowds-style").draggable({
+        zIndex: 999,
+        helper: "clone",
+        scope: "dragflag",
+        appendTo: "body",
+        containment: "parent"
+      });
+      $(".marketing-drag").droppable({
+        scope: "dragflag",
+        drop: function(event, ui) {
+          if (
+            350 <= ui.offset.left &&
+            ui.offset.left <= 450 &&
+            180 <= ui.offset.top &&
+            ui.offset.top < 230
+          ) {
+            that.showFirst = true
+            that.propsSms.couponShow = true
+            that.dragInit2(200, 320);
+            that.$message('journey有变动，请检查数据')
+          }
+        }
       });
     },
     popupTicket() {
@@ -516,14 +601,18 @@ export default {
           command_code:this.propsData.defaultData.command_code,
           created_by:getSessionItem.user_info,
           crowd_id:this.ifDataExtension.crowd_id || '',
-          crowd_name:this.ifDataExtension.crowd_name || ''
+          crowd_name:this.ifDataExtension.crowd_name || '',
+          excluded_guide:this.ifDataExtension.excluded_guide || '',
+          reg_brand_id:this.ifDataExtension.reg_brand_id || ''
         }
         if(this.timeType.timestampEnd) {
           data.retired_time = this.timeType.timestampEnd
         }
         this.$.post('rule/update',data).then(res=>{
           if(res.data.code == 200) {
+            this.testDis = false
             this.$message(res.data.msg)
+            sessionStorage.setItem("saveDataDetail", JSON.stringify(data))
           }else{
             this.$message(res.data.msg)
           }
@@ -538,8 +627,11 @@ export default {
         }
         this.$.get("rule/updateStatus",{params: { id: this.$route.query.id, status: this.statusTestRunVal }}).then(res=>{
           if(res.data.code == 200) {
-            this.$message(res.data.msg)
+            if(this.statusTestRunVal == 1 || this.statusTestRunVal == 2) {
+              this.$message('Processing')
+            }
             if(this.statusTestRunVal == 3) {
+              this.$message('Stop')
               this.detailUpdate = true
               this.detailRun = true
               this.detailTest = true
@@ -549,6 +641,8 @@ export default {
               this.detailRun = false
               this.detailTest = false
               this.detailStop = true
+            }else if(this.statusTestRunVal == 1) {
+              this.runDis = false
             }
           }else{
             this.$message(res.data.msg)
@@ -562,28 +656,41 @@ export default {
           this.ifDataExtension = res.data.data
           this.propsSms.ifSms = res.data.data
           this.ifTicket = res.data.data
+          this.timeType.timeTypeData = res.data.data
           this.propsData.defaultData = res.data.data
           this.userNameTie = res.data.data.rule_name
           this.propsData.brandVal = this.ifDataExtension.brand_name
+          this.propsData.regBrandVal = this.ifDataExtension.reg_brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
           this.propsSms.sendSmsVal =  this.propsSms.ifSms.sms_channel_content
+          let saveDataDetail = {
+            saveDataDetail:this.propsData.defaultData
+          }
+          sessionStorage.setItem("saveDataDetail", JSON.stringify(saveDataDetail));
+          this.getSaveDataDetail = JSON.parse(sessionStorage.getItem("saveDataDetail"))
           if(res.data.data.camp_coupon_id || res.data.data.coupon_id) {
             this.showFirst = true
+            this.propsSms.couponShow = true
             this.dragInit2(200, 320);
           }else{
             this.showFirst = true
+            this.propsSms.couponShow = false
             this.dragInit1(200, 320);
           }
+          this.statusTestRunVal = res.data.data.status
           if(res.data.data.status == 2) {
             this.detailStop = true
             this.detailUpdate = false
             this.detailTest = false
             this.detailRun = false
           }
+          this.cron_express = res.data.data.cron_express
           if(res.data.data.cron_express == '') {
             this.timeType.executeType = 1
+            this.ifDisabled = true
           }else{
             this.timeType.executeType = 2
+            this.ifDisabled = false
           }
           let timestamp = new Date(res.data.data.schulder_time)
           if(res.data.data.retired_time === null) {
@@ -599,6 +706,7 @@ export default {
           this.propsData.newBuy = this.ifDataExtension.purchase_first
           this.propsData.newPeriod = this.ifDataExtension.enter_first
           this.propsData.newMbmber = this.ifDataExtension.purchase_week
+          this.propsData.shoppings = this.ifDataExtension.excluded_guide
           if (res.data.data.cron_express) {
           this.cronChangeDate(res.data.data)
           this.timeType.timeVal = this.cronChangeDate(res.data.data).loopType
@@ -631,7 +739,7 @@ export default {
       })
     },
     dmpTables() {
-      this.$.get("http://bestsellerdmp.bestseller.com.cn/jbuilder-api/crowd/getCrowdList",{params:{crowdName:this.propsData.SearchDmp}}).then(res=>{
+      this.$.get("crowd/getCrowdList",{params:{crowdName:this.propsData.SearchDmp}}).then(res=>{
         this.propsData.dmpTable = res.data.data
       })
     },
@@ -688,9 +796,9 @@ export default {
         if(!val.id) {
           return false
         }
-        this.ifDataExtension = {}
-        this.ifDataExtension.crowd_id = val.id
-        this.ifDataExtension.crowd_name = val.name
+        this.propsData.crowdDmp = {}
+        this.propsData.crowdDmp.crowd_id = val.id
+        this.propsData.crowdDmp.crowd_name = val.name
       }
     },
     backlevel(val) {
@@ -729,6 +837,11 @@ export default {
         coupon_id:this.popupTicket.checkedDiscounts
       }
       this.ifTicket = obj
+      if(this.ifTicket.camp_coupon_id != this.getSaveDataDetail.saveDataDetail.camp_coupon_id ||
+        this.ifTicket.coupon_id != this.getSaveDataDetail.saveDataDetail.coupon_id) {
+          this.testDis = true
+          this.runDis = true
+      }
       this.openTicket = true
       this.openTicketContent = false
     },
@@ -753,6 +866,7 @@ export default {
       if(this.propsData.defaultData.command_name == 'CLV-Data') {
         let reVal = this.propsData.registerVal.join(',')
         let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
+        let regBrand = this.propsData.brandList.filter(item => item.brand_name == this.propsData.regBrandVal)
         let objData = {
           brand_id:item_data[0].id,
           cycle_id:item2_data[0].id,
@@ -762,11 +876,36 @@ export default {
           enter_first:this.propsData.newPeriod,
           purchase_first:this.propsData.newBuy,
           purchase_week:this.propsData.newMbmber,
+          excluded_guide:this.propsData.shoppings,
+          reg_brand_name:this.propsData.regBrandVal
         }
         this.ifDataExtension = objData
+        if(this.propsData.regBrandVal != null && this.propsData.regBrandVal != '' && regBrand != []) {
+          this.ifDataExtension.reg_brand_id = regBrand[0].id
+        }
       }else if(this.propsData.defaultData.command_name == 'DMP-Data') {
-        this.ifDataExtension.brand_id = item_data[0].id
-        this.ifDataExtension.brand_name = this.propsData.brandVal
+        let objDataDmp = {
+          brand_id:item_data[0].id,
+          brand_name:this.propsData.brandVal,
+          crowd_id:this.propsData.crowdDmp.crowd_id,
+          crowd_name:this.propsData.crowdDmp.crowd_name
+        }
+        this.ifDataExtension = objDataDmp
+      }
+      if(this.ifDataExtension.crowd_name == undefined) {
+        this.ifDataExtension.crowd_name = ''
+      }
+      if(this.ifDataExtension.brand_id != this.getSaveDataDetail.saveDataDetail.brand_id || 
+        this.ifDataExtension.vip_channel_name != this.getSaveDataDetail.saveDataDetail.vip_channel_name ||
+        this.ifDataExtension.crowd_name != this.getSaveDataDetail.saveDataDetail.crowd_name ||
+        this.ifDataExtension.cycle_id != this.getSaveDataDetail.saveDataDetail.cycle_id ||
+        this.ifDataExtension.enter_first != this.getSaveDataDetail.saveDataDetail.enter_first ||
+        this.ifDataExtension.purchase_first != this.getSaveDataDetail.saveDataDetail.purchase_first ||
+        this.ifDataExtension.purchase_week != this.getSaveDataDetail.saveDataDetail.purchase_week ||
+        this.ifDataExtension.reg_brand_id != this.getSaveDataDetail.saveDataDetail.reg_brand_id ||
+        this.ifDataExtension.excluded_guide != this.getSaveDataDetail.saveDataDetail.excluded_guide){
+          this.testDis = true
+          this.runDis = true
       }
       this.openDataContent = false
       this.openData = true
@@ -800,27 +939,29 @@ export default {
       }else if(val.name == 'saveMsg') {
         this.saveMessage()
       }else if(val.name == 'inputBlur') {
-        this.inputBlur(val.value,val.id)
+        this.inputBlur(val.value,val.id,val.templt)
       } else if (val.name = "tableIndex") {
         if(val.id) {
-          this.propsSms.ifSms.template_text = val.document_text 
-          this.propsSms.ifSms.template_id= val.id
+          this.propsSms.ifSmsDmp = {}
+          this.propsSms.ifSmsDmp.template_text = val.document_text
+          this.propsSms.ifSmsDmp.template_id = val.id
         }
       }
     },
-    inputBlur(val,id) {
+    inputBlur(val,id,templt) {
         if(val == '') {
           this.$message('文案不可以为空')
           return false
         }
         let upDate = {
-          cycle_id:this.ifDataExtension.cycle_id,
           brand_id:this.ifDataExtension.brand_id,
+          template_name:templt,
           document_text:val,
           id:id
         }
         this.$.post("template/update",upDate).then(res=>{
           if(res.data.code == 200) {
+            this.$message(res.data.msg)
             this.smsLists()
           }else{
             this.$message({
@@ -833,48 +974,74 @@ export default {
     },
     saveMessage() {
       let smsObj = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
-      let objData = {
-        template_text:this.propsSms.editMsg,
-        sms_channel_id: smsObj[0].id,
-        sms_channel_content:this.propsSms.sendSmsVal
-      }
       if(this.propsSms.dataSelected == 2) {
-        let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.template_id)
-        this.propsSms.ifSms.template_text = doc_text[0].document_text
-        this.propsSms.ifSms.sms_channel_content = this.propsSms.sendSmsVal
+        let objDataTwo = {
+          template_text:this.propsSms.ifSmsDmp.template_text,
+          sms_channel_content:this.propsSms.sendSmsVal,
+          sms_channel_id:smsObj[0].id,
+          template_id:this.propsSms.ifSmsDmp.template_id
+        }
+        this.propsSms.ifSms = objDataTwo
         this.openSmsContent = false
         this.openSms = true
       }else if(this.propsSms.dataSelected == 3){
+        if(!this.propsSms.editTitleVal) {
+          this.$message('请输入title')
+          return false
+        }
         if(!this.propsSms.editMsg) {
           this.$message('模板内容不可以为空')
           return false
         }
-        let insertData = {
-          cycle_id:this.ifDataExtension.cycle_id,
-          brand_id:this.ifDataExtension.brand_id,
-          document_text:this.propsSms.editMsg,
-          uuid:(new Date()).valueOf()
+        let reg = this.propsSms.editMsg
+        if(reg.indexOf(" $XXX$ ")==-1 && this.propsSms.couponShow == true) {
+          this.$message('模板内容格式不正确')
+          return false
+        }else if(reg.indexOf(" $XXX$ ")!=-1 && this.propsSms.couponShow == false) {
+          this.$confirm('文案内容中含有 $XXX$ 是否继续？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.smsCreatedMessage()
+          }).catch(() => {
+            return false
+          })
+          return false
         }
-        this.$.post("template/insert",insertData).then(res=>{
-          if(res.data.code == 200) {
-            this.smsLists()
-            let objData = {
-              template_text:this.propsSms.editMsg,
-              sms_channel_id: smsObj[0].id,
-              sms_channel_content:this.propsSms.sendSmsVal
-            }
-            this.propsSms.ifSms = objData
-            this.openSmsContent = false
-            this.openSms = true
-          }else{
-            this.$message({
-              showClose: true,
-              message: res.data.msg,
-              type: 'warning'
-            });
-          }
-        })
+        this.smsCreatedMessage()
       }
+      if(this.propsSms.ifSms.template_id == this.getSaveDataDetail.saveDataDetail.template_id || 
+        this.propsSms.ifSms.sms_channel_id == this.getSaveDataDetail.saveDataDetail.sms_channel_id) {
+          this.testDis = true
+          this.runDis = true
+      }
+    },
+    smsCreatedMessage() {
+      let smsObj = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
+      let insertData = {
+        brand_id:this.ifDataExtension.brand_id,
+        template_name:this.propsSms.editTitleVal,
+        document_text:this.propsSms.editMsg,
+        uuid:(new Date()).valueOf()
+      }
+      this.$.post("template/insert",insertData).then(res=>{
+        if(res.data.code == 200) {
+          this.$message(res.data.msg)
+          this.smsLists()
+          let objData = {
+            template_text:this.propsSms.editMsg,
+            sms_channel_id: smsObj[0].id,
+            sms_channel_content:this.propsSms.sendSmsVal,
+            template_id:res.data.data
+          }
+          this.propsSms.ifSms = objData
+          this.openSmsContent = false
+          this.openSms = true
+        }else{
+          this.$message(res.data.msg)
+        }
+      })
     },
     dataExtension() {
       this.openData = true
@@ -885,7 +1052,23 @@ export default {
     },
     selectTime() {
       this.openTime = true
-    }
+      if(this.statusTestRunVal == 2) {
+        this.ifDisabled = true
+        this.ifActiveDis = true
+      }else{
+        this.ifActiveDis = false
+        this.timeCarryOnce(this.timeType.executeType)
+      }
+    },
+    timeCarryOnce(val) {
+      if(val != '') {
+        if(val == 1) {
+          this.ifDisabled = true
+        }else{
+          this.ifDisabled = false
+        }
+      }
+    },
   },
   beforeRouteLeave (to,from,next) {
     let allconn = jsplumb.jsPlumb.getAllConnections()
@@ -944,6 +1127,16 @@ export default {
             font-size: 15px;
             font-weight: 600;
           }
+        }
+        .l-status{
+          margin-left: 30px;
+          color: #fff;
+          font-style: italic;
+          background: gray;
+          opacity: 0.4;
+          padding: 6px 12px;
+          border-radius: 15px;
+          font-size: 10px;
         }
       }
       .marketing-header-r {

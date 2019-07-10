@@ -63,7 +63,12 @@
               </el-table-column>
               <el-table-column prop="status_name" label="Status" show-overflow-tooltip></el-table-column>
               <el-table-column prop="command_name" label="Crowd Type" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="retired_time" label="Time" show-overflow-tooltip></el-table-column>
+              <el-table-column label="Time" show-overflow-tooltip>
+                <template slot-scope="scope">
+                  <span>{{scope.row.schulder_time}}</span>
+                  <span v-if='scope.row.retired_time'>- {{scope.row.retired_time}}</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="created_by" label="Creator" show-overflow-tooltip></el-table-column>
               <div style="text-align:center; padding: 10px 0" slot="append" v-if="showLoading"><i class="el-icon-loading" style="color:#1589ee;font-size:35px;"></i></div>
             </el-table>

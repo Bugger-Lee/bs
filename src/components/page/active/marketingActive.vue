@@ -34,21 +34,24 @@
             >Save</el-button>
             <el-button
               type="primary"
-               v-if="this.saveUpdate==true"
+              v-if="this.saveUpdate==true"
               class="pd-btn pd-back ifColor"
               @click="updateJorney()"
             >Update</el-button>
             <el-button
               type="primary"
-               v-if="this.saveTest==true"
-              class="pd-btn pd-back ifColor"
+              v-if="this.saveTest==true"
+              :disabled="this.testDis"
+              class="pd-btn pd-back"
+              :class="{'ifColor':this.testDis == false}"
               @click="testRunJourney('test')"
             >Test</el-button>
           </el-button-group>
           <el-button
             type="primary"
-            class="pd-btn mr15"
-             v-if="this.saveRunning==true"
+            class="disBtn mr15"
+            v-if="this.saveRunning==true"
+            :disabled="this.runDis"
             @click="testRunJourney('runing')"
           >Run</el-button>
           <el-button
@@ -279,6 +282,7 @@
         :propsData="propsData"
         :openDataContent="openDataContent"
         :ifDataExtension="ifDataExtension"
+        :statusTestRunVal="statusTestRunVal"
         @backlevel="backlevel"
         @searchDmpList="searchDmpList"
         @sltDataContent="sltDataContent"
@@ -287,12 +291,14 @@
         :openData="openSms"
         :propsSms="propsSms"
         :openDataContent="openSmsContent"
+        :statusTestRunVal="statusTestRunVal"
         @backlevelSms="backlevelSms"
         @searchSmsList="searchSmsList"
         @sltSmsContent="sltSmsContent"
       ></smsPopup>
       <popupTicket :openData="openTicket"
       :openDataContent="openTicketContent"
+      :statusTestRunVal="statusTestRunVal"
       @searchDate="searchDate"
       :propsTicket = "propsTicket"
       @ifCheckedVal="ifCheckedVal"
@@ -312,7 +318,10 @@
           <el-button @click="openTime = false">Cancel</el-button>
           <el-button type="primary" @click="doneTime()">Done</el-button>
         </span>
-        <popupOpenTime :timeType="timeType"></popupOpenTime>
+        <popupOpenTime :timeType="timeType" 
+        :ifDisabled="ifDisabled" 
+        :ifActiveDis="ifActiveDis"
+        @timeCarryOnce="timeCarryOnce"></popupOpenTime>
       </el-dialog>
     </div>
   </div>
@@ -322,7 +331,7 @@ import "@/assets/css/part.less";
 import jsplumb from "jsplumb";
 import $ from "jquery";
 import popupDrag from "./module/popupDrag.vue";
-import smsPopup from "./module/smsPopup.vue";
+import smsPopup from "@/components/public/smsPopup.vue";
 import popupTicket from "./module/popupTicket.vue";
 import popupOpenTime from "@/components/public/popupOpenTime.vue";
 import { constants } from 'fs';
@@ -335,6 +344,8 @@ export default {
       saveTest:true,
       saveRunning:true,
       saveStop:false,
+      testDis:true,
+      runDis:true,
       ifDrag: false,
       ifSmsDrag: false,
       ifProDrag: false,
@@ -359,6 +370,7 @@ export default {
         dateEndVal:'',
         timestamp:'',
         timestampEnd:'',
+        timeTypeData:'',
         time: [
           {
             id: 1,
@@ -422,7 +434,10 @@ export default {
         newMbmber: "",
         data_socure: '',
         data_code:"",
-        SearchDmp:''
+        SearchDmp:"",
+        shoppings:"",
+        regBrandVal:"",
+        crowdDmp:""
       },
       propsTicket:{
         salesTable: [],
@@ -434,13 +449,16 @@ export default {
       propsSms: {
         smsTable: [],
         sendSmsList: [],
+        couponShow:false,
         SearchSms: "",
         editMsg: "",
         ifShowInput: false,
         tableSelectVal: "",
         dataSelected: 2,
         ifSms: '',
-        sendSmsVal: ""
+        ifSmsDmp:'',
+        sendSmsVal: "",
+        editTitleVal:""
       },
       couponName: "",
       ifDataExtension: "",
@@ -450,6 +468,8 @@ export default {
       systemId: "",
       dargSms: false,
       sortDrag: "",
+      ifDisabled:false,
+      ifActiveDis:false,
       sourcesType:[],
     };
   },
@@ -467,6 +487,41 @@ export default {
       "-" +
       this.currentTimeName.getDate();
     this.currentTimeVal = "New Journey -- May  " + this.currentTimeName;
+  },
+  computed: {
+    ifChange() {
+      if(this.saveUpdate == true) {
+        let saveData = JSON.parse(sessionStorage.getItem("saveData"))
+        let schulder_time = parseInt(new Date(this.timeType.timeTypeData.schulder_time).getTime()/1000)
+        let def_schulder_time = parseInt(new Date(saveData.schulder_time).getTime()/1000)
+        let retired_time = parseInt(new Date(this.timeType.timeTypeData.retired_time).getTime()/1000)
+        let def_retired_time = parseInt(new Date(saveData.retired_time).getTime()/1000)
+        if(
+        saveData.sms_channel_id == this.propsSms.ifSms.sms_channel_id &&
+        saveData.template_id == this.propsSms.ifSms.id &&
+        saveData.brand_id == this.ifDataExtension.brand &&
+        saveData.cycle_id == this.ifDataExtension.period &&
+        saveData.vip_channel_name ==  this.ifDataExtension.register &&
+        saveData.enter_first ==  this.ifDataExtension.newPeriod &&
+        saveData.purchase_week == this.ifDataExtension.newMbmber &&
+        saveData.purchase_first == this.ifDataExtension.newBuy &&
+        saveData.excluded_guide == this.ifDataExtension.excluded_guide &&
+        saveData.reg_brand_id == this.ifDataExtension.reg_brand_id &&
+        saveData.crowd_id == this.ifDataExtension.crowd_id &&
+        saveData.camp_coupon_id == this.propsTicket.ifPromotion.camp_coupon_id &&
+        saveData.coupon_id == this.propsTicket.ifPromotion.coupon_id &&
+        saveData.cron_express == this.timeType.timeTypeData.crotabData &&
+        def_schulder_time == schulder_time &&
+        def_retired_time == retired_time
+        ) {
+          return true
+          }else{
+            this.testDis = true
+            this.runDis = true
+            return false
+          }
+        }
+    }
   },
   components: {
     popupDrag,
@@ -503,12 +558,21 @@ export default {
             return false;
           }
         }
-        if(this.timeType.dateTimeVal > this.timeType.dateEndVal) {
+        if(this.timeType.dateTimeVal == '' || this.timeType.dateTimeVal == null ||
+          this.timeType.dateEndVal == '' || this.timeType.dateEndVal == null) {
+            this.$message("请完善时间信息");
+            return false
+        }
+        if(new Date(this.timeType.dateTimeVal).getTime()  >= new Date(this.timeType.dateEndVal).getTime()) {
           this.$message('结束时间必须大于开始时间')
           return false
         }
+      }else if(this.timeType.executeType == 1) {
+        if(this.timeType.dateTimeVal == '' || this.timeType.dateTimeVal == null) {
+          this.$message('请选择激活时间')
+          return false
+        }
       }
-      if(this.timeType.dateTimeVal == '') {this.$message('请您选择激活时间')}
       let timestamp = new Date(this.timeType.dateTimeVal)
       if(this.timeType.dateEndVal && this.timeType.executeType == 2) {
         let timestampEnd = new Date(this.timeType.dateEndVal)
@@ -529,9 +593,40 @@ export default {
       if(this.timeType.executeType == 1) {
         this.cron_express = ''
       }
+      let objData = {
+        crotabData:this.cron_express,
+        schulder_time:this.timeType.dateTimeVal,
+        retired_time:this.timeType.dateEndVal
+      }
+      this.timeType.timeTypeData = objData
       this.openTime = false;
     },
     saveJourney() {
+      if(this.propsData.data_socure == 'CLV-Data' || this.propsData.data_socure == '') {
+        if(this.ifDataExtension.period == undefined ||this.ifDataExtension.register == undefined) {
+          this.$message('请您选择必选项')
+          return false
+        }
+      }else if(this.propsData.data_socure == 'DMP-Data' || this.propsData.data_socure == '') {
+        if(this.ifDataExtension.crowd_id == '' || this.ifDataExtension.crowd_id == undefined) {
+          this.$message('请您选择必选项')
+          return false
+        }
+      }
+      if(this.currentTimeVal == '' ||
+        this.propsSms.ifSms.sms_channel_id == 'undefined' ||
+        this.propsSms.ifSms.id == 'undefined' || 
+        !this.ifDataExtension.brand ||
+        this.timeType.timestamp == '') {
+          this.$message('请您选择必选项')
+          return false
+      }
+      if(this.ifProDrag == true) {
+        if(this.propsTicket.ifPromotion.camp_coupon_id == undefined && this.propsTicket.ifPromotion.coupon_id == undefined) {
+          this.$message('请您选择必选项')
+          return false
+        }
+      }
       let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
       let data = {
         rule_name: this.currentTimeVal,
@@ -545,13 +640,15 @@ export default {
         coupon_id: this.propsTicket.ifPromotion.coupon_id || '',
         enter_first: this.ifDataExtension.newPeriod || '',
         purchase_week: this.ifDataExtension.newMbmber || '',
-        purchase_first: this.propsData.newBuy || '',
+        purchase_first: this.ifDataExtension.newBuy || '',
         cron_express: this.cron_express,
         command_name:this.propsData.data_socure,
         command_code: this.propsData.data_code,
         created_by:getSessionItem.user_info,
         crowd_id:this.ifDataExtension.crowd_id || '',
         crowd_name:this.ifDataExtension.crowd_name || '',
+        excluded_guide:this.ifDataExtension.excluded_guide || '',
+        reg_brand_id:this.ifDataExtension.reg_brand_id || ''
       };
       if (this.timeType.timestampEnd) {
         data.retired_time = this.timeType.timestampEnd
@@ -562,12 +659,38 @@ export default {
           this.systemId = res.data.data;
           this.saveSave = false
           this.saveUpdate = true
+          this.testDis = false
+          let saveData = {
+            sms_channel_id: this.propsSms.ifSms.sms_channel_id,
+            template_id: this.propsSms.ifSms.id,
+            brand_id: this.ifDataExtension.brand,
+            cycle_id: this.ifDataExtension.period,
+            vip_channel_name: this.ifDataExtension.register,
+            enter_first: this.ifDataExtension.newPeriod,
+            purchase_week: this.ifDataExtension.newMbmber,
+            purchase_first: this.ifDataExtension.newBuy,
+            excluded_guide:this.ifDataExtension.excluded_guide,
+            reg_brand_id:this.ifDataExtension.reg_brand_id,
+            crowd_id:this.ifDataExtension.crowd_id,
+            camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id,
+            coupon_id: this.propsTicket.ifPromotion.coupon_id,
+            cron_express:this.timeType.timeTypeData.crotabData,
+            schulder_time:this.timeType.timeTypeData.schulder_time,
+            retired_time:this.timeType.timeTypeData.retired_time
+          }
+          sessionStorage.setItem("saveData", JSON.stringify(saveData));
         } else {
           this.$message(res.data.msg);
         }
       });
     },
     updateJorney() {
+      if(this.ifProDrag == true) {
+        if(this.propsTicket.ifPromotion.camp_coupon_id == undefined && this.propsTicket.ifPromotion.coupon_id == undefined) {
+          this.$message('请您选择必选项')
+          return false
+        }
+      }
       let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
       let data = {
         id:this.systemId,
@@ -582,13 +705,15 @@ export default {
         coupon_id: this.propsTicket.ifPromotion.coupon_id || '',
         enter_first: this.ifDataExtension.newPeriod || '',
         purchase_week: this.ifDataExtension.newMbmber || '',
-        purchase_first: this.propsData.newBuy || '',
+        purchase_first: this.ifDataExtension.newBuy || '',
         cron_express: this.cron_express,
         command_name:this.propsData.data_socure,
         command_code:this.propsData.data_code,
         created_by:getSessionItem.user_info,
         crowd_id:this.ifDataExtension.crowd_id || '',
         crowd_name:this.ifDataExtension.crowd_name || '',
+        excluded_guide:this.ifDataExtension.excluded_guide || '',
+        reg_brand_id:this.ifDataExtension.reg_brand_id || ''
       };
       if (this.timeType.timestampEnd) {
         data.retired_time = this.timeType.timestampEnd
@@ -596,16 +721,32 @@ export default {
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
           this.$message(res.data.msg);
+          this.testDis = false
+          let saveData = {
+            sms_channel_id: this.propsSms.ifSms.sms_channel_id,
+            template_id: this.propsSms.ifSms.id,
+            brand_id: this.ifDataExtension.brand,
+            cycle_id: this.ifDataExtension.period,
+            vip_channel_name: this.ifDataExtension.register,
+            enter_first: this.ifDataExtension.newPeriod,
+            purchase_week: this.ifDataExtension.newMbmber,
+            purchase_first: this.ifDataExtension.newBuy,
+            excluded_guide:this.ifDataExtension.excluded_guide,
+            reg_brand_id:this.ifDataExtension.reg_brand_id,
+            crowd_id:this.ifDataExtension.crowd_id,
+            camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id,
+            coupon_id: this.propsTicket.ifPromotion.coupon_id,
+            cron_express:this.timeType.timeTypeData.crotabData,
+            schulder_time:this.timeType.timeTypeData.schulder_time,
+            retired_time:this.timeType.timeTypeData.retired_time
+          }
+          sessionStorage.setItem("saveData", JSON.stringify(saveData));
         } else {
           this.$message(res.data.msg);
         }
       });
     },
     testRunJourney(val) {
-      if(this.saveSave == true) {
-        this.$message("请您先Save")
-        return false
-      }
       if (val == "test") {
         this.statusTestRunVal = 1;
       } else if (val == "runing") {
@@ -618,7 +759,8 @@ export default {
       }).then(res => {
         if (res.data.code == 200) {
           if (val == "test") {
-            this.$message(res.data.msg);
+            this.$message('Processing');
+            this.runDis = false
           } else if (val == "runing") {
             this.saveUpdate = false
             this.saveTest = false
@@ -631,10 +773,14 @@ export default {
               this.$router.push("./");
             });
           }else if(val == "stop") {
-            this.$message(res.data.msg);
+            this.saveUpdate = true
+            this.saveTest = true
+            this.saveRunning = true
+            this.saveStop = false
+            this.$message('Stop');
           }
         } else {
-          this.$message(res.data.msg);
+          this.$message('Processing');
         }
       });
     },
@@ -677,7 +823,7 @@ export default {
       this.checkedDiscounts = discountsData;
     },
     dmpTables() {
-      this.$.get("http://bestsellerdmp.bestseller.com.cn/jbuilder-api/crowd/getCrowdList",{params:{crowdName:this.propsData.SearchDmp}}).then(res=>{
+      this.$.get("crowd/getCrowdList",{params:{crowdName:this.propsData.SearchDmp}}).then(res=>{
         this.propsData.dmpTable = res.data.data
       })
     },
@@ -709,19 +855,16 @@ export default {
           return false;
         }
       }else if(this.propsData.data_socure == 'DMP-Data') {
-        if(this.propsData.brandVal == "" || !this.ifDataExtension.crowd_id) {
+        if(this.propsData.brandVal == "" || !this.propsData.crowdDmp.crowd_id) {
           this.$message("请您填写必填项")
           return false
         }
       }
-      let item_data = this.propsData.brandList.filter(
-        item => item.id == this.propsData.brandVal
-      );
+      let item_data = this.propsData.brandList.filter(item => item.id == this.propsData.brandVal);
       if(this.propsData.data_socure == 'CLV-Data') {
         let registerVal = this.propsData.registerVal.join(",");
-        let item2_data = this.propsData.periodList.filter(
-          item => item.id == this.propsData.periodVal
-        );
+        let item2_data = this.propsData.periodList.filter(item => item.id == this.propsData.periodVal);
+        let regBrand = this.propsData.brandList.filter(item => item.id == this.propsData.regBrandVal);
         let objData = {
           brand: this.propsData.brandVal,
           period: this.propsData.periodVal,
@@ -731,11 +874,21 @@ export default {
           newPeriod: this.propsData.newPeriod,
           newBuy: this.propsData.newBuy,
           newMbmber: this.propsData.newMbmber,
+          excluded_guide: this.propsData.shoppings,
+          reg_brand_id: this.propsData.regBrandVal
         };
         this.ifDataExtension = objData;
+        if(this.propsData.regBrandVal != '') {
+          this.ifDataExtension.reg_brand_id_show = regBrand[0].brand_name
+        }
       }else if(this.propsData.data_socure == 'DMP-Data') {
-        this.ifDataExtension.brandShow = item_data[0].brand_name
-        this.ifDataExtension.brand = this.propsData.brandVal
+        let dmpObjData = {
+          brandShow:item_data[0].brand_name,
+          brand:this.propsData.brandVal,
+          crowd_id:this.propsData.crowdDmp.crowd_id,
+          crowd_name:this.propsData.crowdDmp.crowd_name
+        }
+        this.ifDataExtension = dmpObjData
       }
       this.openDataContent = false;
       this.openData = true;
@@ -849,24 +1002,24 @@ export default {
       this.dargSms = true;
       this.ifSmsDrag = true;
       this.$nextTick(() => {
-        this.$refs.refData2.style.position = "fixed";
+        this.$refs.refData2.style.position = "absolute";
         this.$refs.refData2.style.top = top + "px";
         this.$refs.refData2.style.left = left + "px";
-        this.$refs.refData2div.style.position = "fixed";
+        this.$refs.refData2div.style.position = "absolute";
         this.$refs.refData2div.style.top = top + 50 + "px";
         this.$refs.refData2div.style.left = left + 5 + "px";
 
-        this.$refs.refData3.style.position = "fixed";
+        this.$refs.refData3.style.position = "absolute";
         this.$refs.refData3.style.top = top + "px";
         this.$refs.refData3.style.left = left + 150 + "px";
-        this.$refs.refData3div.style.position = "fixed";
+        this.$refs.refData3div.style.position = "absolute";
         this.$refs.refData3div.style.top = top + 50 + "px";
         this.$refs.refData3div.style.left = left + 150 + 5 + "px";
 
-        this.$refs.refData4.style.position = "fixed";
+        this.$refs.refData4.style.position = "absolute";
         this.$refs.refData4.style.top = top + "px";
         this.$refs.refData4.style.left = left + 300 + "px";
-        this.$refs.refData4div.style.position = "fixed";
+        this.$refs.refData4div.style.position = "absolute";
         this.$refs.refData4div.style.top = top + 50 + "px";
         this.$refs.refData4div.style.left = left + 300 + 5 + "px";
         this.jsPlumb("data1", "return1");
@@ -883,10 +1036,10 @@ export default {
       this.showFirst = false;
       this.showLast = false;
       this.$nextTick(() => {
-        this.$refs.newData.style.position = "fixed";
+        this.$refs.newData.style.position = "absolute";
         this.$refs.newData.style.top = top + "px";
         this.$refs.newData.style.left = left + "px";
-        this.$refs.newrefDatadiv.style.position = "fixed";
+        this.$refs.newrefDatadiv.style.position = "absolute";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
         this.$refs.newrefDatadiv.style.left = left + -5 + "px";
       });
@@ -896,10 +1049,10 @@ export default {
       this.propsData.data_code = code
       this.ifDrag = true;
       this.$nextTick(() => {
-        this.$refs.refData1.style.position = "fixed";
+        this.$refs.refData1.style.position = "absolute";
         this.$refs.refData1.style.top = top + "px";
         this.$refs.refData1.style.left = left + "px";
-        this.$refs.refData1div.style.position = "fixed";
+        this.$refs.refData1div.style.position = "absolute";
         this.$refs.refData1div.style.top = top + 50 + "px";
         this.$refs.refData1div.style.left = left + -8 + "px";
         this.dragLeft = left;
@@ -912,33 +1065,33 @@ export default {
       this.showFirst = false;
       this.showFirst1 = true;
       this.$nextTick(() => {
-        this.$refs.newData.style.position = "fixed";
+        this.$refs.newData.style.position = "absolute";
         this.$refs.newData.style.top = top + "px";
-        this.$refs.newData.style.left = left + 80 + "px";
-        this.$refs.newrefDatadiv.style.position = "fixed";
+        this.$refs.newData.style.left = left + 50 + "px";
+        this.$refs.newrefDatadiv.style.position = "absolute";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + 75 + "px";
+        this.$refs.newrefDatadiv.style.left = left + 45 + "px";
 
-        this.$refs.refData2.style.position = "fixed";
+        this.$refs.refData2.style.position = "absolute";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 230 + "px";
-        this.$refs.refData2div.style.position = "fixed";
+        this.$refs.refData2.style.left = left + 170 + "px";
+        this.$refs.refData2div.style.position = "absolute";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 235 + "px";
+        this.$refs.refData2div.style.left = left + 175 + "px";
 
-        this.$refs.refData3.style.position = "fixed";
+        this.$refs.refData3.style.position = "absolute";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 380 + "px";
-        this.$refs.refData3div.style.position = "fixed";
+        this.$refs.refData3.style.left = left + 295 + "px";
+        this.$refs.refData3div.style.position = "absolute";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 380 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 300 + "px";
 
-        this.$refs.refData4.style.position = "fixed";
+        this.$refs.refData4.style.position = "absolute";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 530 + "px";
-        this.$refs.refData4div.style.position = "fixed";
+        this.$refs.refData4.style.left = left + 430 + "px";
+        this.$refs.refData4div.style.position = "absolute";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 530 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 435 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
@@ -959,33 +1112,33 @@ export default {
       this.showSecend = false;
       this.showLast = true;
       this.$nextTick(() => {
-        this.$refs.newData.style.position = "fixed";
+        this.$refs.newData.style.position = "absolute";
         this.$refs.newData.style.top = top + "px";
-        this.$refs.newData.style.left = left + -20 + "px";
-        this.$refs.newrefDatadiv.style.position = "fixed";
+        this.$refs.newData.style.left = left + -80 + "px";
+        this.$refs.newrefDatadiv.style.position = "absolute";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + -25 + "px";
+        this.$refs.newrefDatadiv.style.left = left + -85 + "px";
 
-        this.$refs.refData2.style.position = "fixed";
+        this.$refs.refData2.style.position = "absolute";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 150 + "px";
-        this.$refs.refData2div.style.position = "fixed";
+        this.$refs.refData2.style.left = left + 60 + "px";
+        this.$refs.refData2div.style.position = "absolute";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 155 + "px";
+        this.$refs.refData2div.style.left = left + 65 + "px";
 
-        this.$refs.refData3.style.position = "fixed";
+        this.$refs.refData3.style.position = "absolute";
         this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 300 + "px";
-        this.$refs.refData3div.style.position = "fixed";
+        this.$refs.refData3.style.left = left + 180 + "px";
+        this.$refs.refData3div.style.position = "absolute";
         this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 300 + 5 + "px";
+        this.$refs.refData3div.style.left = left + 185 + "px";
 
-        this.$refs.refData4.style.position = "fixed";
+        this.$refs.refData4.style.position = "absolute";
         this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 450 + "px";
-        this.$refs.refData4div.style.position = "fixed";
+        this.$refs.refData4.style.left = left + 320 + "px";
+        this.$refs.refData4div.style.position = "absolute";
         this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 450 + 5 + "px";
+        this.$refs.refData4div.style.left = left + 325 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
@@ -1015,6 +1168,7 @@ export default {
       }
     },
     sms() {
+      this.propsSms.couponShow = this.ifProDrag
       if(this.propsData.brandVal == "") {
         this.$message({
           showClose: true,
@@ -1029,6 +1183,22 @@ export default {
     },
     selectTime() {
       this.openTime = true;
+      if(this.statusTestRunVal == 2) {
+        this.ifDisabled = true
+        this.ifActiveDis = true
+      }else{
+        this.ifActiveDis = false
+        this.timeCarryOnce(this.timeType.executeType)
+      }
+    },
+    timeCarryOnce(val) {
+      if(val != '') {
+        if(val == 1) {
+          this.ifDisabled = true
+        }else{
+          this.ifDisabled = false
+        }
+      }
     },
     sltDataContent(val) {
       this.openData = false;
@@ -1040,9 +1210,9 @@ export default {
         if(!val.id) {
           return false
         }
-        this.ifDataExtension = {}
-        this.ifDataExtension.crowd_id = val.id
-        this.ifDataExtension.crowd_name = val.name
+        this.propsData.crowdDmp = {}
+        this.propsData.crowdDmp.crowd_id = val.id
+        this.propsData.crowdDmp.crowd_name = val.name
       }
     },
     sltPromotion(val) {
@@ -1062,37 +1232,34 @@ export default {
       } else if (val.name == "saveMsg") {
         this.saveMessage();
       } else if (val.name == "inputBlur") {
-        this.inputBlur(val.value, val.id);
+        this.inputBlur(val.value, val.id , val.templt);
       } else if (val.name = "tableIndex") {
-          if(val.id) {
-            if (this.propsSms.ifSms == '') {
-              this.propsSms.ifSms = {}
-            }
-            this.propsSms.ifSms.contentMag = val.document_text
-            this.propsSms.ifSms.id = val.id
+        if(val.id) {
+          if (this.propsSms.ifSmsDmp == '') {
+            this.propsSms.ifSmsDmp = {}
           }
-
+          this.propsSms.ifSmsDmp.template_text = val.document_text
+          this.propsSms.ifSmsDmp.id = val.id
+        }
       }
     },
-    inputBlur(val, id) {
+    inputBlur(val, id,templt) {
       if (val == "") {
         this.$message("请您输入文案内容");
         return false;
       }
       let upDate = {
         brand_id: this.ifDataExtension.brand,
+        template_name:templt,
         document_text: val,
         id: id
       };
       this.$.post("template/update", upDate).then(res => {
         if (res.data.code == 200) {
+          this.$message(res.data.msg)
           this.smsLists();
         } else {
-          this.$message({
-            showClose: true,
-            message: res.data.msg,
-            type: "warning"
-          });
+          this.$message(res.data.msg)
         }
       });
     },
@@ -1102,57 +1269,77 @@ export default {
         return false
       }
       let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
-      let objData = {
-        contentMag: this.propsSms.ifSms.contentMag,
-        sms_channel_id_show:this.propsSms.sendSmsVal,
-        sms_channel_id: sms_data[0].id,
-        id:this.propsSms.ifSms.id
-      };
-      if (this.propsSms.editMsg == "") {
-        this.$message({
-          showClose: true,
-          message: "请您新建文案内容",
-          type: "warning"
-        });
-        return false;
-      }
       if (this.propsSms.dataSelected == 2) {
-        let doc_text = this.propsSms.smsTable.filter(item => item.id == this.propsSms.ifSms.id)
-        objData.contentMag = doc_text[0].document_text
+        if(this.propsSms.ifSmsDmp.template_text == undefined) {
+          this.$message('请填写必填项')
+          return false
+        }
+        let objData = {
+          template_text: this.propsSms.ifSmsDmp.template_text,
+          sms_channel_content:this.propsSms.sendSmsVal,
+          sms_channel_id: sms_data[0].id,
+          id:this.propsSms.ifSmsDmp.id
+        }
         this.propsSms.ifSms = objData;
         this.openSmsContent = false;
         this.openSms = true;
       } else if (this.propsSms.dataSelected == 3) {
-         if(!this.propsSms.editMsg) {
+        if(!this.propsSms.editTitleVal) {
+          this.$message('请输入title')
+          return false
+        }
+        if(!this.propsSms.editMsg) {
           this.$message('模板内容不可以为空')
           return false
         }
-        let insertData = {
-          brand_id: this.ifDataExtension.brand,
-          document_text: this.propsSms.editMsg,
-          uuid:(new Date()).valueOf()
-        };
-        this.$.post("template/insert", insertData).then(res => {
-          if (res.data.code == 200) {
-            this.smsLists();
-            let objData = {
-              contentMag: this.propsSms.editMsg,
-              sms_channel_id_show:this.propsSms.sendSmsVal,
-              sms_channel_id: sms_data[0].id,
-              id:res.data.data
-            };
-            this.propsSms.ifSms = objData;
-            this.openSmsContent = false;
-            this.openSms = true;
-          } else {
-            this.$message({
-              showClose: true,
-              message: res.data.msg,
-              type: "warning"
-            });
-          }
-        });
+        let reg = this.propsSms.editMsg
+        if(reg.indexOf(" $XXX$ ")==-1 && this.propsSms.couponShow == true) {
+          this.$message('模板内容格式不正确')
+          return false
+        }else if(reg.indexOf(" $XXX$ ")!=-1 && this.propsSms.couponShow == false) {
+          this.$confirm('文案内容中含有 $XXX$ 是否继续？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.smsCreatedMessage()
+          }).catch(() => {
+            return false
+          })
+          return false
+        }
+        this.smsCreatedMessage()
       }
+    },
+    smsCreatedMessage() {
+      let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
+      let insertData = {
+        brand_id: this.ifDataExtension.brand,
+        template_name:this.propsSms.editTitleVal,
+        document_text: this.propsSms.editMsg,
+        uuid:(new Date()).valueOf()
+      }
+      this.$.post("template/insert", insertData).then(res => {
+        if (res.data.code == 200) {
+          this.$message(res.data.msg)
+          this.smsLists();
+          let objDataThree = {
+            template_text: this.propsSms.editMsg,
+            sms_channel_content:this.propsSms.sendSmsVal,
+            sms_channel_id: sms_data[0].id,
+            id:res.data.data
+          };
+          this.propsSms.ifSms = objDataThree;
+          this.openSmsContent = false;
+          this.openSms = true;
+        } else {
+          this.$message({
+            showClose: true,
+            message: res.data.msg,
+            type: "warning"
+          });
+        }
+      });
     },
     dragInit() {
       let minleft = $(".imaginary-circle").offset().left;
@@ -1170,7 +1357,6 @@ export default {
       $(".marketing-drag").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
-          console.log(ui.draggable[0].slot)
           if (
             minleft <= ui.offset.left &&
             ui.offset.left <= minleft + maxleft &&
@@ -1342,6 +1528,10 @@ export default {
         .pd-btn {
           padding: 6px 12px;
           background-color: #0070d2;
+          border: none;
+        }
+        .disBtn{
+          padding: 6px 12px;
           border: none;
         }
         .pd-back {

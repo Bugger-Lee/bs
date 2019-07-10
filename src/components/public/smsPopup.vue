@@ -12,7 +12,7 @@
           <span class="redStar">*</span>Message Definition
         </p>
         <div class="data-content-c" v-if="propsSms.ifSms == ''">
-          <img src="../../../../assets/img/noneData2.png" style="height:240px;">
+          <img src="../../assets/img/noneData2.png" style="height:240px;">
           <p class="c-explain-one">Let's get started!</p>
           <p>Select or create a message</p>
           <el-button
@@ -24,11 +24,11 @@
         <div v-if="propsSms.ifSms != ''" class="data-content-apply" style="min-height:100px;">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">Message Definition</span>
-            <el-button class="bth" @click="clickPopup({name:'openNext'})">Edit</el-button>
+            <el-button class="bth" @click="clickPopup({name:'openNext'})" v-if="this.statusTestRunVal != 2">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P class="pttb"><span>Content : {{propsSms.ifSms.template_text}}</span><span></span></P>
-            <P class="pttb"><span>Sms Channel : {{propsSms.ifSms.sms_channel_content}}</span><span></span></P>
+            <P class="pttb" v-if="propsSms.ifSms.template_text"><span>Content : {{propsSms.ifSms.template_text}}</span><span></span></P>
+            <P class="pttb" v-if="propsSms.ifSms.sms_channel_content"><span>Sms Channel : {{propsSms.ifSms.sms_channel_content}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -88,7 +88,7 @@
                   <el-col :span="12">
                     <el-input
                       class="select-msg-search-ipt"
-                      placeholder="Search by Template"
+                      placeholder="Search by Title"
                       prefix-icon="el-icon-search"
                       @keyup.enter.native="searchSmsList"
                       v-model="propsSms.SearchSms">
@@ -97,7 +97,7 @@
                   <el-col :span="12">
                     <div class="ml10">
                       <span class="redStar">*</span>
-                      <span>Sms Channel</span>
+                      <span>SMS Channel</span>
                       <el-select v-model="propsSms.sendSmsVal" clearable placeholder="Pls Sms Channel" style="display:inline-block;"  class="select-option-classify">
                         <el-option
                           v-for="item in propsSms.sendSmsList"
@@ -110,16 +110,16 @@
                 </div>
                 <div class="select-msg-table">
                   <el-table ref='singleTable' :data="smsTable" style="width: 100%"  highlight-current-row  @current-change="tableIndex" height="220" setCurrentRow>
-                    <el-table-column prop="template_name" label="Template" show-overflow-tooltip></el-table-column>
-                    <!-- <el-table-column prop="cycle_type" label="Period" show-overflow-tooltip></el-table-column> -->
+                    <el-table-column prop="template_name" label="Title" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="brand_name" label="Brand" show-overflow-tooltip> </el-table-column>
                     <el-table-column prop="document_text" label="Sms Content" show-overflow-tooltip>
                       <template slot-scope="scope">
                         <span v-if="scope.$index != change_index" @click="clickText(scope.$index)">{{scope.row.document_text}}</span>
-                        <el-input v-else :placeholder="scope.row.document_text" v-model="input_text" @blur="clickPopup({name:'inputBlur',value:input_text,id:scope.row.id})"></el-input>
+                        <el-input v-else :placeholder="scope.row.document_text" v-model="input_text" @blur="clickPopup({name:'inputBlur',value:input_text,id:scope.row.id,templt:scope.row.template_name})"></el-input>
                       </template>  
                     </el-table-column>
                     <el-table-column prop="created_time" label="Created Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
+                    <el-table-column prop="created_by" label="Creator" show-overflow-tooltip></el-table-column>
                   </el-table>
                 </div>
                 <div class="select-msg-page">
@@ -151,9 +151,32 @@
           <div class="sms-edit">
             <el-col :span="8" class="sms-edit-l">
               <p class="sms-edit-l-tit">CONTENT</p>
+              <div style="margin-top:30px;">
+                <span class="redStar">*</span>
+                <span>Title</span>
+                <el-input
+                    style="width:76%;"
+                    placeholder="Pls Edit Title"
+                    v-model="propsSms.editTitleVal">
+                </el-input>
+              </div>
+              <div class="mt10">
+                <span class="redStar">*</span>
+                <span>SMS Channel</span>
+                <el-select v-model="propsSms.sendSmsVal" clearable placeholder="Pls Sms Channel" style="display:inline-block;"  class="select-option-classify">
+                  <el-option
+                    v-for="item in propsSms.sendSmsList"
+                    :key="item.id"
+                    :value="item.channel_content"
+                  ></el-option>
+                </el-select>
+              </div>
               <div class="sms-edit-l-content">
-                <p><i class="el-icon-edit"></i>Edit message template</p>
-                <textarea rows="6" placeholder="请编辑短信模板" v-model="propsSms.editMsg">
+                <p><span class="redStar">*</span><i class="el-icon-edit"></i>Edit message template</p>
+                <textarea v-if="propsSms.couponShow == true" rows="6" placeholder="Edit message template (塞劵文案格式包含 $XXX$ )" v-model="propsSms.editMsg">
+
+                </textarea>
+                <textarea v-else rows="6" placeholder="Edit message template(普通文案)" v-model="propsSms.editMsg">
 
                 </textarea>
               </div>
@@ -241,7 +264,7 @@ export default {
       return result[this.currentPage-1]
     }
   },
-  props: ["openData", "openDataContent","propsSms"],
+  props: ["openData", "openDataContent","propsSms","statusTestRunVal"],
   methods: {
     clickPopup(value) {
       this.$emit("sltSmsContent", value);
@@ -250,7 +273,9 @@ export default {
         this.input_text = ''
       } else if( value.name == 'openNext') {
         this.showChange = true
-        this.setRow()
+        if(this.smsTable) {
+          this.setRow()
+        }
       }
     },
     setRow() {
@@ -293,7 +318,9 @@ export default {
     // 分页
     handleSizeChange(val) {
       this.currentPage = val
-      this.setRow()
+      if(this.smsTable) {
+        this.setRow()
+      }
     }
   }
 };

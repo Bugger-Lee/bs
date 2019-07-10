@@ -7,15 +7,16 @@
           <div class="mb20 mt20">
             <span>Execute Mode ： </span>
             <el-tooltip class="item" effect="dark" content="单次执行开始时间即激活时间" placement="top-start">
-              <el-radio v-model="timeType.executeType" :label="1" :change = "carryOnce(timeType.executeType)">One-Time</el-radio>
+              <el-radio v-model="timeType.executeType" :disabled="ifActiveDis" :label="1" @change = "carryOnce(timeType.executeType)">One-Time</el-radio>
             </el-tooltip>
-            <el-radio v-model="timeType.executeType" :label="2" :change = "carryOnce(timeType.executeType)">On Schedule</el-radio>
+            <el-radio v-model="timeType.executeType" :disabled="ifActiveDis" :label="2" @change = "carryOnce(timeType.executeType)">On Schedule</el-radio>
           </div>
           <div class="mb20">
             <span>Active Time ： </span>
             <el-date-picker
               style="width:32%;"
               v-model="timeType.dateTimeVal"
+              :disabled="ifActiveDis"
               size="small"
               type="datetime"
               :picker-options="{
@@ -30,7 +31,7 @@
               v-model="timeType.dateEndVal"
               size="small"
               type="datetime"
-              :disabled = ifDisabled
+              :disabled = "ifDisabled"
               :picker-options="{
                 selectableRange: selectRange,
                 disabledDate:disabledDate
@@ -57,7 +58,7 @@
               </el-option>
             </el-select>
             <el-date-picker
-              :disabled = ifDisabled
+              :disabled = "ifDisabled"
               v-if="this.ifShowTime == 'months'"
               size="small"
               style="width:26%;"
@@ -66,7 +67,7 @@
               placeholder="Pls Month">
             </el-date-picker>
             <el-time-picker
-              :disabled = ifDisabled
+              :disabled = "ifDisabled"
               size="small"
               format="HH:mm"
               style="width:26%;"
@@ -85,19 +86,13 @@ export default {
   data() {
     return{
       ifShowTime:"Days",
-      ifDisabled:false,
       disabledDate(time) {
         return time.getTime() < Date.now();
       },
       selectRange: new Date().getHours()+':'+new Date().getMinutes()+':00 - 23:59:00'
     }
   },
-  created() {
-    if(this.timeType.executeType == 1) {
-      this.ifDisabled = true
-    }
-  },
-  props:["timeType"],
+  props:["timeType","ifDisabled","ifActiveDis"],
   methods:{
     timeChange(val) {
       if(val == "Days") {
@@ -113,13 +108,7 @@ export default {
       }
     },
     carryOnce(val) {
-      if(val != '') {
-        if(val == 1) {
-          this.ifDisabled = true
-        }else{
-          this.ifDisabled = false
-        }
-      }
+      this.$emit('timeCarryOnce',val)
     }
   }
 };

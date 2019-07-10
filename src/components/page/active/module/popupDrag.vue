@@ -24,16 +24,18 @@
         <div v-if="ifDataExtension != ''" class="data-content-apply">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">DATA EXTENSION PROPERTIES</span>
-            <el-button class="bth" @click="backlevel('edit')">Edit</el-button>
+            <el-button class="bth" @click="backlevel('edit')" v-if="this.statusTestRunVal != 2">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
             <P class="pttb" v-if="ifDataExtension.brandShow"><span>Brands : {{ifDataExtension.brandShow}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.periodShow"><span>Periods : {{ifDataExtension.periodShow}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.crowd_name"><span>Crowd Name : {{ifDataExtension.crowd_name}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.register"><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.reg_brand_id_show"><span>Registered Brands : {{ifDataExtension.reg_brand_id_show}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.newPeriod"><span>New Entry : {{ifDataExtension.newPeriod}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.newBuy"><span>First Purchase : {{ifDataExtension.newBuy}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.newMbmber"><span>No Purchase (within a week) : {{ifDataExtension.newMbmber}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.excluded_guide"><span>Exclude Staff : {{ifDataExtension.excluded_guide}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -91,8 +93,8 @@
               <el-col :span="12">
                 <div class="ml10">
                   <span class="redStar">*</span>
-                  <span>Select Brands</span>
-                  <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brands" class="select-option-classify">
+                  <span>Select Brand</span>&nbsp;
+                  <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brand" class="select-option-classify">
                     <el-option
                       v-for="item in propsData.brandList"
                       :key="item.id"
@@ -103,8 +105,8 @@
                 </div>
                 <div class="ml10">
                   <span class="redStar">*</span>
-                  <span>Select Periods</span>
-                  <el-select v-model="propsData.periodVal"  clearable placeholder="Pls select periods" class="select-option-classify">
+                  <span>Select Period</span>
+                  <el-select v-model="propsData.periodVal"  clearable placeholder="Pls select period" class="select-option-classify">
                     <el-option
                       @click.native="periodChange()"
                       v-for="item in propsData.periodList"
@@ -125,26 +127,42 @@
                     ></el-option>
                   </el-select>
                 </div>
+                <div class="ml10">
+                  <span class="ml15">&nbsp;Registered Brand</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <el-select v-model="propsData.regBrandVal" clearable placeholder="Pls select registered brand" class="select-option-classify">
+                    <el-option
+                      v-for="item in propsData.brandList"
+                      :key="item.id"
+                      :label="item.brand_name"
+                      :value="item.id"
+                    ></el-option>
+                  </el-select>
+                </div>
               </el-col>
               <el-col :span="12">
                 <div class="select-option-ipt" v-if="ifNewPeriod">
-                  <span class="mr15">New Entry:</span>
+                  <span class="mr15">New Entry:</span>&nbsp;&nbsp;&nbsp;
                   <el-radio v-model="propsData.newPeriod" label="Y">Yes</el-radio>
                   <el-radio v-model="propsData.newPeriod" label="N">No</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewBuy">
-                  <span class="mr15">First Purchase:</span>
+                  <span class="mr05">First Purchase:</span>
                   <el-radio v-model="propsData.newBuy" label="Y">Yes</el-radio>
                   <el-radio v-model="propsData.newBuy" label="N">No</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewMbmber">
-                  <span class="mr15">No Purchase</span>  
+                  <span class="mr15">No Purchase:</span>
                   <el-radio v-model="propsData.newMbmber" label="Y">Yes</el-radio>
                   <el-radio v-model="propsData.newMbmber" label="N">No</el-radio>
                 </div>
                 <p v-if="ifNewMbmber">
                   <span class="mr15" style="color:red;font-size:10px;">(within a week)</span>  
                 </p>
+                <div class="select-option-ipt">
+                  <span class="mr15">Exclude Staff:</span>
+                  <el-radio label="Y" v-model="propsData.shoppings">Yes</el-radio>
+                  <el-radio label="N" v-model="propsData.shoppings">No</el-radio>
+                </div>
               </el-col>
             </div>
           </el-col>
@@ -164,8 +182,8 @@
                 <el-col :span="12">
                   <div class="ml10">
                     <span class="redStar">*</span>
-                    <span>Select Brands</span>
-                    <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brands" class="select-option-classify">
+                    <span>Select Brand</span>
+                    <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brand" class="select-option-classify">
                       <el-option
                         v-for="item in propsData.brandList"
                         :key="item.id"
@@ -233,7 +251,7 @@ export default {
       currentPage:1
     };
   },
-  props: ["openData", "openDataContent","propsData","ifDataExtension"],
+  props: ["openData", "openDataContent","propsData","ifDataExtension","statusTestRunVal"],
   computed: {
     openDataProps: {
       get() {
@@ -297,6 +315,7 @@ export default {
       }else{
         this.ifNewBuy = true
         this.ifNewMbmber = false
+        this.propsData.newMbmber = ''
       }
     },
     handleSizeChange(val) {

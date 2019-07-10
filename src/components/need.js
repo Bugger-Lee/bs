@@ -25,7 +25,6 @@ const dateChangeCron = (dates) =>{
     } else if (loopType === 'Months') { // 1-31
         cron = 0 + '' + s + ' ' + m + ' ' + h + ' ' + mo.join(',') + ' * ?'
     }
-    console.log(cron)
     return cron 
 }
 // 将crontab表达式转化为定时任务
@@ -107,7 +106,7 @@ const formatDate = (row, column, created_time ,index) =>{
     let h = date.getHours() < 10 ? '0' + date.getHours() + ':' : date.getHours() + ':';
     let m = date.getMinutes()  < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':';
     let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-    return Y + M + D ;
+    return Y + M + D + h + m + s;
 }
 Vue.prototype.dateChangeCron = dateChangeCron
 Vue.prototype.cronChangeDate = cronChangeDate
