@@ -1296,35 +1296,50 @@ export default {
         if(reg.indexOf(" $XXX$ ")==-1 && this.propsSms.couponShow == true) {
           this.$message('模板内容格式不正确')
           return false
+        }else if(reg.indexOf(" $XXX$ ")!=-1 && this.propsSms.couponShow == false) {
+          this.$confirm('文案内容中含有 $XXX$ 是否继续？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.smsCreatedMessage()
+          }).catch(() => {
+            return false
+          })
+          return false
         }
-        let insertData = {
-          brand_id: this.ifDataExtension.brand,
-          template_name:this.propsSms.editTitleVal,
-          document_text: this.propsSms.editMsg,
-          uuid:(new Date()).valueOf()
-        };
-        this.$.post("template/insert", insertData).then(res => {
-          if (res.data.code == 200) {
-            this.$message(res.data.msg)
-            this.smsLists();
-            let objDataThree = {
-              template_text: this.propsSms.editMsg,
-              sms_channel_content:this.propsSms.sendSmsVal,
-              sms_channel_id: sms_data[0].id,
-              id:res.data.data
-            };
-            this.propsSms.ifSms = objDataThree;
-            this.openSmsContent = false;
-            this.openSms = true;
-          } else {
-            this.$message({
-              showClose: true,
-              message: res.data.msg,
-              type: "warning"
-            });
-          }
-        });
+        this.smsCreatedMessage()
       }
+    },
+    smsCreatedMessage() {
+      let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
+      let insertData = {
+        brand_id: this.ifDataExtension.brand,
+        template_name:this.propsSms.editTitleVal,
+        document_text: this.propsSms.editMsg,
+        uuid:(new Date()).valueOf()
+      }
+      this.$.post("template/insert", insertData).then(res => {
+        if (res.data.code == 200) {
+          this.$message(res.data.msg)
+          this.smsLists();
+          let objDataThree = {
+            template_text: this.propsSms.editMsg,
+            sms_channel_content:this.propsSms.sendSmsVal,
+            sms_channel_id: sms_data[0].id,
+            id:res.data.data
+          };
+          this.propsSms.ifSms = objDataThree;
+          this.openSmsContent = false;
+          this.openSms = true;
+        } else {
+          this.$message({
+            showClose: true,
+            message: res.data.msg,
+            type: "warning"
+          });
+        }
+      });
     },
     dragInit() {
       let minleft = $(".imaginary-circle").offset().left;
