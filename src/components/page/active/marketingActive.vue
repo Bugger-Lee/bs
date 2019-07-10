@@ -566,9 +566,9 @@ export default {
       }
       this.timeType.timeTypeData = objData
       if(this.saveUpdate == true) {
-        if(this.timeType.timeTypeData.crotabData != this.getSaveDataDetail.saveDataDetail.cron_express ||
-          parseInt(new Date(this.timeType.timeTypeData.schulder_time).getTime()) != parseInt(new Date(this.getSaveData.saveData.schulder_time).getTime()) ||
-          parseInt(new Date(this.timeType.timeTypeData.retired_time).getTime()) != parseInt(new Date(this.getSaveData.saveData.retired_time).getTime())) {
+        if(this.timeType.timeTypeData.crotabData != this.getSaveData.cron_express ||
+          parseInt(new Date(this.timeType.timeTypeData.schulder_time).getTime()) != parseInt(new Date(this.getSaveData.schulder_time).getTime()) ||
+          parseInt(new Date(this.timeType.timeTypeData.retired_time).getTime()) != parseInt(new Date(this.getSaveData.retired_time).getTime())) {
             this.testDis = true
             this.runDis = true
         }
@@ -782,8 +782,8 @@ export default {
       }
       this.propsTicket.ifPromotion = obj
       if(this.saveUpdate == true) {
-        if(this.propsTicket.ifPromotion.camp_coupon_id != this.getSaveData.saveData.camp_coupon_id ||
-        this.propsTicket.ifPromotion.coupon_id != this.getSaveData.saveData.coupon_id) {
+        if(this.propsTicket.ifPromotion.camp_coupon_id != this.getSaveData.camp_coupon_id ||
+        this.propsTicket.ifPromotion.coupon_id != this.getSaveData.coupon_id) {
           this.testDis = true
           this.runDis = true
         }
@@ -838,19 +838,18 @@ export default {
         this.ifDataExtension = dmpObjData
       }
       if(this.saveUpdate == true) {
-        if(this.ifDataExtension.brand != this.getSaveData.saveData.brand_id || 
-        this.ifDataExtension.register != this.getSaveData.saveData.vip_channel_name ||
-        this.ifDataExtension.crowd_name != this.getSaveData.saveData.crowd_name ||
-        this.ifDataExtension.period != this.getSaveData.saveData.cycle_id ||
-        this.ifDataExtension.newPeriod != this.getSaveData.saveData.enter_first ||
-        this.ifDataExtension.newBuy != this.getSaveData.saveData.purchase_first ||
-        this.ifDataExtension.newMbmber != this.getSaveData.saveData.purchase_week ||
-        this.ifDataExtension.reg_brand_id != this.getSaveData.saveData.reg_brand_id ||
-        this.ifDataExtension.excluded_guide != this.getSaveData.saveData.excluded_guide){
+        if(this.ifDataExtension.brand != this.getSaveData.brand_id || 
+        this.ifDataExtension.register != this.getSaveData.vip_channel_name ||
+        this.ifDataExtension.crowd_name != this.getSaveData.crowd_name ||
+        this.ifDataExtension.period != this.getSaveData.cycle_id ||
+        this.ifDataExtension.newPeriod != this.getSaveData.enter_first ||
+        this.ifDataExtension.newBuy != this.getSaveData.purchase_first ||
+        this.ifDataExtension.newMbmber != this.getSaveData.purchase_week ||
+        this.ifDataExtension.reg_brand_id != this.getSaveData.reg_brand_id ||
+        this.ifDataExtension.excluded_guide != this.getSaveData.excluded_guide){
           this.testDis = true
           this.runDis = true
         }
-      console.log(this.ifDataExtension.crowd_name,this.getSaveData.saveData.crowd_name)
       }
       this.openDataContent = false;
       this.openData = true;
@@ -1273,8 +1272,8 @@ export default {
         this.smsCreatedMessage()
       }
       if(this.saveUpdate == true) {
-        if(this.propsSms.ifSms.id != this.getSaveData.saveData.template_id || 
-        this.propsSms.ifSms.sms_channel_id != this.getSaveData.saveData.sms_channel_id) {
+        if(this.propsSms.ifSms.id != this.getSaveData.template_id || 
+        this.propsSms.ifSms.sms_channel_id != this.getSaveData.sms_channel_id) {
           this.testDis = true
           this.runDis = true
         }

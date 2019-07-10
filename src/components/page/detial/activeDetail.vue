@@ -641,6 +641,12 @@ export default {
               this.detailRun = false
               this.detailTest = false
               this.detailStop = true
+              this.$confirm("您已经成功执行此操作,是否跳转到首页?", "提示", {
+              confirmButtonText: "是",
+              cancelButtonText: "否"
+              }).then(() => {
+                this.$router.push("./");
+              });
             }else if(this.statusTestRunVal == 1) {
               this.runDis = false
             }
