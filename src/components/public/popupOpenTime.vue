@@ -83,7 +83,7 @@ export default {
       startTime: {
         disabledDate: time => {
           let endDateVal = this.timeType.dateEndVal
-          let nowDate = new Date().getTime()-8.64e7
+          let nowDate = new Date().getTime()
           if (endDateVal) {
             return time.getTime() > new Date(endDateVal).getTime() || time.getTime() < nowDate
           }else if(endDateVal == new Date().getTime()) {
