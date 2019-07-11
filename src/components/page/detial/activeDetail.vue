@@ -15,7 +15,7 @@
               <p>{{this.userNameTie}}</p>
             </div>
           </div>
-          <span class="l-status" v-if="this.propsData.defaultData.task_status">{{this.propsData.defaultData.task_status}}</span>
+          <span class="l-status" v-if="this.taskStatusMsg">{{this.taskStatusMsg}}</span>
         </el-col>
         <el-col :span="12" class="marketing-header-r">
           <el-button-group class="mr05">
@@ -345,7 +345,8 @@ export default {
       userNameTie:'',
       ifDisabled:false,
       ifActiveDis:false,
-      getSaveDataDetail:''
+      getSaveDataDetail:'',
+      taskStatusMsg:''
     };
   },
   components: {
@@ -362,6 +363,7 @@ export default {
     this.sendSmsLists()
     this.sourcesList()
     this.dmpTables()
+    this.taskStatus()
   },
   methods: {
     doneTime() {
@@ -559,6 +561,11 @@ export default {
         }
       });
     },
+    taskStatus() {
+      this.$.get("rule/getTaskStatus?id="+this.$route.query.id).then(res=>{
+        this.taskStatusMsg = res.data.data
+      })
+    },
     popupTicket() {
       this.openTicket = true
       this.discountLists()
@@ -629,6 +636,7 @@ export default {
           if(res.data.code == 200) {
             if(this.statusTestRunVal == 1 || this.statusTestRunVal == 2) {
               this.$message('Processing')
+              this.taskStatus()
             }
             if(this.statusTestRunVal == 3) {
               this.$message('Stop')
@@ -890,6 +898,11 @@ export default {
           this.ifDataExtension.reg_brand_id = regBrand[0].id
         }
       }else if(this.propsData.defaultData.command_name == 'DMP-Data') {
+        if(this.propsData.crowdDmp == '') {
+          this.propsData.crowdDmp = {}
+          this.propsData.crowdDmp.crowd_id = this.ifDataExtension.crowd_id
+          this.propsData.crowdDmp.crowd_name = this.ifDataExtension.crowd_name
+        }
         let objDataDmp = {
           brand_id:item_data[0].id,
           brand_name:this.propsData.brandVal,
@@ -943,6 +956,11 @@ export default {
       } else if (val.name == 'openNext') {
         this.openSmsContent = true
       }else if(val.name == 'saveMsg') {
+        if (this.propsSms.ifSmsDmp == '') {
+          this.propsSms.ifSmsDmp = {}
+          this.propsSms.ifSmsDmp.template_text = this.propsSms.ifSms.template_text,
+          this.propsSms.ifSmsDmp.template_id = this.propsSms.ifSms.template_id
+        }
         this.saveMessage()
       }else if(val.name == 'inputBlur') {
         this.inputBlur(val.value,val.id,val.templt)

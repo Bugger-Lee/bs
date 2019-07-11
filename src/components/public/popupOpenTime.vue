@@ -19,10 +19,7 @@
               :disabled="ifActiveDis"
               size="small"
               type="datetime"
-              :picker-options="{
-                selectableRange: selectRange,
-                disabledDate:disabledDate
-              }"
+              :picker-options="startTime"
               placeholder="Pls Active Time">
             </el-date-picker>
             <span class="ml10">End Time ： </span>
@@ -32,10 +29,7 @@
               size="small"
               type="datetime"
               :disabled = "ifDisabled"
-              :picker-options="{
-                selectableRange: selectRange,
-                disabledDate:disabledDate
-              }"
+              :picker-options="endTime"
               placeholder="Pls End Time">
             </el-date-picker>
           </div>
@@ -86,10 +80,29 @@ export default {
   data() {
     return{
       ifShowTime:"Days",
-      disabledDate(time) {
-        return time.getTime() < Date.now();
+      startTime: {
+        disabledDate: time => {
+          let endDateVal = this.timeType.dateEndVal
+          let nowDate = new Date().getTime()-8.64e7
+          if (endDateVal) {
+            return time.getTime() > new Date(endDateVal).getTime() || time.getTime() < nowDate
+          }else if(endDateVal == new Date().getTime()) {
+            return time.getTime() > new Date(endDateVal).getTime() || time.getTime() > nowDate
+          }else{
+            return time.getTime() < new Date()-8.64e7
+          } 
+        }
       },
-      selectRange: new Date().getHours()+':'+new Date().getMinutes()+':00 - 23:59:00'
+      endTime:{
+        disabledDate: time => {
+          let beginDateVal = this.timeType.dateTimeVal
+          if (beginDateVal) {
+            return time.getTime() < new Date(beginDateVal).getTime()
+          }else{
+            return time.getTime() < new Date()-8.64e7
+          } 
+        }
+      }
     }
   },
   props:["timeType","ifDisabled","ifActiveDis"],
