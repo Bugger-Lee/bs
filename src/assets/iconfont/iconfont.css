@@ -86,10 +86,6 @@
   content: "\e610";
 }
 
-.icon-icon-test:before {
-  content: "\e60b";
-}
-
 .icon-duanxin2:before {
   content: "\e629";
 }
@@ -114,10 +110,6 @@
   content: "\e603";
 }
 
-.icon-weibiaoti-:before {
-  content: "\e616";
-}
-
 .icon-dbaudit:before {
   content: "\e88e";
 }
@@ -136,6 +128,10 @@
 
 .icon-tiaojian:before {
   content: "\e796";
+}
+
+.icon-tiaoxingma-mian:before {
+  content: "\e6c7";
 }
 
 .icon-duanxin:before {
@@ -212,5 +208,9 @@
 
 .icon-xinxi1-copy-copy-copy:before {
   content: "\e8b5";
+}
+
+.icon-xiaoshoudanju:before {
+  content: "\e60c";
 }
 

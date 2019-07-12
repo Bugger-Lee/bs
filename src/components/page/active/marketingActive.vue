@@ -627,6 +627,9 @@ export default {
       if (this.timeType.timestampEnd) {
         data.retired_time = this.timeType.timestampEnd
       }
+      if(this.propsData.data_socure == 'DMP-Data') {
+        data.crowd_count = this.ifDataExtension.crowd_count
+      }
       this.$.post("rule/insert", data).then(res => {
         if (res.data.code == 200) {
           this.$message(res.data.msg);
@@ -674,6 +677,9 @@ export default {
       };
       if (this.timeType.timestampEnd) {
         data.retired_time = this.timeType.timestampEnd
+      }
+      if(this.propsData.data_socure == 'DMP-Data') {
+        data.crowd_count = this.ifDataExtension.crowd_count
       }
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
@@ -822,18 +828,20 @@ export default {
           newBuy: this.propsData.newBuy,
           newMbmber: this.propsData.newMbmber,
           excluded_guide: this.propsData.shoppings,
-          reg_brand_id: this.propsData.regBrandVal
+          reg_brand_id: this.propsData.regBrandVal,
         };
         this.ifDataExtension = objData;
         if(this.propsData.regBrandVal != '') {
           this.ifDataExtension.reg_brand_id_show = regBrand[0].brand_name
         }
+        this.clvCrowdCount()
       }else if(this.propsData.data_socure == 'DMP-Data') {
         let dmpObjData = {
           brandShow:item_data[0].brand_name,
           brand:this.propsData.brandVal,
           crowd_id:this.propsData.crowdDmp.crowd_id,
-          crowd_name:this.propsData.crowdDmp.crowd_name
+          crowd_name:this.propsData.crowdDmp.crowd_name,
+          crowd_count:this.propsData.crowdDmp.crowd_count
         }
         this.ifDataExtension = dmpObjData
       }
@@ -853,6 +861,24 @@ export default {
       }
       this.openDataContent = false;
       this.openData = true;
+    },
+    clvCrowdCount() {
+      let data={
+        brandName:this.ifDataExtension.brandShow,
+        cycleType:this.ifDataExtension.periodShow,
+        regBrandName:this.ifDataExtension.reg_brand_id_show,
+        vipChannelName:this.ifDataExtension.register,
+        enterFirst:this.ifDataExtension.newPeriod,
+        purchaseFirst:this.ifDataExtension.newBuy,
+        purchaseWeek:this.ifDataExtension.newMbmber,
+      }
+      this.$.get("crowd/getClvCrowdCount",{params:data}).then(res=>{
+        if(res.data.code == 200) {
+          this.ifDataExtension.crowd_count = res.data.data
+        }else{
+          this.ifDataExtension.crowd_count = res.data.msg
+        }
+      })
     },
     backlevelSms(val) {
       this.openSmsContent = false;
@@ -1174,6 +1200,7 @@ export default {
         this.propsData.crowdDmp = {}
         this.propsData.crowdDmp.crowd_id = val.id
         this.propsData.crowdDmp.crowd_name = val.name
+        this.propsData.crowdDmp.crowd_count = val.crowd_count
       }
     },
     sltPromotion(val) {

@@ -609,6 +609,7 @@ export default {
           created_by:getSessionItem.user_info,
           crowd_id:this.ifDataExtension.crowd_id || '',
           crowd_name:this.ifDataExtension.crowd_name || '',
+          crowd_count:this.ifDataExtension.crowd_count || '',
           excluded_guide:this.ifDataExtension.excluded_guide || '',
           reg_brand_id:this.ifDataExtension.reg_brand_id || ''
         }
@@ -813,6 +814,7 @@ export default {
         this.propsData.crowdDmp = {}
         this.propsData.crowdDmp.crowd_id = val.id
         this.propsData.crowdDmp.crowd_name = val.name
+        this.propsData.crowdDmp.crowd_count = val.crowd_count
       }
     },
     backlevel(val) {
@@ -902,12 +904,14 @@ export default {
           this.propsData.crowdDmp = {}
           this.propsData.crowdDmp.crowd_id = this.ifDataExtension.crowd_id
           this.propsData.crowdDmp.crowd_name = this.ifDataExtension.crowd_name
+          this.propsData.crowdDmp.crowd_count = this.ifDataExtension.crowd_count
         }
         let objDataDmp = {
           brand_id:item_data[0].id,
           brand_name:this.propsData.brandVal,
           crowd_id:this.propsData.crowdDmp.crowd_id,
-          crowd_name:this.propsData.crowdDmp.crowd_name
+          crowd_name:this.propsData.crowdDmp.crowd_name,
+          crowd_count:this.propsData.crowdDmp.crowd_count
         }
         this.ifDataExtension = objDataDmp
       }
