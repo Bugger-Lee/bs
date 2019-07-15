@@ -609,18 +609,23 @@ export default {
           created_by:getSessionItem.user_info,
           crowd_id:this.ifDataExtension.crowd_id || '',
           crowd_name:this.ifDataExtension.crowd_name || '',
-          crowd_count:this.ifDataExtension.crowd_count || '',
           excluded_guide:this.ifDataExtension.excluded_guide || '',
           reg_brand_id:this.ifDataExtension.reg_brand_id || ''
         }
         if(this.timeType.timestampEnd) {
           data.retired_time = this.timeType.timestampEnd
         }
+        if(this.propsData.defaultData.command_name == 'DMP-Data') {
+          data.crowd_count = this.ifDataExtension.crowd_count
+        }
         this.$.post('rule/update',data).then(res=>{
           if(res.data.code == 200) {
             this.testDis = false
             this.$message(res.data.msg)
             sessionStorage.setItem("saveDataDetail", JSON.stringify(data))
+            if(this.propsData.defaultData.command_name == 'CLV-Data') {
+              this.activeMessage()              
+            }
           }else{
             this.$message(res.data.msg)
           }
@@ -893,12 +898,14 @@ export default {
           purchase_first:this.propsData.newBuy,
           purchase_week:this.propsData.newMbmber,
           excluded_guide:this.propsData.shoppings,
-          reg_brand_name:this.propsData.regBrandVal
+          reg_brand_name:this.propsData.regBrandVal,
+          crowd_count:''
         }
         this.ifDataExtension = objData
         if(this.propsData.regBrandVal != null && this.propsData.regBrandVal != '' && regBrand != []) {
           this.ifDataExtension.reg_brand_id = regBrand[0].id
         }
+        this.clvCrowdCount()
       }else if(this.propsData.defaultData.command_name == 'DMP-Data') {
         if(this.propsData.crowdDmp == '') {
           this.propsData.crowdDmp = {}
@@ -932,6 +939,24 @@ export default {
       }
       this.openDataContent = false
       this.openData = true
+    },
+    clvCrowdCount() {
+      let data={
+        brandName:this.ifDataExtension.brand_name,
+        cycleType:this.ifDataExtension.cycle_type,
+        regBrandName:this.ifDataExtension.reg_brand_name,
+        vipChannelName:this.ifDataExtension.vip_channel_name,
+        enterFirst:this.ifDataExtension.newPeriod,
+        purchaseFirst:this.ifDataExtension.newBuy,
+        purchaseWeek:this.ifDataExtension.newMbmber,
+      }
+      this.$.get("crowd/getClvCrowdCount",{params:data}).then(res=>{
+        if(res.data.code == 200) {
+          this.ifDataExtension.crowd_count = res.data.data
+        }else{
+          this.ifDataExtension.crowd_count = res.data.msg
+        }
+      })
     },
     backlevelSms() {
       this.openSmsContent = false

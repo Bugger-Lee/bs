@@ -12,15 +12,15 @@
                 <a href>Journeys Dashboard</a>
                 <i>> Journey</i>
               </span>
-
             </p>
             <p>
               <el-input
-                  style="height:20px;line-height:20px;"
                   v-model="currentTimeVal"
-                  suffix-icon="el-icon-edit"
                   size="mini"
-                ></el-input>
+                  :disabled="titleDis"
+                >
+                <i slot="suffix" class="el-icon-edit mr05" style="line-height:28px;cursor: pointer;" @click="editTitle()"></i>
+              </el-input>
             </p>
           </div>
         </el-col>
@@ -346,6 +346,7 @@ export default {
       saveStop:false,
       testDis:true,
       runDis:true,
+      titleDis:false,
       ifDrag: false,
       ifSmsDrag: false,
       ifProDrag: false,
@@ -471,7 +472,8 @@ export default {
       ifDisabled:false,
       ifActiveDis:false,
       sourcesType:[],
-      getSaveData:''
+      getSaveData:'',
+      getDetailId:""
     };
   },
   created() {
@@ -504,6 +506,11 @@ export default {
     next();
   },
   methods: {
+    editTitle() {
+      if(this.saveUpdate != true) {
+        this.currentTimeVal = ''
+      }
+    },
     doneTime() {
       if(this.timeType.executeType == 2) {
         if (this.timeType.timeVal == "Days") {
@@ -637,8 +644,13 @@ export default {
           this.saveSave = false
           this.saveUpdate = true
           this.testDis = false
+          this.titleDis = true
           sessionStorage.setItem("saveData", JSON.stringify(data))
           this.getSaveData = JSON.parse(sessionStorage.getItem("saveData"))
+          this.getDetailId = res.data.data
+          if(this.propsData.data_socure == 'CLV-Data') {
+            this.getDetail()
+          }
         } else {
           this.$message(res.data.msg);
         }
@@ -687,10 +699,19 @@ export default {
           this.testDis = false
           sessionStorage.setItem("saveData", JSON.stringify(data))
           this.getSaveData = JSON.parse(sessionStorage.getItem("saveData"))
+          this.getDetailId = res.data.data
+          if(this.propsData.data_socure == 'CLV-Data') {
+            this.getDetail()
+          }
         } else {
           this.$message(res.data.msg);
         }
       });
+    },
+    getDetail() {
+      this.$.get('rule/getDetail?id='+this.getDetailId).then(res=>{
+        this.ifDataExtension.crowd_count = res.data.data.crowd_count
+      })
     },
     testRunJourney(val) {
       if (val == "test") {
@@ -732,8 +753,12 @@ export default {
     },
     backlevel(val) {
       if (val == 1) {
-        this.openDataContent = false;
-        this.openData = true;
+        if(this.ifDataExtension != '') {
+          this.openDataContent = false;
+          this.openData = true;
+        }else{
+          this.openDataContent = false;
+        }
       } else if (val == 2) {
         this.dataSummary();
       } else if (val == "edit") {
@@ -743,8 +768,12 @@ export default {
     },
     PromotionLevel(val) {
       if (val == 1) {
-        this.openTicketContent = false;
-        this.openTicket = true;
+        if(this.propsTicket.ifPromotion != '') {
+          this.openTicketContent = false;
+          this.openTicket = true;
+        }else{
+          this.openTicketContent = false;
+        }
       } else if (val == 2) {
         this.promotionSummary()
       } else if (val == "edit") {
@@ -829,6 +858,7 @@ export default {
           newMbmber: this.propsData.newMbmber,
           excluded_guide: this.propsData.shoppings,
           reg_brand_id: this.propsData.regBrandVal,
+          crowd_count:''
         };
         this.ifDataExtension = objData;
         if(this.propsData.regBrandVal != '') {
@@ -881,8 +911,12 @@ export default {
       })
     },
     backlevelSms(val) {
-      this.openSmsContent = false;
-      this.openSms = true;
+      if(this.propsSms.ifSms != '') {
+        this.openSmsContent = false;
+        this.openSms = true;
+      }else{
+        this.openSmsContent = false;
+      }
     },
     sendSmsLists() {
       this.$.get("smsChannel/getList?channelName=").then(res => {
@@ -1139,7 +1173,11 @@ export default {
       });
     },
     dataExtension() {
-      this.openData = true;
+      if(this.ifDataExtension != '') {
+        this.openData = true;
+      }else{
+        this.openDataContent = true
+      }
     },
     popupTicket() {
       if(this.propsData.brandVal == "") {
@@ -1151,7 +1189,11 @@ export default {
         return false
       }else{
         this.discountLists();
-        this.openTicket = true;
+        if(this.propsTicket.ifPromotion != '') {
+          this.openTicket = true;
+        }else{
+          this.openTicketContent = true;
+        }
       }
     },
     sms() {
@@ -1165,7 +1207,11 @@ export default {
         return false
       }else{
         this.smsLists();
-        this.openSms = true;
+        if(this.propsSms.ifSms != '') {
+          this.openSms = true;          
+        }else{
+          this.openSmsContent = true
+        }
       }
     },
     selectTime() {

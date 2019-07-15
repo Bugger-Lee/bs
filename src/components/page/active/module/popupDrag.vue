@@ -5,7 +5,9 @@
       :close-on-click-modal="false"
       width="60%">
       <span slot="title" class="data-title">
-        <span class="icon-dbsshujukubeifenDBS-copy-copy-copy"></span>Data Extension Summary
+        <span class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="propsData.data_socure == 'CLV-Data'"></span>
+        <span class="icon-renqun1" v-if="propsData.data_socure == 'DMP-Data'"></span>
+        Data Extension Summary
       </span>
       <div class="data-content">
         <p>
@@ -27,8 +29,8 @@
             <el-button class="bth" @click="backlevel('edit')" v-if="this.statusTestRunVal != 2">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P class="pttb" v-if="ifDataExtension.brandShow"><span>Brands : {{ifDataExtension.brandShow}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.periodShow"><span>Periods : {{ifDataExtension.periodShow}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.brandShow"><span>Brand : {{ifDataExtension.brandShow}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.periodShow"><span>Period : {{ifDataExtension.periodShow}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.crowd_name"><span>Crowd Name : {{ifDataExtension.crowd_name}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.crowd_count !== ''"><span>Crowd Count : {{ifDataExtension.crowd_count}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.register"><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
@@ -54,7 +56,8 @@
       <el-col :span="3" class="data-content-l">
         <div class="data-content-summary" :class="{'data-Selected':dataSelected == 1}" @click="tabSelect(1)">
           <span>
-            <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+            <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="propsData.data_socure == 'CLV-Data'"></i>
+            <i class="icon-renqun1" v-if="propsData.data_socure == 'DMP-Data'"></i>
           </span>
           <p class="summary-title mt10">Summary</p>
         </div>

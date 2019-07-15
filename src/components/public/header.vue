@@ -2,7 +2,7 @@
   <div class="Header" v-loading.fullscreen.lock="fullscreenLoading">
     <div class="headers">
       <p class="headers-left">
-        <i class="ml15">Journey Builder</i>
+        <i class="ml15" @click="goToHome()">Journey Builder</i>
       </p>
       <p class="headers-center">
         <span
@@ -88,6 +88,9 @@ export default {
   methods: {
     changes(id) {
       this.changeTab = id;
+    },
+    goToHome() {
+      this.$router.push('./')
     }
   }
 };
@@ -108,13 +111,9 @@ export default {
   left: 0;
   border-bottom: 5px solid #ccc;
   .headers-left {
-    font-size: 17px;
+    font-size: 28px;
     display: inline-block;
-    i {
-      font: bold 25px Brush Script MT;
-      text-shadow: 0px 2px 5px #ccc;
-      font-style: italic;
-    }
+    cursor: pointer;
   }
   .headers-center {
     display: inline-block;
