@@ -1197,6 +1197,9 @@ export default {
       }
     },
     sms() {
+      this.propsSms.editTitleVal = ''
+      this.propsSms.sendSmsVal = ''
+      this.propsSms.editMsg = ''
       this.propsSms.couponShow = this.ifProDrag
       if(this.propsData.brandVal == "") {
         this.$message({
@@ -1278,6 +1281,9 @@ export default {
         this.openSmsContent = false;
       } else if (val.name == "openNext") {
         this.openSmsContent = true;
+        this.propsSms.editTitleVal = ''
+        this.propsSms.sendSmsVal = ''
+        this.propsSms.editMsg = ''
       } else if (val.name == "saveMsg") {
         this.saveMessage();
       } else if (val.name == "inputBlur") {
@@ -1368,12 +1374,14 @@ export default {
       }
     },
     smsCreatedMessage() {
+      let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
       let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
       let insertData = {
         brand_id: this.ifDataExtension.brand,
         template_name:this.propsSms.editTitleVal,
         document_text: this.propsSms.editMsg,
-        uuid:(new Date()).valueOf()
+        uuid:(new Date()).valueOf(),
+        created_by:getSessionItem.user_info
       }
       this.$.post("template/insert", insertData).then(res => {
         if (res.data.code == 200) {

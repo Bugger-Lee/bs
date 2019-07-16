@@ -999,6 +999,9 @@ export default {
         this.openSmsContent = false
       } else if (val.name == 'openNext') {
         this.openSmsContent = true
+        this.propsSms.editTitleVal = ''
+        this.propsSms.sendSmsVal = ''
+        this.propsSms.editMsg = ''
       }else if(val.name == 'saveMsg') {
         if (this.propsSms.ifSmsDmp == '') {
           this.propsSms.ifSmsDmp = {}
@@ -1086,12 +1089,14 @@ export default {
       }
     },
     smsCreatedMessage() {
+      let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
       let smsObj = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
       let insertData = {
         brand_id:this.ifDataExtension.brand_id,
         template_name:this.propsSms.editTitleVal,
         document_text:this.propsSms.editMsg,
-        uuid:(new Date()).valueOf()
+        uuid:(new Date()).valueOf(),
+        created_by:getSessionItem.user_info
       }
       this.$.post("template/insert",insertData).then(res=>{
         if(res.data.code == 200) {
@@ -1116,6 +1121,9 @@ export default {
     },
     sms() {
       this.smsLists();
+      this.propsSms.editTitleVal = ''
+      this.propsSms.sendSmsVal = ''
+      this.propsSms.editMsg = ''
       this.openSms = true
     },
     selectTime() {
