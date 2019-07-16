@@ -5,7 +5,9 @@
       :close-on-click-modal="false"
       width="60%">
       <span slot="title" class="data-title">
-        <span class="icon-dbsshujukubeifenDBS-copy-copy-copy"></span>Data Extension Summary
+        <span class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="propsData.data_socure == 'CLV-Data'"></span>
+        <span class="icon-renqun1" v-if="propsData.data_socure == 'DMP-Data'"></span>
+        Data Extension Summary
       </span>
       <div class="data-content">
         <p>
@@ -27,9 +29,10 @@
             <el-button class="bth" @click="backlevel('edit')" v-if="this.statusTestRunVal != 2">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P class="pttb" v-if="ifDataExtension.brandShow"><span>Brands : {{ifDataExtension.brandShow}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.periodShow"><span>Periods : {{ifDataExtension.periodShow}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.brandShow"><span>Brand : {{ifDataExtension.brandShow}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.periodShow"><span>Period : {{ifDataExtension.periodShow}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.crowd_name"><span>Crowd Name : {{ifDataExtension.crowd_name}}</span><span></span></P>
+            <!-- <P class="pttb" v-if="ifDataExtension.crowd_count !== ''"><span>Crowd Count : {{ifDataExtension.crowd_count}}</span><span></span></P> -->
             <P class="pttb" v-if="ifDataExtension.register"><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.reg_brand_id_show"><span>Registered Brands : {{ifDataExtension.reg_brand_id_show}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.newPeriod"><span>New Entry : {{ifDataExtension.newPeriod}}</span><span></span></P>
@@ -53,7 +56,8 @@
       <el-col :span="3" class="data-content-l">
         <div class="data-content-summary" :class="{'data-Selected':dataSelected == 1}" @click="tabSelect(1)">
           <span>
-            <i class="icon-dbsshujukubeifenDBS-copy-copy-copy"></i>
+            <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="propsData.data_socure == 'CLV-Data'"></i>
+            <i class="icon-renqun1" v-if="propsData.data_socure == 'DMP-Data'"></i>
           </span>
           <p class="summary-title mt10">Summary</p>
         </div>
@@ -142,26 +146,26 @@
               <el-col :span="12">
                 <div class="select-option-ipt" v-if="ifNewPeriod">
                   <span class="mr15">New Entry:</span>&nbsp;&nbsp;&nbsp;
-                  <el-radio v-model="propsData.newPeriod" label="Y">Yes</el-radio>
-                  <el-radio v-model="propsData.newPeriod" label="N">No</el-radio>
+                  <el-radio v-model="propsData.newPeriod" label="Y" @click.native.prevent="elRadios('Y','newPeriod')">Yes</el-radio>
+                  <el-radio v-model="propsData.newPeriod" label="N" @click.native.prevent="elRadios('N','newPeriod')">No</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewBuy">
                   <span class="mr05">First Purchase:</span>
-                  <el-radio v-model="propsData.newBuy" label="Y">Yes</el-radio>
-                  <el-radio v-model="propsData.newBuy" label="N">No</el-radio>
+                  <el-radio v-model="propsData.newBuy" label="Y" @click.native.prevent="elRadios('Y','newBuy')">Yes</el-radio>
+                  <el-radio v-model="propsData.newBuy" label="N" @click.native.prevent="elRadios('N','newBuy')">No</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewMbmber">
                   <span class="mr15">No Purchase:</span>
-                  <el-radio v-model="propsData.newMbmber" label="Y">Yes</el-radio>
-                  <el-radio v-model="propsData.newMbmber" label="N">No</el-radio>
+                  <el-radio v-model="propsData.newMbmber" label="Y" @click.native.prevent="elRadios('Y','newMbmber')">Yes</el-radio>
+                  <el-radio v-model="propsData.newMbmber" label="N" @click.native.prevent="elRadios('N','newMbmber')">No</el-radio>
                 </div>
                 <p v-if="ifNewMbmber">
                   <span class="mr15" style="color:red;font-size:10px;">(within a week)</span>  
                 </p>
                 <div class="select-option-ipt">
                   <span class="mr15">Exclude Staff:</span>
-                  <el-radio label="Y" v-model="propsData.shoppings">Yes</el-radio>
-                  <el-radio label="N" v-model="propsData.shoppings">No</el-radio>
+                  <el-radio label="Y" v-model="propsData.shoppings" @click.native.prevent="elRadios('Y','shoppings')">Yes</el-radio>
+                  <el-radio label="N" v-model="propsData.shoppings" @click.native.prevent="elRadios('N','shoppings')">No</el-radio>
                 </div>
               </el-col>
             </div>
@@ -282,6 +286,14 @@ export default {
     clickPopup(value) {
       this.$emit("sltDataContent", value);
     },
+    // radio单选或不选
+    elRadios(val,index) {
+      let valName = {
+        name:val,
+        elRadioModel:index
+      }
+      this.$emit("sltDataContent", valName);
+    },
     // dmp列表搜索
     searchDmpList(e) {
       this.$emit('searchDmpList',e)
@@ -290,6 +302,7 @@ export default {
     backlevel(val) {
       this.$emit("backlevel",val)
     },
+
     dmpTableIndex(val) {
       if(!val) {
         return false

@@ -15,7 +15,7 @@
               <p>{{this.userNameTie}}</p>
             </div>
           </div>
-          <span class="l-status" v-if="this.propsData.defaultData.task_status">{{this.propsData.defaultData.task_status}}</span>
+          <span class="l-status" v-if="this.taskStatusMsg">{{this.taskStatusMsg}}</span>
         </el-col>
         <el-col :span="12" class="marketing-header-r">
           <el-button-group class="mr05">
@@ -345,7 +345,8 @@ export default {
       userNameTie:'',
       ifDisabled:false,
       ifActiveDis:false,
-      getSaveDataDetail:''
+      getSaveDataDetail:'',
+      taskStatusMsg:''
     };
   },
   components: {
@@ -362,6 +363,7 @@ export default {
     this.sendSmsLists()
     this.sourcesList()
     this.dmpTables()
+    this.taskStatus()
   },
   methods: {
     doneTime() {
@@ -559,6 +561,11 @@ export default {
         }
       });
     },
+    taskStatus() {
+      this.$.get("rule/getTaskStatus?id="+this.$route.query.id).then(res=>{
+        this.taskStatusMsg = res.data.data
+      })
+    },
     popupTicket() {
       this.openTicket = true
       this.discountLists()
@@ -608,11 +615,17 @@ export default {
         if(this.timeType.timestampEnd) {
           data.retired_time = this.timeType.timestampEnd
         }
+        // if(this.propsData.defaultData.command_name == 'DMP-Data') {
+        //   data.crowd_count = this.ifDataExtension.crowd_count
+        // }
         this.$.post('rule/update',data).then(res=>{
           if(res.data.code == 200) {
             this.testDis = false
             this.$message(res.data.msg)
             sessionStorage.setItem("saveDataDetail", JSON.stringify(data))
+            // if(this.propsData.defaultData.command_name == 'CLV-Data') {
+            //   this.activeMessage()              
+            // }
           }else{
             this.$message(res.data.msg)
           }
@@ -629,6 +642,7 @@ export default {
           if(res.data.code == 200) {
             if(this.statusTestRunVal == 1 || this.statusTestRunVal == 2) {
               this.$message('Processing')
+              this.taskStatus()
             }
             if(this.statusTestRunVal == 3) {
               this.$message('Stop')
@@ -641,6 +655,12 @@ export default {
               this.detailRun = false
               this.detailTest = false
               this.detailStop = true
+              this.$confirm("您已经成功执行此操作,是否跳转到首页?", "提示", {
+              confirmButtonText: "是",
+              cancelButtonText: "否"
+              }).then(() => {
+                this.$router.push("./");
+              });
             }else if(this.statusTestRunVal == 1) {
               this.runDis = false
             }
@@ -799,6 +819,22 @@ export default {
         this.propsData.crowdDmp = {}
         this.propsData.crowdDmp.crowd_id = val.id
         this.propsData.crowdDmp.crowd_name = val.name
+        // this.propsData.crowdDmp.crowd_count = val.crowd_count
+      }else if(val.name == 'Y' || val.name == 'N') {
+        switch (val.elRadioModel) {
+          case 'newPeriod':
+            val.name === this.propsData.newPeriod ? this.propsData.newPeriod = '' : this.propsData.newPeriod = val.name
+            break;
+          case 'newBuy':
+            val.name === this.propsData.newBuy ? this.propsData.newBuy = '' : this.propsData.newBuy = val.name
+            break; 
+          case 'newMbmber':
+            val.name === this.propsData.newMbmber ? this.propsData.newMbmber = '' : this.propsData.newMbmber = val.name
+            break;
+          default: 
+            val.name === this.propsData.shoppings ? this.propsData.shoppings = '' : this.propsData.shoppings = val.name            
+            break;
+        } 
       }
     },
     backlevel(val) {
@@ -877,18 +913,27 @@ export default {
           purchase_first:this.propsData.newBuy,
           purchase_week:this.propsData.newMbmber,
           excluded_guide:this.propsData.shoppings,
-          reg_brand_name:this.propsData.regBrandVal
+          reg_brand_name:this.propsData.regBrandVal,
+          // crowd_count:''
         }
         this.ifDataExtension = objData
         if(this.propsData.regBrandVal != null && this.propsData.regBrandVal != '' && regBrand != []) {
           this.ifDataExtension.reg_brand_id = regBrand[0].id
         }
+        // this.clvCrowdCount()
       }else if(this.propsData.defaultData.command_name == 'DMP-Data') {
+        if(this.propsData.crowdDmp == '') {
+          this.propsData.crowdDmp = {}
+          this.propsData.crowdDmp.crowd_id = this.ifDataExtension.crowd_id
+          this.propsData.crowdDmp.crowd_name = this.ifDataExtension.crowd_name
+          // this.propsData.crowdDmp.crowd_count = this.ifDataExtension.crowd_count
+        }
         let objDataDmp = {
           brand_id:item_data[0].id,
           brand_name:this.propsData.brandVal,
           crowd_id:this.propsData.crowdDmp.crowd_id,
-          crowd_name:this.propsData.crowdDmp.crowd_name
+          crowd_name:this.propsData.crowdDmp.crowd_name,
+          // crowd_count:this.propsData.crowdDmp.crowd_count
         }
         this.ifDataExtension = objDataDmp
       }
@@ -910,6 +955,24 @@ export default {
       this.openDataContent = false
       this.openData = true
     },
+    // clvCrowdCount() {
+    //   let data={
+    //     brandName:this.ifDataExtension.brand_name,
+    //     cycleType:this.ifDataExtension.cycle_type,
+    //     regBrandName:this.ifDataExtension.reg_brand_name,
+    //     vipChannelName:this.ifDataExtension.vip_channel_name,
+    //     enterFirst:this.ifDataExtension.newPeriod,
+    //     purchaseFirst:this.ifDataExtension.newBuy,
+    //     purchaseWeek:this.ifDataExtension.newMbmber,
+    //   }
+    //   this.$.get("crowd/getClvCrowdCount",{params:data}).then(res=>{
+    //     if(res.data.code == 200) {
+    //       this.ifDataExtension.crowd_count = res.data.data
+    //     }else{
+    //       this.ifDataExtension.crowd_count = res.data.msg
+    //     }
+    //   })
+    // },
     backlevelSms() {
       this.openSmsContent = false
       this.openSms = true
@@ -936,7 +999,14 @@ export default {
         this.openSmsContent = false
       } else if (val.name == 'openNext') {
         this.openSmsContent = true
+        this.propsSms.editTitleVal = ''
+        this.propsSms.editMsg = ''
       }else if(val.name == 'saveMsg') {
+        if (this.propsSms.ifSmsDmp == '') {
+          this.propsSms.ifSmsDmp = {}
+          this.propsSms.ifSmsDmp.template_text = this.propsSms.ifSms.template_text,
+          this.propsSms.ifSmsDmp.template_id = this.propsSms.ifSms.template_id
+        }
         this.saveMessage()
       }else if(val.name == 'inputBlur') {
         this.inputBlur(val.value,val.id,val.templt)
@@ -1011,23 +1081,25 @@ export default {
         }
         this.smsCreatedMessage()
       }
-      if(this.propsSms.ifSms.template_id == this.getSaveDataDetail.saveDataDetail.template_id || 
-        this.propsSms.ifSms.sms_channel_id == this.getSaveDataDetail.saveDataDetail.sms_channel_id) {
+      if(this.propsSms.ifSms.template_id != this.getSaveDataDetail.saveDataDetail.template_id || 
+        this.propsSms.ifSms.sms_channel_id != this.getSaveDataDetail.saveDataDetail.sms_channel_id) {
           this.testDis = true
           this.runDis = true
       }
     },
     smsCreatedMessage() {
+      let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
       let smsObj = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
       let insertData = {
         brand_id:this.ifDataExtension.brand_id,
         template_name:this.propsSms.editTitleVal,
         document_text:this.propsSms.editMsg,
-        uuid:(new Date()).valueOf()
+        uuid:(new Date()).valueOf(),
+        created_by:getSessionItem.user_info
       }
       this.$.post("template/insert",insertData).then(res=>{
         if(res.data.code == 200) {
-          this.$message(res.data.msg)
+          this.$message('SMS Created')
           this.smsLists()
           let objData = {
             template_text:this.propsSms.editMsg,
@@ -1048,6 +1120,8 @@ export default {
     },
     sms() {
       this.smsLists();
+      this.propsSms.editTitleVal = ''
+      this.propsSms.editMsg = ''
       this.openSms = true
     },
     selectTime() {

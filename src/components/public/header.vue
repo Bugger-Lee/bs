@@ -2,7 +2,7 @@
   <div class="Header" v-loading.fullscreen.lock="fullscreenLoading">
     <div class="headers">
       <p class="headers-left">
-        <i class="ml15">Journey Builder</i>
+        <i class="ml15" @click="goToHome()">Journey Builder</i>
       </p>
       <p class="headers-center">
         <span
@@ -43,51 +43,54 @@ export default {
       alertIndex:false
     };
   },
-  // created() {
-  //   let url = window.location.href
-  //   let indexStart = url.indexOf("==")
-  //   let indexEnd = url.indexOf("?token")
-  //   if(indexStart > 0) {
-  //     this.linkUserId = url.substring(indexStart+2,indexEnd).replace("#","").replace("/","")
-  //   }else{
-  //     this.linkUserId = ''
-  //   }
-  //   if(this.linkUserId == '') {
-  //     this.fullscreenLoading = true
-  //     this.alertIndex = false
-  //     this.$.get('getSsoUrl').then(res=>{
-  //       window.location.href=res.data.data
-  //     })
-  //   }else if(this.linkUserId != ''){
-  //     this.fullscreenLoading = false
-  //     this.$.get('getUserInfo',{params:{bsAccount:this.linkUserId}}).then(res=>{
-  //       if(res.data.code == 200) {
-  //         this.alertIndex = false
-  //         this.userInfo=res.data.data.user_name
-  //         let user = {
-  //           user_info:res.data.data.user_name
-  //         }
-  //         sessionStorage.setItem("user", JSON.stringify(user));
-  //       }else{
-  //         this.alertIndex = true
-  //         this.linkUserId = ''
-  //         this.$alert(res.data.msg, '提示', {
-  //           confirmButtonText:'请重新登录',
-  //           showClose:false,
-  //           callback: action => {
-  //             window.location.href="https://sso.bestseller.com.cn/sso/login?service=http://bestsellerdmp.bestseller.com.cn/journey-builder/j_spring_cas_security_check?spring-security-redirect=http://bestsellerdmp.bestseller.com.cn/journey-builder/index.html"
-  //           }
-  //         });
-  //         return false
-  //       }
-  //     })
-  //   }else{
-  //     this.$router.push('./')
-  //   }
-  // },
+  created() {
+    let url = window.location.href
+    let indexStart = url.indexOf("==")
+    let indexEnd = url.indexOf("?token")
+    if(indexStart > 0) {
+      this.linkUserId = url.substring(indexStart+2,indexEnd).replace("#","").replace("/","")
+    }else{
+      this.linkUserId = ''
+    }
+    if(this.linkUserId == '') {
+      this.fullscreenLoading = true
+      this.alertIndex = false
+      this.$.get('getSsoUrl').then(res=>{
+        window.location.href=res.data.data
+      })
+    }else if(this.linkUserId != ''){
+      this.fullscreenLoading = false
+      this.$.get('getUserInfo',{params:{bsAccount:this.linkUserId}}).then(res=>{
+        if(res.data.code == 200) {
+          this.alertIndex = false
+          this.userInfo=res.data.data.user_name
+          let user = {
+            user_info:res.data.data.user_name
+          }
+          sessionStorage.setItem("user", JSON.stringify(user));
+        }else{
+          this.alertIndex = true
+          this.linkUserId = ''
+          this.$alert(res.data.msg, '提示', {
+            confirmButtonText:'请重新登录',
+            showClose:false,
+            callback: action => {
+              window.location.href="https://sso.bestseller.com.cn/sso/login?service=http://bestsellerdmp.bestseller.com.cn/journey-builder/j_spring_cas_security_check?spring-security-redirect=http://bestsellerdmp.bestseller.com.cn/journey-builder/index.html"
+            }
+          });
+          return false
+        }
+      })
+    }else{
+      this.$router.push('./')
+    }
+  },
   methods: {
     changes(id) {
       this.changeTab = id;
+    },
+    goToHome() {
+      this.$router.push('./')
     }
   }
 };
@@ -108,13 +111,9 @@ export default {
   left: 0;
   border-bottom: 5px solid #ccc;
   .headers-left {
-    font-size: 17px;
+    font-size: 28px;
     display: inline-block;
-    i {
-      font: bold 25px Brush Script MT;
-      text-shadow: 0px 2px 5px #ccc;
-      font-style: italic;
-    }
+    cursor: pointer;
   }
   .headers-center {
     display: inline-block;

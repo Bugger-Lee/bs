@@ -12,15 +12,15 @@
                 <a href>Journeys Dashboard</a>
                 <i>> Journey</i>
               </span>
-
             </p>
             <p>
               <el-input
-                  style="height:20px;line-height:20px;"
                   v-model="currentTimeVal"
-                  suffix-icon="el-icon-edit"
                   size="mini"
-                ></el-input>
+                  :disabled="titleDis"
+                >
+                <i slot="suffix" class="el-icon-edit mr05" style="line-height:28px;cursor: pointer;" @click="editTitle()"></i>
+              </el-input>
             </p>
           </div>
         </el-col>
@@ -346,6 +346,7 @@ export default {
       saveStop:false,
       testDis:true,
       runDis:true,
+      titleDis:false,
       ifDrag: false,
       ifSmsDrag: false,
       ifProDrag: false,
@@ -471,6 +472,8 @@ export default {
       ifDisabled:false,
       ifActiveDis:false,
       sourcesType:[],
+      getSaveData:'',
+      // getDetailId:""
     };
   },
   created() {
@@ -488,41 +491,6 @@ export default {
       this.currentTimeName.getDate();
     this.currentTimeVal = "New Journey -- May  " + this.currentTimeName;
   },
-  computed: {
-    ifChange() {
-      if(this.saveUpdate == true) {
-        let saveData = JSON.parse(sessionStorage.getItem("saveData"))
-        let schulder_time = parseInt(new Date(this.timeType.timeTypeData.schulder_time).getTime()/1000)
-        let def_schulder_time = parseInt(new Date(saveData.schulder_time).getTime()/1000)
-        let retired_time = parseInt(new Date(this.timeType.timeTypeData.retired_time).getTime()/1000)
-        let def_retired_time = parseInt(new Date(saveData.retired_time).getTime()/1000)
-        if(
-        saveData.sms_channel_id == this.propsSms.ifSms.sms_channel_id &&
-        saveData.template_id == this.propsSms.ifSms.id &&
-        saveData.brand_id == this.ifDataExtension.brand &&
-        saveData.cycle_id == this.ifDataExtension.period &&
-        saveData.vip_channel_name ==  this.ifDataExtension.register &&
-        saveData.enter_first ==  this.ifDataExtension.newPeriod &&
-        saveData.purchase_week == this.ifDataExtension.newMbmber &&
-        saveData.purchase_first == this.ifDataExtension.newBuy &&
-        saveData.excluded_guide == this.ifDataExtension.excluded_guide &&
-        saveData.reg_brand_id == this.ifDataExtension.reg_brand_id &&
-        saveData.crowd_id == this.ifDataExtension.crowd_id &&
-        saveData.camp_coupon_id == this.propsTicket.ifPromotion.camp_coupon_id &&
-        saveData.coupon_id == this.propsTicket.ifPromotion.coupon_id &&
-        saveData.cron_express == this.timeType.timeTypeData.crotabData &&
-        def_schulder_time == schulder_time &&
-        def_retired_time == retired_time
-        ) {
-          return true
-          }else{
-            this.testDis = true
-            this.runDis = true
-            return false
-          }
-        }
-    }
-  },
   components: {
     popupDrag,
     popupOpenTime,
@@ -538,6 +506,11 @@ export default {
     next();
   },
   methods: {
+    editTitle() {
+      if(this.saveUpdate != true) {
+        this.currentTimeVal = ''
+      }
+    },
     doneTime() {
       if(this.timeType.executeType == 2) {
         if (this.timeType.timeVal == "Days") {
@@ -599,6 +572,14 @@ export default {
         retired_time:this.timeType.dateEndVal
       }
       this.timeType.timeTypeData = objData
+      if(this.saveUpdate == true) {
+        if(this.timeType.timeTypeData.crotabData != this.getSaveData.cron_express ||
+          parseInt(new Date(this.timeType.timeTypeData.schulder_time).getTime()) != parseInt(new Date(this.getSaveData.schulder_time).getTime()) ||
+          parseInt(new Date(this.timeType.timeTypeData.retired_time).getTime()) != parseInt(new Date(this.getSaveData.retired_time).getTime())) {
+            this.testDis = true
+            this.runDis = true
+        }
+      }
       this.openTime = false;
     },
     saveJourney() {
@@ -653,6 +634,9 @@ export default {
       if (this.timeType.timestampEnd) {
         data.retired_time = this.timeType.timestampEnd
       }
+      // if(this.propsData.data_socure == 'DMP-Data') {
+      //   data.crowd_count = this.ifDataExtension.crowd_count
+      // }
       this.$.post("rule/insert", data).then(res => {
         if (res.data.code == 200) {
           this.$message(res.data.msg);
@@ -660,25 +644,13 @@ export default {
           this.saveSave = false
           this.saveUpdate = true
           this.testDis = false
-          let saveData = {
-            sms_channel_id: this.propsSms.ifSms.sms_channel_id,
-            template_id: this.propsSms.ifSms.id,
-            brand_id: this.ifDataExtension.brand,
-            cycle_id: this.ifDataExtension.period,
-            vip_channel_name: this.ifDataExtension.register,
-            enter_first: this.ifDataExtension.newPeriod,
-            purchase_week: this.ifDataExtension.newMbmber,
-            purchase_first: this.ifDataExtension.newBuy,
-            excluded_guide:this.ifDataExtension.excluded_guide,
-            reg_brand_id:this.ifDataExtension.reg_brand_id,
-            crowd_id:this.ifDataExtension.crowd_id,
-            camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id,
-            coupon_id: this.propsTicket.ifPromotion.coupon_id,
-            cron_express:this.timeType.timeTypeData.crotabData,
-            schulder_time:this.timeType.timeTypeData.schulder_time,
-            retired_time:this.timeType.timeTypeData.retired_time
-          }
-          sessionStorage.setItem("saveData", JSON.stringify(saveData));
+          this.titleDis = true
+          sessionStorage.setItem("saveData", JSON.stringify(data))
+          this.getSaveData = JSON.parse(sessionStorage.getItem("saveData"))
+          // this.getDetailId = res.data.data
+          // if(this.propsData.data_socure == 'CLV-Data') {
+          //   this.getDetail()
+          // }
         } else {
           this.$message(res.data.msg);
         }
@@ -718,34 +690,29 @@ export default {
       if (this.timeType.timestampEnd) {
         data.retired_time = this.timeType.timestampEnd
       }
+      // if(this.propsData.data_socure == 'DMP-Data') {
+      //   data.crowd_count = this.ifDataExtension.crowd_count
+      // }
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
-          this.$message(res.data.msg);
+          this.$message(res.data.msg)
           this.testDis = false
-          let saveData = {
-            sms_channel_id: this.propsSms.ifSms.sms_channel_id,
-            template_id: this.propsSms.ifSms.id,
-            brand_id: this.ifDataExtension.brand,
-            cycle_id: this.ifDataExtension.period,
-            vip_channel_name: this.ifDataExtension.register,
-            enter_first: this.ifDataExtension.newPeriod,
-            purchase_week: this.ifDataExtension.newMbmber,
-            purchase_first: this.ifDataExtension.newBuy,
-            excluded_guide:this.ifDataExtension.excluded_guide,
-            reg_brand_id:this.ifDataExtension.reg_brand_id,
-            crowd_id:this.ifDataExtension.crowd_id,
-            camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id,
-            coupon_id: this.propsTicket.ifPromotion.coupon_id,
-            cron_express:this.timeType.timeTypeData.crotabData,
-            schulder_time:this.timeType.timeTypeData.schulder_time,
-            retired_time:this.timeType.timeTypeData.retired_time
-          }
-          sessionStorage.setItem("saveData", JSON.stringify(saveData));
+          sessionStorage.setItem("saveData", JSON.stringify(data))
+          this.getSaveData = JSON.parse(sessionStorage.getItem("saveData"))
+          // this.getDetailId = res.data.data
+          // if(this.propsData.data_socure == 'CLV-Data') {
+          //   this.getDetail()
+          // }
         } else {
           this.$message(res.data.msg);
         }
       });
     },
+    // getDetail() {
+    //   this.$.get('rule/getDetail?id='+this.getDetailId).then(res=>{
+    //     this.ifDataExtension.crowd_count = res.data.data.crowd_count
+    //   })
+    // },
     testRunJourney(val) {
       if (val == "test") {
         this.statusTestRunVal = 1;
@@ -786,8 +753,12 @@ export default {
     },
     backlevel(val) {
       if (val == 1) {
-        this.openDataContent = false;
-        this.openData = true;
+        if(this.ifDataExtension != '') {
+          this.openDataContent = false;
+          this.openData = true;
+        }else{
+          this.openDataContent = false;
+        }
       } else if (val == 2) {
         this.dataSummary();
       } else if (val == "edit") {
@@ -797,8 +768,12 @@ export default {
     },
     PromotionLevel(val) {
       if (val == 1) {
-        this.openTicketContent = false;
-        this.openTicket = true;
+        if(this.propsTicket.ifPromotion != '') {
+          this.openTicketContent = false;
+          this.openTicket = true;
+        }else{
+          this.openTicketContent = false;
+        }
       } else if (val == 2) {
         this.promotionSummary()
       } else if (val == "edit") {
@@ -841,6 +816,13 @@ export default {
         coupon_id: this.checkedDiscounts
       }
       this.propsTicket.ifPromotion = obj
+      if(this.saveUpdate == true) {
+        if(this.propsTicket.ifPromotion.camp_coupon_id != this.getSaveData.camp_coupon_id ||
+        this.propsTicket.ifPromotion.coupon_id != this.getSaveData.coupon_id) {
+          this.testDis = true
+          this.runDis = true
+        }
+      }
       this.openTicketContent = false;
       this.openTicket = true;
     },
@@ -876,26 +858,65 @@ export default {
           newMbmber: this.propsData.newMbmber,
           excluded_guide: this.propsData.shoppings,
           reg_brand_id: this.propsData.regBrandVal
+          // crowd_count:''
         };
         this.ifDataExtension = objData;
         if(this.propsData.regBrandVal != '') {
           this.ifDataExtension.reg_brand_id_show = regBrand[0].brand_name
         }
+        // this.clvCrowdCount()
       }else if(this.propsData.data_socure == 'DMP-Data') {
         let dmpObjData = {
           brandShow:item_data[0].brand_name,
           brand:this.propsData.brandVal,
           crowd_id:this.propsData.crowdDmp.crowd_id,
           crowd_name:this.propsData.crowdDmp.crowd_name
+          // crowd_count:this.propsData.crowdDmp.crowd_count
         }
         this.ifDataExtension = dmpObjData
+      }
+      if(this.saveUpdate == true) {
+        if(this.ifDataExtension.brand != this.getSaveData.brand_id || 
+        this.ifDataExtension.register != this.getSaveData.vip_channel_name ||
+        this.ifDataExtension.crowd_name != this.getSaveData.crowd_name ||
+        this.ifDataExtension.period != this.getSaveData.cycle_id ||
+        this.ifDataExtension.newPeriod != this.getSaveData.enter_first ||
+        this.ifDataExtension.newBuy != this.getSaveData.purchase_first ||
+        this.ifDataExtension.newMbmber != this.getSaveData.purchase_week ||
+        this.ifDataExtension.reg_brand_id != this.getSaveData.reg_brand_id ||
+        this.ifDataExtension.excluded_guide != this.getSaveData.excluded_guide){
+          this.testDis = true
+          this.runDis = true
+        }
       }
       this.openDataContent = false;
       this.openData = true;
     },
+    // clvCrowdCount() {
+    //   let data={
+    //     brandName:this.ifDataExtension.brandShow,
+    //     cycleType:this.ifDataExtension.periodShow,
+    //     regBrandName:this.ifDataExtension.reg_brand_id_show,
+    //     vipChannelName:this.ifDataExtension.register,
+    //     enterFirst:this.ifDataExtension.newPeriod,
+    //     purchaseFirst:this.ifDataExtension.newBuy,
+    //     purchaseWeek:this.ifDataExtension.newMbmber,
+    //   }
+    //   this.$.get("crowd/getClvCrowdCount",{params:data}).then(res=>{
+    //     if(res.data.code == 200) {
+    //       this.ifDataExtension.crowd_count = res.data.data
+    //     }else{
+    //       this.ifDataExtension.crowd_count = res.data.msg
+    //     }
+    //   })
+    // },
     backlevelSms(val) {
-      this.openSmsContent = false;
-      this.openSms = true;
+      if(this.propsSms.ifSms != '') {
+        this.openSmsContent = false;
+        this.openSms = true;
+      }else{
+        this.openSmsContent = false;
+      }
     },
     sendSmsLists() {
       this.$.get("smsChannel/getList?channelName=").then(res => {
@@ -1152,7 +1173,11 @@ export default {
       });
     },
     dataExtension() {
-      this.openData = true;
+      if(this.ifDataExtension != '') {
+        this.openData = true;
+      }else{
+        this.openDataContent = true
+      }
     },
     popupTicket() {
       if(this.propsData.brandVal == "") {
@@ -1164,10 +1189,16 @@ export default {
         return false
       }else{
         this.discountLists();
-        this.openTicket = true;
+        if(this.propsTicket.ifPromotion != '') {
+          this.openTicket = true;
+        }else{
+          this.openTicketContent = true;
+        }
       }
     },
     sms() {
+      this.propsSms.editTitleVal = ''
+      this.propsSms.editMsg = ''
       this.propsSms.couponShow = this.ifProDrag
       if(this.propsData.brandVal == "") {
         this.$message({
@@ -1178,7 +1209,11 @@ export default {
         return false
       }else{
         this.smsLists();
-        this.openSms = true;
+        if(this.propsSms.ifSms != '') {
+          this.openSms = true;          
+        }else{
+          this.openSmsContent = true
+        }
       }
     },
     selectTime() {
@@ -1213,6 +1248,22 @@ export default {
         this.propsData.crowdDmp = {}
         this.propsData.crowdDmp.crowd_id = val.id
         this.propsData.crowdDmp.crowd_name = val.name
+        // this.propsData.crowdDmp.crowd_count = val.crowd_count
+      }else if(val.name == 'Y' || val.name == 'N') {
+        switch (val.elRadioModel) {
+          case 'newPeriod':
+            val.name === this.propsData.newPeriod ? this.propsData.newPeriod = '' : this.propsData.newPeriod = val.name
+            break;
+          case 'newBuy':
+            val.name === this.propsData.newBuy ? this.propsData.newBuy = '' : this.propsData.newBuy = val.name
+            break; 
+          case 'newMbmber':
+            val.name === this.propsData.newMbmber ? this.propsData.newMbmber = '' : this.propsData.newMbmber = val.name
+            break;
+          default: 
+            val.name === this.propsData.shoppings ? this.propsData.shoppings = '' : this.propsData.shoppings = val.name            
+            break;
+        } 
       }
     },
     sltPromotion(val) {
@@ -1229,6 +1280,8 @@ export default {
         this.openSmsContent = false;
       } else if (val.name == "openNext") {
         this.openSmsContent = true;
+        this.propsSms.editTitleVal = ''
+        this.propsSms.editMsg = ''
       } else if (val.name == "saveMsg") {
         this.saveMessage();
       } else if (val.name == "inputBlur") {
@@ -1310,18 +1363,27 @@ export default {
         }
         this.smsCreatedMessage()
       }
+      if(this.saveUpdate == true) {
+        if(this.propsSms.ifSms.id != this.getSaveData.template_id || 
+        this.propsSms.ifSms.sms_channel_id != this.getSaveData.sms_channel_id) {
+          this.testDis = true
+          this.runDis = true
+        }
+      }
     },
     smsCreatedMessage() {
+      let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
       let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
       let insertData = {
         brand_id: this.ifDataExtension.brand,
         template_name:this.propsSms.editTitleVal,
         document_text: this.propsSms.editMsg,
-        uuid:(new Date()).valueOf()
+        uuid:(new Date()).valueOf(),
+        created_by:getSessionItem.user_info
       }
       this.$.post("template/insert", insertData).then(res => {
         if (res.data.code == 200) {
-          this.$message(res.data.msg)
+          this.$message('SMS Created')
           this.smsLists();
           let objDataThree = {
             template_text: this.propsSms.editMsg,
