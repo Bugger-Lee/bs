@@ -585,12 +585,12 @@ export default {
     saveJourney() {
       if(this.propsData.data_socure == 'CLV-Data' || this.propsData.data_socure == '') {
         if(this.ifDataExtension.period == undefined ||this.ifDataExtension.register == undefined) {
-          this.$message('请您选择必选项')
+          this.$message('请完成所有数据输入')
           return false
         }
       }else if(this.propsData.data_socure == 'DMP-Data' || this.propsData.data_socure == '') {
         if(this.ifDataExtension.crowd_id == '' || this.ifDataExtension.crowd_id == undefined) {
-          this.$message('请您选择必选项')
+          this.$message('请完成所有数据输入')
           return false
         }
       }
@@ -599,12 +599,12 @@ export default {
         this.propsSms.ifSms.id == 'undefined' || 
         !this.ifDataExtension.brand ||
         this.timeType.timestamp == '') {
-          this.$message('请您选择必选项')
+          this.$message('请完成所有数据输入')
           return false
       }
       if(this.ifProDrag == true) {
         if(this.propsTicket.ifPromotion.camp_coupon_id == undefined && this.propsTicket.ifPromotion.coupon_id == undefined) {
-          this.$message('请您选择必选项')
+          this.$message('请完成所有数据输入')
           return false
         }
       }
@@ -637,7 +637,7 @@ export default {
       if(this.propsData.data_socure == 'DMP-Data') {
         data.crowd_count = this.ifDataExtension.crowd_count
       }
-      this.$.post("rule/insert", data).then(res => {
+      this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
           this.$message(res.data.msg);
           this.systemId = res.data.data;
@@ -647,10 +647,6 @@ export default {
           this.titleDis = true
           sessionStorage.setItem("saveData", JSON.stringify(data))
           this.getSaveData = JSON.parse(sessionStorage.getItem("saveData"))
-          this.getDetailId = res.data.data
-          if(this.propsData.data_socure == 'CLV-Data') {
-            this.getDetail()
-          }
         } else {
           this.$message(res.data.msg);
         }
@@ -659,7 +655,7 @@ export default {
     updateJorney() {
       if(this.ifProDrag == true) {
         if(this.propsTicket.ifPromotion.camp_coupon_id == undefined && this.propsTicket.ifPromotion.coupon_id == undefined) {
-          this.$message('请您选择必选项')
+          this.$message('请完成所有数据输入')
           return false
         }
       }
@@ -699,10 +695,6 @@ export default {
           this.testDis = false
           sessionStorage.setItem("saveData", JSON.stringify(data))
           this.getSaveData = JSON.parse(sessionStorage.getItem("saveData"))
-          this.getDetailId = res.data.data
-          if(this.propsData.data_socure == 'CLV-Data') {
-            this.getDetail()
-          }
         } else {
           this.$message(res.data.msg);
         }
@@ -710,7 +702,15 @@ export default {
     },
     getDetail() {
       this.$.get('rule/getDetail?id='+this.getDetailId).then(res=>{
-        this.ifDataExtension.crowd_count = res.data.data.crowd_count
+        if(res.data.code == 200) {
+          if(res.data.data.crowd_count == -1) {
+            this.ifDataExtension.crowd_count = '人群数量计算中'
+          }else{
+            this.ifDataExtension.crowd_count = res.data.data.crowd_count
+          }
+        }else{
+          this.$message(res.data.data)
+        }
       })
     },
     testRunJourney(val) {
@@ -893,22 +893,36 @@ export default {
       this.openData = true;
     },
     clvCrowdCount() {
-      let data={
-        brandName:this.ifDataExtension.brandShow,
-        cycleType:this.ifDataExtension.periodShow,
-        regBrandName:this.ifDataExtension.reg_brand_id_show,
-        vipChannelName:this.ifDataExtension.register,
-        enterFirst:this.ifDataExtension.newPeriod,
-        purchaseFirst:this.ifDataExtension.newBuy,
-        purchaseWeek:this.ifDataExtension.newMbmber,
+      let data = {
+        rule_name: this.currentTimeVal,
+        brand_id: this.ifDataExtension.brand,
+        cycle_id: this.ifDataExtension.period || '',
+        vip_channel_name: this.ifDataExtension.register || '',
+        enter_first: this.ifDataExtension.newPeriod || '',
+        purchase_week: this.ifDataExtension.newMbmber || '',
+        purchase_first: this.ifDataExtension.newBuy || '',
+        excluded_guide:this.ifDataExtension.excluded_guide || '',
+        reg_brand_id:this.ifDataExtension.reg_brand_id || ''
+      };
+      if(this.getDetailId == '') {
+        this.$.post("rule/insert",data).then(res=>{
+          if(res.data.code == 200) {
+            this.getDetailId = res.data.data
+            this.getDetail()
+          }else{
+            this.$message(res.data.msg)
+          }
+        })
+      }else{
+        this.$.post("rule/update",data).then(res=>{
+          if(res.data.code == 200) {
+            this.getDetailId = res.data.data
+            this.getDetail()
+          }else{
+            this.$message(res.data.msg)
+          }
+        })
       }
-      this.$.get("crowd/getClvCrowdCount",{params:data}).then(res=>{
-        if(res.data.code == 200) {
-          this.ifDataExtension.crowd_count = res.data.data
-        }else{
-          this.ifDataExtension.crowd_count = res.data.msg
-        }
-      })
     },
     backlevelSms(val) {
       if(this.propsSms.ifSms != '') {
