@@ -146,26 +146,26 @@
               <el-col :span="12">
                 <div class="select-option-ipt" v-if="ifNewPeriod">
                   <span class="mr15">New Entry:</span>&nbsp;&nbsp;&nbsp;
-                  <el-radio v-model="propsData.newPeriod" label="Y">Yes</el-radio>
-                  <el-radio v-model="propsData.newPeriod" label="N">No</el-radio>
+                  <el-radio v-model="propsData.newPeriod" label="Y" @click.native.prevent="elRadios('Y','newPeriod')">Yes</el-radio>
+                  <el-radio v-model="propsData.newPeriod" label="N" @click.native.prevent="elRadios('N','newPeriod')">No</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewBuy">
                   <span class="mr05">First Purchase:</span>
-                  <el-radio v-model="propsData.newBuy" label="Y">Yes</el-radio>
-                  <el-radio v-model="propsData.newBuy" label="N">No</el-radio>
+                  <el-radio v-model="propsData.newBuy" label="Y" @click.native.prevent="elRadios('Y','newBuy')">Yes</el-radio>
+                  <el-radio v-model="propsData.newBuy" label="N" @click.native.prevent="elRadios('N','newBuy')">No</el-radio>
                 </div>
                 <div class="select-option-ipt" v-if="ifNewMbmber">
                   <span class="mr15">No Purchase:</span>
-                  <el-radio v-model="propsData.newMbmber" label="Y">Yes</el-radio>
-                  <el-radio v-model="propsData.newMbmber" label="N">No</el-radio>
+                  <el-radio v-model="propsData.newMbmber" label="Y" @click.native.prevent="elRadios('Y','newMbmber')">Yes</el-radio>
+                  <el-radio v-model="propsData.newMbmber" label="N" @click.native.prevent="elRadios('N','newMbmber')">No</el-radio>
                 </div>
                 <p v-if="ifNewMbmber">
                   <span class="mr15" style="color:red;font-size:10px;">(within a week)</span>  
                 </p>
                 <div class="select-option-ipt">
                   <span class="mr15">Exclude Staff:</span>
-                  <el-radio label="Y" v-model="propsData.shoppings">Yes</el-radio>
-                  <el-radio label="N" v-model="propsData.shoppings">No</el-radio>
+                  <el-radio label="Y" v-model="propsData.shoppings" @click.native.prevent="elRadios('Y','shoppings')">Yes</el-radio>
+                  <el-radio label="N" v-model="propsData.shoppings" @click.native.prevent="elRadios('N','shoppings')">No</el-radio>
                 </div>
               </el-col>
             </div>
@@ -286,6 +286,14 @@ export default {
     clickPopup(value) {
       this.$emit("sltDataContent", value);
     },
+    // radio单选或不选
+    elRadios(val,index) {
+      let valName = {
+        name:val,
+        elRadioModel:index
+      }
+      this.$emit("sltDataContent", valName);
+    },
     // dmp列表搜索
     searchDmpList(e) {
       this.$emit('searchDmpList',e)
@@ -294,6 +302,7 @@ export default {
     backlevel(val) {
       this.$emit("backlevel",val)
     },
+
     dmpTableIndex(val) {
       if(!val) {
         return false

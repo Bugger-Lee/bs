@@ -1247,6 +1247,21 @@ export default {
         this.propsData.crowdDmp.crowd_id = val.id
         this.propsData.crowdDmp.crowd_name = val.name
         this.propsData.crowdDmp.crowd_count = val.crowd_count
+      }else if(val.name == 'Y' || val.name == 'N') {
+        switch (val.elRadioModel) {
+          case 'newPeriod':
+            val.name === this.propsData.newPeriod ? this.propsData.newPeriod = '' : this.propsData.newPeriod = val.name
+            break;
+          case 'newBuy':
+            val.name === this.propsData.newBuy ? this.propsData.newBuy = '' : this.propsData.newBuy = val.name
+            break; 
+          case 'newMbmber':
+            val.name === this.propsData.newMbmber ? this.propsData.newMbmber = '' : this.propsData.newMbmber = val.name
+            break;
+          default: 
+            val.name === this.propsData.shoppings ? this.propsData.shoppings = '' : this.propsData.shoppings = val.name            
+            break;
+        } 
       }
     },
     sltPromotion(val) {
