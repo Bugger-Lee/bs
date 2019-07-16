@@ -9,7 +9,7 @@
           <div class="l-tit">
             <div class="l-tit-t">
               <p>
-                <a href>Journeys Dashboard</a>
+                <a href>HomePage</a>
                 <i>> Journey</i>
               </p>
               <p>{{this.userNameTie}}</p>

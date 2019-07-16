@@ -9,7 +9,7 @@
           <div class="l-tit">
             <p class="l-tit-t">
               <span>
-                <a href>Journeys Dashboard</a>
+                <a href>HomePage</a>
                 <i>> Journey</i>
               </span>
             </p>
