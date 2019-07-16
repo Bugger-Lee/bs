@@ -1000,7 +1000,6 @@ export default {
       } else if (val.name == 'openNext') {
         this.openSmsContent = true
         this.propsSms.editTitleVal = ''
-        this.propsSms.sendSmsVal = ''
         this.propsSms.editMsg = ''
       }else if(val.name == 'saveMsg') {
         if (this.propsSms.ifSmsDmp == '') {
@@ -1100,7 +1099,7 @@ export default {
       }
       this.$.post("template/insert",insertData).then(res=>{
         if(res.data.code == 200) {
-          this.$message(res.data.msg)
+          this.$message('SMS Created')
           this.smsLists()
           let objData = {
             template_text:this.propsSms.editMsg,
@@ -1122,7 +1121,6 @@ export default {
     sms() {
       this.smsLists();
       this.propsSms.editTitleVal = ''
-      this.propsSms.sendSmsVal = ''
       this.propsSms.editMsg = ''
       this.openSms = true
     },

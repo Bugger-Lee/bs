@@ -1198,7 +1198,6 @@ export default {
     },
     sms() {
       this.propsSms.editTitleVal = ''
-      this.propsSms.sendSmsVal = ''
       this.propsSms.editMsg = ''
       this.propsSms.couponShow = this.ifProDrag
       if(this.propsData.brandVal == "") {
@@ -1282,7 +1281,6 @@ export default {
       } else if (val.name == "openNext") {
         this.openSmsContent = true;
         this.propsSms.editTitleVal = ''
-        this.propsSms.sendSmsVal = ''
         this.propsSms.editMsg = ''
       } else if (val.name == "saveMsg") {
         this.saveMessage();
@@ -1385,7 +1383,7 @@ export default {
       }
       this.$.post("template/insert", insertData).then(res => {
         if (res.data.code == 200) {
-          this.$message(res.data.msg)
+          this.$message('SMS Created')
           this.smsLists();
           let objDataThree = {
             template_text: this.propsSms.editMsg,
