@@ -32,7 +32,7 @@
             <P class="pttb" v-if="ifDataExtension.brandShow"><span>Brand : {{ifDataExtension.brandShow}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.periodShow"><span>Period : {{ifDataExtension.periodShow}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.crowd_name"><span>Crowd Name : {{ifDataExtension.crowd_name}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.crowd_count !== ''"><span>Crowd Count : {{ifDataExtension.crowd_count}}</span><span></span></P>
+            <!-- <P class="pttb" v-if="ifDataExtension.crowd_count !== ''"><span>Crowd Count : {{ifDataExtension.crowd_count}}</span><span></span></P> -->
             <P class="pttb" v-if="ifDataExtension.register"><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.reg_brand_id_show"><span>Registered Brands : {{ifDataExtension.reg_brand_id_show}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.newPeriod"><span>New Entry : {{ifDataExtension.newPeriod}}</span><span></span></P>

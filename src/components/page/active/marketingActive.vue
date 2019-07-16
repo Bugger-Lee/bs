@@ -9,7 +9,7 @@
           <div class="l-tit">
             <p class="l-tit-t">
               <span>
-                <a href>Journeys Dashboard</a>
+                <a href>HomePage</a>
                 <i>> Journey</i>
               </span>
             </p>
@@ -473,7 +473,7 @@ export default {
       ifActiveDis:false,
       sourcesType:[],
       getSaveData:'',
-      getDetailId:""
+      // getDetailId:""
     };
   },
   created() {
@@ -686,9 +686,9 @@ export default {
       if (this.timeType.timestampEnd) {
         data.retired_time = this.timeType.timestampEnd
       }
-      if(this.propsData.data_socure == 'DMP-Data') {
-        data.crowd_count = this.ifDataExtension.crowd_count
-      }
+      // if(this.propsData.data_socure == 'DMP-Data') {
+      //   data.crowd_count = this.ifDataExtension.crowd_count
+      // }
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
           this.$message(res.data.msg)
@@ -857,21 +857,21 @@ export default {
           newBuy: this.propsData.newBuy,
           newMbmber: this.propsData.newMbmber,
           excluded_guide: this.propsData.shoppings,
-          reg_brand_id: this.propsData.regBrandVal,
-          crowd_count:''
+          reg_brand_id: this.propsData.regBrandVal
+          // crowd_count:''
         };
         this.ifDataExtension = objData;
         if(this.propsData.regBrandVal != '') {
           this.ifDataExtension.reg_brand_id_show = regBrand[0].brand_name
         }
-        this.clvCrowdCount()
+        // this.clvCrowdCount()
       }else if(this.propsData.data_socure == 'DMP-Data') {
         let dmpObjData = {
           brandShow:item_data[0].brand_name,
           brand:this.propsData.brandVal,
           crowd_id:this.propsData.crowdDmp.crowd_id,
-          crowd_name:this.propsData.crowdDmp.crowd_name,
-          crowd_count:this.propsData.crowdDmp.crowd_count
+          crowd_name:this.propsData.crowdDmp.crowd_name
+          // crowd_count:this.propsData.crowdDmp.crowd_count
         }
         this.ifDataExtension = dmpObjData
       }
@@ -1211,6 +1211,8 @@ export default {
       }
     },
     sms() {
+      this.propsSms.editTitleVal = ''
+      this.propsSms.editMsg = ''
       this.propsSms.couponShow = this.ifProDrag
       if(this.propsData.brandVal == "") {
         this.$message({
@@ -1260,7 +1262,7 @@ export default {
         this.propsData.crowdDmp = {}
         this.propsData.crowdDmp.crowd_id = val.id
         this.propsData.crowdDmp.crowd_name = val.name
-        this.propsData.crowdDmp.crowd_count = val.crowd_count
+        // this.propsData.crowdDmp.crowd_count = val.crowd_count
       }else if(val.name == 'Y' || val.name == 'N') {
         switch (val.elRadioModel) {
           case 'newPeriod':
@@ -1292,6 +1294,8 @@ export default {
         this.openSmsContent = false;
       } else if (val.name == "openNext") {
         this.openSmsContent = true;
+        this.propsSms.editTitleVal = ''
+        this.propsSms.editMsg = ''
       } else if (val.name == "saveMsg") {
         this.saveMessage();
       } else if (val.name == "inputBlur") {
@@ -1382,16 +1386,18 @@ export default {
       }
     },
     smsCreatedMessage() {
+      let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
       let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
       let insertData = {
         brand_id: this.ifDataExtension.brand,
         template_name:this.propsSms.editTitleVal,
         document_text: this.propsSms.editMsg,
-        uuid:(new Date()).valueOf()
+        uuid:(new Date()).valueOf(),
+        created_by:getSessionItem.user_info
       }
       this.$.post("template/insert", insertData).then(res => {
         if (res.data.code == 200) {
-          this.$message(res.data.msg)
+          this.$message('SMS Created')
           this.smsLists();
           let objDataThree = {
             template_text: this.propsSms.editMsg,
