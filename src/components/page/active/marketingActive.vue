@@ -335,6 +335,7 @@ import smsPopup from "@/components/public/smsPopup.vue";
 import popupTicket from "./module/popupTicket.vue";
 import popupOpenTime from "@/components/public/popupOpenTime.vue";
 import { constants } from 'fs';
+import { clearInterval, setTimeout } from 'timers';
 export default {
   name: "marketingActive",
   data() {
@@ -425,8 +426,9 @@ export default {
         periodList: [],
         registerList: [],
         dmpTable:[],
-        brandVal: "",
-        periodVal: "",
+        crowdCountIcon:false,
+        brandVal: null,
+        periodVal: null,
         periodShow: "",
         brandShow: "",
         registerVal: "",
@@ -437,7 +439,7 @@ export default {
         data_code:"",
         SearchDmp:"",
         shoppings:"",
-        regBrandVal:"",
+        regBrandVal:null,
         crowdDmp:""
       },
       propsTicket:{
@@ -458,7 +460,7 @@ export default {
         dataSelected: 2,
         ifSms: '',
         ifSmsDmp:'',
-        sendSmsVal: "",
+        sendSmsVal: null,
         editTitleVal:""
       },
       couponName: "",
@@ -472,8 +474,7 @@ export default {
       ifDisabled:false,
       ifActiveDis:false,
       sourcesType:[],
-      getSaveData:'',
-      // getDetailId:""
+      getSaveData:''
     };
   },
   created() {
@@ -628,8 +629,7 @@ export default {
         created_by:getSessionItem.user_info,
         crowd_id:this.ifDataExtension.crowd_id || '',
         crowd_name:this.ifDataExtension.crowd_name || '',
-        excluded_guide:this.ifDataExtension.excluded_guide || '',
-        reg_brand_id:this.ifDataExtension.reg_brand_id || ''
+        excluded_guide:this.ifDataExtension.excluded_guide || ''
       };
       if (this.timeType.timestampEnd) {
         data.retired_time = this.timeType.timestampEnd
@@ -637,16 +637,19 @@ export default {
       if(this.propsData.data_socure == 'DMP-Data') {
         data.crowd_count = this.ifDataExtension.crowd_count
       }
+      if(this.ifDataExtension.reg_brand_id != null ) {
+        data.reg_brand_id = this.ifDataExtension.reg_brand_id
+      }
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
           this.$message(res.data.msg);
-          this.systemId = res.data.data;
           this.saveSave = false
           this.saveUpdate = true
           this.testDis = false
           this.titleDis = true
           sessionStorage.setItem("saveData", JSON.stringify(data))
           this.getSaveData = JSON.parse(sessionStorage.getItem("saveData"))
+          this.$router.push({path:'/activeDetail',query:{id:this.systemId}})
         } else {
           this.$message(res.data.msg);
         }
@@ -680,15 +683,17 @@ export default {
         created_by:getSessionItem.user_info,
         crowd_id:this.ifDataExtension.crowd_id || '',
         crowd_name:this.ifDataExtension.crowd_name || '',
-        excluded_guide:this.ifDataExtension.excluded_guide || '',
-        reg_brand_id:this.ifDataExtension.reg_brand_id || ''
+        excluded_guide:this.ifDataExtension.excluded_guide || ''
       };
       if (this.timeType.timestampEnd) {
         data.retired_time = this.timeType.timestampEnd
       }
-      // if(this.propsData.data_socure == 'DMP-Data') {
-      //   data.crowd_count = this.ifDataExtension.crowd_count
-      // }
+      if(this.propsData.data_socure == 'DMP-Data') {
+        data.crowd_count = this.ifDataExtension.crowd_count
+      }
+      if(this.ifDataExtension.reg_brand_id != null ) {
+        data.reg_brand_id = this.ifDataExtension.reg_brand_id
+      }
       this.$.post("rule/update", data).then(res => {
         if (res.data.code == 200) {
           this.$message(res.data.msg)
@@ -701,11 +706,19 @@ export default {
       });
     },
     getDetail() {
-      this.$.get('rule/getDetail?id='+this.getDetailId).then(res=>{
+      this.$.get('rule/getDetail?id='+this.systemId).then(res=>{
         if(res.data.code == 200) {
           if(res.data.data.crowd_count == -1) {
+            this.propsData.crowdCountIcon = true
             this.ifDataExtension.crowd_count = '人群数量计算中'
+            setTimeout(() => {
+              this.getDetail()
+            }, 10000)
+          }else if(res.data.data.crowd_count == 0){
+            this.propsData.crowdCountIcon = false
+            this.$message('人群计算失败')
           }else{
+            this.propsData.crowdCountIcon = false
             this.ifDataExtension.crowd_count = res.data.data.crowd_count
           }
         }else{
@@ -828,7 +841,7 @@ export default {
     },
     dataSummary() {
       if(this.propsData.data_socure == 'CLV-Data') {
-        if(this.propsData.brandVal == "" ||this.propsData.periodVal === "" ||this.propsData.registerVal.length === 0) {
+        if(this.propsData.brandVal == null || this.propsData.periodVal == null || this.propsData.registerVal.length === 0) {
           this.$message({
             showClose: true,
             message: "请您选择必选项",
@@ -837,7 +850,7 @@ export default {
           return false;
         }
       }else if(this.propsData.data_socure == 'DMP-Data') {
-        if(this.propsData.brandVal == "" || !this.propsData.crowdDmp.crowd_id) {
+        if(this.propsData.brandVal == null || !this.propsData.crowdDmp.crowd_id) {
           this.$message("请您填写必填项")
           return false
         }
@@ -857,21 +870,21 @@ export default {
           newBuy: this.propsData.newBuy,
           newMbmber: this.propsData.newMbmber,
           excluded_guide: this.propsData.shoppings,
-          reg_brand_id: this.propsData.regBrandVal
-          // crowd_count:''
+          reg_brand_id: this.propsData.regBrandVal,
+          crowd_count:''
         };
         this.ifDataExtension = objData;
-        if(this.propsData.regBrandVal != '') {
+        if(this.propsData.regBrandVal != null) {
           this.ifDataExtension.reg_brand_id_show = regBrand[0].brand_name
         }
-        // this.clvCrowdCount()
+        this.clvCrowdCount()
       }else if(this.propsData.data_socure == 'DMP-Data') {
         let dmpObjData = {
           brandShow:item_data[0].brand_name,
           brand:this.propsData.brandVal,
           crowd_id:this.propsData.crowdDmp.crowd_id,
-          crowd_name:this.propsData.crowdDmp.crowd_name
-          // crowd_count:this.propsData.crowdDmp.crowd_count
+          crowd_name:this.propsData.crowdDmp.crowd_name,
+          crowd_count:this.propsData.crowdDmp.crowd_count
         }
         this.ifDataExtension = dmpObjData
       }
@@ -893,30 +906,36 @@ export default {
       this.openData = true;
     },
     clvCrowdCount() {
+      let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
       let data = {
         rule_name: this.currentTimeVal,
         brand_id: this.ifDataExtension.brand,
-        cycle_id: this.ifDataExtension.period || '',
-        vip_channel_name: this.ifDataExtension.register || '',
-        enter_first: this.ifDataExtension.newPeriod || '',
-        purchase_week: this.ifDataExtension.newMbmber || '',
-        purchase_first: this.ifDataExtension.newBuy || '',
-        excluded_guide:this.ifDataExtension.excluded_guide || '',
-        reg_brand_id:this.ifDataExtension.reg_brand_id || ''
+        cycle_id: this.ifDataExtension.period,
+        vip_channel_name: this.ifDataExtension.register,
+        enter_first: this.ifDataExtension.newPeriod,
+        purchase_week: this.ifDataExtension.newMbmber ,
+        purchase_first: this.ifDataExtension.newBuy,
+        excluded_guide:this.ifDataExtension.excluded_guide,
+        command_code: this.propsData.data_code,
+        command_name:this.propsData.data_socure,
+        created_by:getSessionItem.user_info
       };
-      if(this.getDetailId == '') {
+      if(this.ifDataExtension.reg_brand_id != null ) {
+        data.reg_brand_id = this.ifDataExtension.reg_brand_id
+      }
+      if(this.systemId == '') {
         this.$.post("rule/insert",data).then(res=>{
           if(res.data.code == 200) {
-            this.getDetailId = res.data.data
+            this.systemId = res.data.data
             this.getDetail()
           }else{
             this.$message(res.data.msg)
           }
         })
       }else{
+        data.id = this.systemId
         this.$.post("rule/update",data).then(res=>{
           if(res.data.code == 200) {
-            this.getDetailId = res.data.data
             this.getDetail()
           }else{
             this.$message(res.data.msg)
@@ -1262,7 +1281,7 @@ export default {
         this.propsData.crowdDmp = {}
         this.propsData.crowdDmp.crowd_id = val.id
         this.propsData.crowdDmp.crowd_name = val.name
-        // this.propsData.crowdDmp.crowd_count = val.crowd_count
+        this.propsData.crowdDmp.crowd_count = val.crowd_count
       }else if(val.name == 'Y' || val.name == 'N') {
         switch (val.elRadioModel) {
           case 'newPeriod':
@@ -1331,7 +1350,7 @@ export default {
       });
     },
     saveMessage() {
-      if(this.propsSms.sendSmsVal == '') {
+      if(this.propsSms.sendSmsVal == null) {
         this.$message('请您选择短信渠道')
         return false
       }

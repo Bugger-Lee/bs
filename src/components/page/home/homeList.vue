@@ -63,6 +63,7 @@
               </el-table-column>
               <el-table-column prop="status_name" label="Status" show-overflow-tooltip></el-table-column>
               <el-table-column prop="command_name" label="Crowd Type" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="crowd_count" label="Crowd Count" show-overflow-tooltip></el-table-column>
               <el-table-column label="Time" show-overflow-tooltip>
                 <template slot-scope="scope">
                   <span>{{scope.row.schulder_time}}</span>
