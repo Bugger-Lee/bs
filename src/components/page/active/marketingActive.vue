@@ -30,7 +30,7 @@
               type="primary"
               class="pd-btn pd-back ifColor"
               v-if="this.saveSave==true"
-              @click="saveJourney()"
+              @click="updateJorney()"
             >Save</el-button>
             <el-button
               type="primary"
@@ -583,7 +583,7 @@ export default {
       }
       this.openTime = false;
     },
-    saveJourney() {
+    updateJorney() {
       if(this.propsData.data_socure == 'CLV-Data' || this.propsData.data_socure == '') {
         if(this.ifDataExtension.period == undefined ||this.ifDataExtension.register == undefined) {
           this.$message('请完成所有数据输入')
@@ -615,7 +615,6 @@ export default {
         sms_channel_id: this.propsSms.ifSms.sms_channel_id,
         template_id: this.propsSms.ifSms.id,
         brand_id: this.ifDataExtension.brand,
-        cycle_id: this.ifDataExtension.period || '',
         vip_channel_name: this.ifDataExtension.register || '',
         schulder_time: this.timeType.timestamp,
         camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id || '',
@@ -627,8 +626,6 @@ export default {
         command_name:this.propsData.data_socure,
         command_code: this.propsData.data_code,
         created_by:getSessionItem.user_info,
-        crowd_id:this.ifDataExtension.crowd_id || '',
-        crowd_name:this.ifDataExtension.crowd_name || '',
         excluded_guide:this.ifDataExtension.excluded_guide || ''
       };
       if (this.timeType.timestampEnd) {
@@ -636,72 +633,39 @@ export default {
       }
       if(this.propsData.data_socure == 'DMP-Data') {
         data.crowd_count = this.ifDataExtension.crowd_count
+        data.crowd_id = this.ifDataExtension.crowd_id
+        data.crowd_name = this.ifDataExtension.crowd_name
       }
       if(this.ifDataExtension.reg_brand_id != null ) {
         data.reg_brand_id = this.ifDataExtension.reg_brand_id
       }
-      this.$.post("rule/update", data).then(res => {
+      if(this.ifDataExtension.period) {
+        data.cycle_id = this.ifDataExtension.period
+      }
+      let urlData = ""
+      if(this.systemId) {
+        data.id = this.systemId
+        urlData = "rule/update"
+      }else{
+        urlData = "rule/insert"
+      }
+      this.$.post(urlData, data).then(res => {
+        this.$message(res.data.msg)
         if (res.data.code == 200) {
-          this.$message(res.data.msg);
-          this.saveSave = false
-          this.saveUpdate = true
-          this.testDis = false
-          this.titleDis = true
+          if(this.saveSave == true) {
+            this.saveSave = false
+            this.saveUpdate = true
+            this.testDis = false
+            this.titleDis = true
+            if(urlData == "rule/insert") {
+              this.systemId = res.data.data
+            }
+            this.$router.push({path:'/activeDetail',query:{id:this.systemId}}) 
+          }else{
+            this.testDis = false
+          }
           sessionStorage.setItem("saveData", JSON.stringify(data))
           this.getSaveData = JSON.parse(sessionStorage.getItem("saveData"))
-          this.$router.push({path:'/activeDetail',query:{id:this.systemId}})
-        } else {
-          this.$message(res.data.msg);
-        }
-      });
-    },
-    updateJorney() {
-      if(this.ifProDrag == true) {
-        if(this.propsTicket.ifPromotion.camp_coupon_id == undefined && this.propsTicket.ifPromotion.coupon_id == undefined) {
-          this.$message('请完成所有数据输入')
-          return false
-        }
-      }
-      let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
-      let data = {
-        id:this.systemId,
-        rule_name: this.currentTimeVal,
-        sms_channel_id: this.propsSms.ifSms.sms_channel_id,
-        template_id: this.propsSms.ifSms.id,
-        brand_id: this.ifDataExtension.brand,
-        cycle_id: this.ifDataExtension.period || '',
-        vip_channel_name: this.ifDataExtension.register || '',
-        schulder_time: this.timeType.timestamp,
-        camp_coupon_id: this.propsTicket.ifPromotion.camp_coupon_id || '',
-        coupon_id: this.propsTicket.ifPromotion.coupon_id || '',
-        enter_first: this.ifDataExtension.newPeriod || '',
-        purchase_week: this.ifDataExtension.newMbmber || '',
-        purchase_first: this.ifDataExtension.newBuy || '',
-        cron_express: this.cron_express,
-        command_name:this.propsData.data_socure,
-        command_code:this.propsData.data_code,
-        created_by:getSessionItem.user_info,
-        crowd_id:this.ifDataExtension.crowd_id || '',
-        crowd_name:this.ifDataExtension.crowd_name || '',
-        excluded_guide:this.ifDataExtension.excluded_guide || ''
-      };
-      if (this.timeType.timestampEnd) {
-        data.retired_time = this.timeType.timestampEnd
-      }
-      if(this.propsData.data_socure == 'DMP-Data') {
-        data.crowd_count = this.ifDataExtension.crowd_count
-      }
-      if(this.ifDataExtension.reg_brand_id != null ) {
-        data.reg_brand_id = this.ifDataExtension.reg_brand_id
-      }
-      this.$.post("rule/update", data).then(res => {
-        if (res.data.code == 200) {
-          this.$message(res.data.msg)
-          this.testDis = false
-          sessionStorage.setItem("saveData", JSON.stringify(data))
-          this.getSaveData = JSON.parse(sessionStorage.getItem("saveData"))
-        } else {
-          this.$message(res.data.msg);
         }
       });
     },
@@ -716,7 +680,7 @@ export default {
             }, 10000)
           }else if(res.data.data.crowd_count == 0){
             this.propsData.crowdCountIcon = false
-            this.$message('人群计算失败')
+            this.ifDataExtension.crowd_count = '人群数量计算失败'
           }else{
             this.propsData.crowdCountIcon = false
             this.ifDataExtension.crowd_count = res.data.data.crowd_count
@@ -878,6 +842,7 @@ export default {
           this.ifDataExtension.reg_brand_id_show = regBrand[0].brand_name
         }
         this.clvCrowdCount()
+        return false
       }else if(this.propsData.data_socure == 'DMP-Data') {
         let dmpObjData = {
           brandShow:item_data[0].brand_name,
@@ -906,42 +871,50 @@ export default {
       this.openData = true;
     },
     clvCrowdCount() {
-      let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
-      let data = {
-        rule_name: this.currentTimeVal,
-        brand_id: this.ifDataExtension.brand,
-        cycle_id: this.ifDataExtension.period,
-        vip_channel_name: this.ifDataExtension.register,
-        enter_first: this.ifDataExtension.newPeriod,
-        purchase_week: this.ifDataExtension.newMbmber ,
-        purchase_first: this.ifDataExtension.newBuy,
-        excluded_guide:this.ifDataExtension.excluded_guide,
-        command_code: this.propsData.data_code,
-        command_name:this.propsData.data_socure,
-        created_by:getSessionItem.user_info
-      };
-      if(this.ifDataExtension.reg_brand_id != null ) {
-        data.reg_brand_id = this.ifDataExtension.reg_brand_id
-      }
-      if(this.systemId == '') {
-        this.$.post("rule/insert",data).then(res=>{
-          if(res.data.code == 200) {
-            this.systemId = res.data.data
-            this.getDetail()
-          }else{
-            this.$message(res.data.msg)
+      this.$alert('人群将会重新计算，请不要频繁操作', '提示', {
+        confirmButtonText: '确定',
+        showClose:false,
+        callback: action => {
+          let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
+          let data = {
+            rule_name: this.currentTimeVal,
+            brand_id: this.ifDataExtension.brand,
+            cycle_id: this.ifDataExtension.period,
+            vip_channel_name: this.ifDataExtension.register,
+            enter_first: this.ifDataExtension.newPeriod,
+            purchase_week: this.ifDataExtension.newMbmber ,
+            purchase_first: this.ifDataExtension.newBuy,
+            excluded_guide:this.ifDataExtension.excluded_guide,
+            command_code: this.propsData.data_code,
+            command_name:this.propsData.data_socure,
+            created_by:getSessionItem.user_info
+          };
+          if(this.ifDataExtension.reg_brand_id != null ) {
+            data.reg_brand_id = this.ifDataExtension.reg_brand_id
           }
-        })
-      }else{
-        data.id = this.systemId
-        this.$.post("rule/update",data).then(res=>{
-          if(res.data.code == 200) {
-            this.getDetail()
+          if(this.systemId == '') {
+            this.$.post("rule/insert",data).then(res=>{
+              if(res.data.code == 200) {
+                this.systemId = res.data.data
+                this.getDetail()
+              }else{
+                this.$message(res.data.msg)
+              }
+            })
           }else{
-            this.$message(res.data.msg)
+            data.id = this.systemId
+            this.$.post("rule/update",data).then(res=>{
+              if(res.data.code == 200) {
+                this.getDetail()
+              }else{
+                this.$message(res.data.msg)
+              }
+            })
           }
-        })
-      }
+          this.openDataContent = false;
+          this.openData = true;
+        }
+      })
     },
     backlevelSms(val) {
       if(this.propsSms.ifSms != '') {

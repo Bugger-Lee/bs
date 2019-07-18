@@ -32,13 +32,13 @@
             <P class="pttb" v-if="ifDataExtension.brandShow"><span>Brand : {{ifDataExtension.brandShow}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.periodShow"><span>Period : {{ifDataExtension.periodShow}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.crowd_name"><span>Crowd Name : {{ifDataExtension.crowd_name}}</span><span></span></P>
-            <P class="pttb" v-if="ifDataExtension.crowd_count !== ''"><span>Crowd Count : {{ifDataExtension.crowd_count}}<i style="color:#409EFF;font-size:20px;" class="el-icon-loading" v-if="propsData.crowdCountIcon == true"></i></span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.register"><span>Registered Channels : {{ifDataExtension.register}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.reg_brand_id_show"><span>Registered Brands : {{ifDataExtension.reg_brand_id_show}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.newPeriod"><span>New Entry : {{ifDataExtension.newPeriod}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.newBuy"><span>First Purchase : {{ifDataExtension.newBuy}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.newMbmber"><span>No Purchase (within a week) : {{ifDataExtension.newMbmber}}</span><span></span></P>
             <P class="pttb" v-if="ifDataExtension.excluded_guide"><span>Exclude Staff : {{ifDataExtension.excluded_guide}}</span><span></span></P>
+            <P class="pttb" v-if="ifDataExtension.crowd_count !== ''"><span>Crowd Count : {{ifDataExtension.crowd_count}}<i style="color:#409EFF;font-size:20px;" class="el-icon-loading" v-if="propsData.crowdCountIcon == true"></i></span><span></span></P>
           </div>
         </div>
       </div>
