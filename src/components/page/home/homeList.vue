@@ -71,6 +71,19 @@
                 </template>
               </el-table-column>
               <el-table-column prop="created_by" label="Creator" show-overflow-tooltip></el-table-column>
+              <el-table-column
+                fixed="right"
+                label="操作"
+                width="80">
+                <template slot-scope="scope">
+                  <el-button
+                    @click.native.prevent="deleteIndexList(scope, tableData)"
+                    type="text"
+                    size="small">
+                    移除
+                  </el-button>
+                </template>
+              </el-table-column>
               <div style="text-align:center; padding: 10px 0" slot="append" v-if="showLoading"><i class="el-icon-loading" style="color:#1589ee;font-size:35px;"></i></div>
             </el-table>
           </el-col>
@@ -165,6 +178,15 @@ export default {
           this.totalDate = res.data.data
           this.JourneyTotal = res.data.size
           this.splitDate()
+        }
+      })
+    },
+    // 删除
+    deleteIndexList(val) {
+      this.$.post("rule/delete?id="+val.row.id).then(res=>{
+        this.$message(res.data.msg)
+        if(res.data.code == 200) {
+          this.homeLists()
         }
       })
     },

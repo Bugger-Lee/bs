@@ -632,9 +632,11 @@ export default {
         data.retired_time = this.timeType.timestampEnd
       }
       if(this.propsData.data_socure == 'DMP-Data') {
-        data.crowd_count = this.ifDataExtension.crowd_count
         data.crowd_id = this.ifDataExtension.crowd_id
         data.crowd_name = this.ifDataExtension.crowd_name
+      }
+      if(this.ifDataExtension.crowd_count != "人群数量计算中" && this.ifDataExtension.crowd_count != "人群数量计算失败") {
+        data.crowd_count = this.ifDataExtension.crowd_count
       }
       if(this.ifDataExtension.reg_brand_id != null ) {
         data.reg_brand_id = this.ifDataExtension.reg_brand_id
@@ -669,21 +671,21 @@ export default {
         }
       });
     },
-    getDetail() {
-      this.$.get('rule/getDetail?id='+this.systemId).then(res=>{
+    getCrowdCount() {
+      this.$.get('rule/getCrowdCount?id='+this.systemId).then(res=>{
         if(res.data.code == 200) {
-          if(res.data.data.crowd_count == -1) {
+          if(res.data.data == -1) {
             this.propsData.crowdCountIcon = true
             this.ifDataExtension.crowd_count = '人群数量计算中'
             setTimeout(() => {
-              this.getDetail()
+              this.getCrowdCount()
             }, 10000)
-          }else if(res.data.data.crowd_count == 0){
+          }else if(res.data.data == 0){
             this.propsData.crowdCountIcon = false
             this.ifDataExtension.crowd_count = '人群数量计算失败'
           }else{
             this.propsData.crowdCountIcon = false
-            this.ifDataExtension.crowd_count = res.data.data.crowd_count
+            this.ifDataExtension.crowd_count = res.data.data
           }
         }else{
           this.$message(res.data.data)
@@ -896,7 +898,7 @@ export default {
             this.$.post("rule/insert",data).then(res=>{
               if(res.data.code == 200) {
                 this.systemId = res.data.data
-                this.getDetail()
+                this.getCrowdCount()
               }else{
                 this.$message(res.data.msg)
               }
@@ -905,7 +907,7 @@ export default {
             data.id = this.systemId
             this.$.post("rule/update",data).then(res=>{
               if(res.data.code == 200) {
-                this.getDetail()
+                this.getCrowdCount()
               }else{
                 this.$message(res.data.msg)
               }
@@ -917,6 +919,7 @@ export default {
       })
     },
     backlevelSms(val) {
+      this.propsSms.dataSelected = 2
       if(this.propsSms.ifSms != '') {
         this.openSmsContent = false;
         this.openSms = true;
@@ -1186,7 +1189,7 @@ export default {
       }
     },
     popupTicket() {
-      if(this.propsData.brandVal == "") {
+      if(this.propsData.brandVal == null) {
         this.$message({
           showClose: true,
           message: '请您先将数据源里的必选内容选完',
@@ -1203,10 +1206,11 @@ export default {
       }
     },
     sms() {
+      this.propsSms.dataSelected = 2
       this.propsSms.editTitleVal = ''
       this.propsSms.editMsg = ''
       this.propsSms.couponShow = this.ifProDrag
-      if(this.propsData.brandVal == "") {
+      if(this.propsData.brandVal == null) {
         this.$message({
           showClose: true,
           message: '请您先将数据源里的必选内容选完',
@@ -1328,6 +1332,7 @@ export default {
         return false
       }
       let sms_data = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
+      let reg = ""
       if (this.propsSms.dataSelected == 2) {
         if(this.propsSms.ifSmsDmp.template_text == undefined) {
           this.$message('请填写必填项')
@@ -1340,8 +1345,6 @@ export default {
           id:this.propsSms.ifSmsDmp.id
         }
         this.propsSms.ifSms = objData;
-        this.openSmsContent = false;
-        this.openSms = true;
       } else if (this.propsSms.dataSelected == 3) {
         if(!this.propsSms.editTitleVal) {
           this.$message('请输入title')
@@ -1351,24 +1354,24 @@ export default {
           this.$message('模板内容不可以为空')
           return false
         }
-        let reg = this.propsSms.editMsg
-        if(reg.indexOf(" $XXX$ ")==-1 && this.propsSms.couponShow == true) {
-          this.$message('模板内容格式不正确')
-          return false
-        }else if(reg.indexOf(" $XXX$ ")!=-1 && this.propsSms.couponShow == false) {
-          this.$confirm('文案内容中含有 $XXX$ 是否继续？', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.smsCreatedMessage()
-          }).catch(() => {
-            return false
-          })
-          return false
-        }
-        this.smsCreatedMessage()
       }
+      this.propsSms.dataSelected == 3 ? reg = this.propsSms.editMsg:reg = this.propsSms.ifSms.template_text
+      if(reg.indexOf(" $XXX$ ")==-1 && this.propsSms.couponShow == true) {
+        this.$message('模板内容格式不正确')
+        return false
+      }else if(reg.indexOf(" $XXX$ ")!=-1 && this.propsSms.couponShow == false) {
+        this.$confirm('文案内容中含有 $XXX$ 是否继续？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.propsSms.dataSelected == 3 ? this.smsCreatedMessage():(this.openSmsContent = false,this.openSms = true)
+        }).catch(() => {
+          return false
+        })
+        return false
+      }
+      this.propsSms.dataSelected == 3 ? this.smsCreatedMessage():(this.openSmsContent = false,this.openSms = true)
       if(this.saveUpdate == true) {
         if(this.propsSms.ifSms.id != this.getSaveData.template_id || 
         this.propsSms.ifSms.sms_channel_id != this.getSaveData.sms_channel_id) {
