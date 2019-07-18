@@ -9,7 +9,7 @@
           <div class="l-tit">
             <div class="l-tit-t">
               <p>
-                <a href>HomePage</a>
+                <a @click="goToHome()" style="cursor:pointer;">HomePage</a>
                 <i>> Journey</i>
               </p>
               <p>{{this.userNameTie}}</p>
@@ -347,7 +347,8 @@ export default {
       ifDisabled:false,
       ifActiveDis:false,
       getSaveDataDetail:'',
-      taskStatusMsg:''
+      taskStatusMsg:'',
+      warnTips:""
     };
   },
   components: {
@@ -367,6 +368,21 @@ export default {
     this.taskStatus()
   },
   methods: {
+    goToHome() {
+      if(this.warnTips == '') {
+        this.$confirm('Journey Builder未保存,是否继续？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$router.push('./')
+        }).catch(() => {
+            return false       
+        })
+      }else{
+        this.$router.push('./')
+      }
+    },
     doneTime() {
       let datas = {
         loopType: this.timeType.timeVal,
@@ -571,7 +587,11 @@ export default {
       })
     },
     popupTicket() {
-      this.openTicket = true
+      if(this.ifTicket.camp_coupon_id !='' || this.ifTicket.coupon_id != '') {
+        this.openTicket = true
+      }else{
+        this.openTicketContent = true
+      }
       this.discountLists()
     },
     detailStatus(val) {
@@ -630,6 +650,7 @@ export default {
         }
         this.$.post('rule/update',data).then(res=>{
           if(res.data.code == 200) {
+            this.warnTips = 1
             this.testDis = false
             this.$message(res.data.msg)
             sessionStorage.setItem("saveDataDetail", JSON.stringify(data))
@@ -865,8 +886,12 @@ export default {
     },
     PromotionLevel(val) {
       if(val == 1) {
-        this.openTicketContent = false
-        this.openTicket = true
+        if(this.ifTicket.camp_coupon_id !='' || this.ifTicket.coupon_id != '') {
+          this.openTicketContent = false
+          this.openTicket = true
+        }else{
+          this.openTicketContent = false
+        }
       }else if(val == 2){
         this.promotionSummary()
       }else if(val == 'edit') {

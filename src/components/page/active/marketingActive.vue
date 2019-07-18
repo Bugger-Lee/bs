@@ -9,7 +9,7 @@
           <div class="l-tit">
             <p class="l-tit-t">
               <span>
-                <a href>HomePage</a>
+                <a @click="goToHome()" style="cursor:pointer;">HomePage</a>
                 <i>> Journey</i>
               </span>
             </p>
@@ -474,7 +474,8 @@ export default {
       ifDisabled:false,
       ifActiveDis:false,
       sourcesType:[],
-      getSaveData:''
+      getSaveData:'',
+      warnTips:""
     };
   },
   created() {
@@ -507,6 +508,21 @@ export default {
     next();
   },
   methods: {
+    goToHome() {
+      if(this.warnTips == '') {
+        this.$confirm('Journey Builder未保存,是否继续？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$router.push('./')
+        }).catch(() => {
+            return false       
+        })
+      }else{
+        this.$router.push('./')
+      }
+    },
     editTitle() {
       if(this.saveUpdate != true) {
         this.currentTimeVal = ''
@@ -654,6 +670,7 @@ export default {
       this.$.post(urlData, data).then(res => {
         this.$message(res.data.msg)
         if (res.data.code == 200) {
+          this.warnTips = 1
           if(this.saveSave == true) {
             this.saveSave = false
             this.saveUpdate = true
