@@ -220,7 +220,7 @@
         </div>
       </el-col>
       <span slot="footer">
-        <el-button @click="openDataContentProps = false" >Cancel</el-button>
+        <el-button @click="backlevel('cancel')" >Cancel</el-button>
         <el-button type="primary" @click="backlevel(2)">Summary</el-button>
       </span>
     </el-dialog>

@@ -197,7 +197,7 @@
         </div>
       </el-col>
       <span slot="footer">
-        <el-button @click="openDataContentProps = false">Cancel</el-button>
+        <el-button @click="clickPopup({name:'cancel'})">Cancel</el-button>
         <el-button type="primary" @click="clickPopup({name:'saveMsg'})">Save Meaasge</el-button>
       </span>
     </el-dialog>
@@ -275,6 +275,10 @@ export default {
         this.showChange = true
         if(this.smsTable) {
           this.setRow()
+        }
+      }else if(value.name == 'cancel') {
+        if(!this.propsSms.ifSms) {
+          this.$refs.singleTable.setCurrentRow()
         }
       }
     },
