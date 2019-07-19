@@ -9,7 +9,7 @@
           <div class="l-tit">
             <div class="l-tit-t">
               <p>
-                <a href>HomePage</a>
+                <a @click="goToHome()" style="cursor:pointer;">HomePage</a>
                 <i>> Journey</i>
               </p>
               <p>{{this.userNameTie}}</p>
@@ -255,7 +255,8 @@ export default {
           SearchDmp:'',
           defaultData:'',
           shoppings:'',
-          regBrandVal:'',
+          regBrandVal:null,
+          crowdCountIcon:false,
           crowdDmp:''
       },
       propsSms:{
@@ -346,7 +347,8 @@ export default {
       ifDisabled:false,
       ifActiveDis:false,
       getSaveDataDetail:'',
-      taskStatusMsg:''
+      taskStatusMsg:'',
+      warnTips:""
     };
   },
   components: {
@@ -366,6 +368,21 @@ export default {
     this.taskStatus()
   },
   methods: {
+    goToHome() {
+      if(this.warnTips == '') {
+        this.$confirm('Journey Builder未保存,是否继续？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$router.push('./')
+        }).catch(() => {
+            return false       
+        })
+      }else{
+        this.$router.push('./')
+      }
+    },
     doneTime() {
       let datas = {
         loopType: this.timeType.timeVal,
@@ -376,6 +393,9 @@ export default {
       this.dateChangeCron(datas)
       this.cron_express = this.dateChangeCron(datas)
       if(this.timeType.executeType == 1) {
+        if(this.timeType.dateTimeVal == '') {
+          this.$message("请您完善时间信息");
+        }
         this.cron_express = ''
       }else if(this.timeType.executeType == 2){
         if (this.timeType.timeVal == "Days") {
@@ -567,7 +587,11 @@ export default {
       })
     },
     popupTicket() {
-      this.openTicket = true
+      if(this.ifTicket.camp_coupon_id !='' || this.ifTicket.coupon_id != '') {
+        this.openTicket = true
+      }else{
+        this.openTicketContent = true
+      }
       this.discountLists()
     },
     detailStatus(val) {
@@ -595,7 +619,6 @@ export default {
           sms_channel_id:this.propsSms.ifSms.sms_channel_id,
           template_id:temp_data_id,
           brand_id:this.ifDataExtension.brand_id,
-          cycle_id:this.ifDataExtension.cycle_id || '',
           vip_channel_name:this.ifDataExtension.vip_channel_name || '',
           schulder_time:this.timeType.timestamp,
           camp_coupon_id:this.ifTicket.camp_coupon_id || '',
@@ -607,25 +630,30 @@ export default {
           command_name:this.propsData.defaultData.command_name,
           command_code:this.propsData.defaultData.command_code,
           created_by:getSessionItem.user_info,
-          crowd_id:this.ifDataExtension.crowd_id || '',
-          crowd_name:this.ifDataExtension.crowd_name || '',
-          excluded_guide:this.ifDataExtension.excluded_guide || '',
-          reg_brand_id:this.ifDataExtension.reg_brand_id || ''
+          excluded_guide:this.ifDataExtension.excluded_guide || ''
         }
         if(this.timeType.timestampEnd) {
           data.retired_time = this.timeType.timestampEnd
         }
-        // if(this.propsData.defaultData.command_name == 'DMP-Data') {
-        //   data.crowd_count = this.ifDataExtension.crowd_count
-        // }
+        if(this.propsData.defaultData.command_name == 'DMP-Data') {
+          data.crowd_id = this.ifDataExtension.crowd_id
+          data.crowd_name = this.ifDataExtension.crowd_name
+        }
+        if(this.ifDataExtension.crowd_count != "人群数量计算中" && this.ifDataExtension.crowd_count != "人群数量计算失败") {
+          data.crowd_count = this.ifDataExtension.crowd_count
+        }
+        if(this.ifDataExtension.reg_brand_id != null ) {
+          data.reg_brand_id = this.ifDataExtension.reg_brand_id
+        }
+        if(this.ifDataExtension.cycle_id) {
+          data.cycle_id = this.ifDataExtension.cycle_id
+        }
         this.$.post('rule/update',data).then(res=>{
           if(res.data.code == 200) {
+            this.warnTips = 1
             this.testDis = false
             this.$message(res.data.msg)
             sessionStorage.setItem("saveDataDetail", JSON.stringify(data))
-            // if(this.propsData.defaultData.command_name == 'CLV-Data') {
-            //   this.activeMessage()              
-            // }
           }else{
             this.$message(res.data.msg)
           }
@@ -819,7 +847,7 @@ export default {
         this.propsData.crowdDmp = {}
         this.propsData.crowdDmp.crowd_id = val.id
         this.propsData.crowdDmp.crowd_name = val.name
-        // this.propsData.crowdDmp.crowd_count = val.crowd_count
+        this.propsData.crowdDmp.crowd_count = val.crowd_count
       }else if(val.name == 'Y' || val.name == 'N') {
         switch (val.elRadioModel) {
           case 'newPeriod':
@@ -858,8 +886,12 @@ export default {
     },
     PromotionLevel(val) {
       if(val == 1) {
-        this.openTicketContent = false
-        this.openTicket = true
+        if(this.ifTicket.camp_coupon_id !='' || this.ifTicket.coupon_id != '') {
+          this.openTicketContent = false
+          this.openTicket = true
+        }else{
+          this.openTicketContent = false
+        }
       }else if(val == 2){
         this.promotionSummary()
       }else if(val == 'edit') {
@@ -914,26 +946,27 @@ export default {
           purchase_week:this.propsData.newMbmber,
           excluded_guide:this.propsData.shoppings,
           reg_brand_name:this.propsData.regBrandVal,
-          // crowd_count:''
+          crowd_count:''
         }
         this.ifDataExtension = objData
         if(this.propsData.regBrandVal != null && this.propsData.regBrandVal != '' && regBrand != []) {
           this.ifDataExtension.reg_brand_id = regBrand[0].id
         }
-        // this.clvCrowdCount()
+        this.clvCrowdCount()
+        return false
       }else if(this.propsData.defaultData.command_name == 'DMP-Data') {
         if(this.propsData.crowdDmp == '') {
           this.propsData.crowdDmp = {}
           this.propsData.crowdDmp.crowd_id = this.ifDataExtension.crowd_id
           this.propsData.crowdDmp.crowd_name = this.ifDataExtension.crowd_name
-          // this.propsData.crowdDmp.crowd_count = this.ifDataExtension.crowd_count
+          this.propsData.crowdDmp.crowd_count = this.ifDataExtension.crowd_count
         }
         let objDataDmp = {
           brand_id:item_data[0].id,
           brand_name:this.propsData.brandVal,
           crowd_id:this.propsData.crowdDmp.crowd_id,
           crowd_name:this.propsData.crowdDmp.crowd_name,
-          // crowd_count:this.propsData.crowdDmp.crowd_count
+          crowd_count:this.propsData.crowdDmp.crowd_count
         }
         this.ifDataExtension = objDataDmp
       }
@@ -955,27 +988,70 @@ export default {
       this.openDataContent = false
       this.openData = true
     },
-    // clvCrowdCount() {
-    //   let data={
-    //     brandName:this.ifDataExtension.brand_name,
-    //     cycleType:this.ifDataExtension.cycle_type,
-    //     regBrandName:this.ifDataExtension.reg_brand_name,
-    //     vipChannelName:this.ifDataExtension.vip_channel_name,
-    //     enterFirst:this.ifDataExtension.newPeriod,
-    //     purchaseFirst:this.ifDataExtension.newBuy,
-    //     purchaseWeek:this.ifDataExtension.newMbmber,
-    //   }
-    //   this.$.get("crowd/getClvCrowdCount",{params:data}).then(res=>{
-    //     if(res.data.code == 200) {
-    //       this.ifDataExtension.crowd_count = res.data.data
-    //     }else{
-    //       this.ifDataExtension.crowd_count = res.data.msg
-    //     }
-    //   })
-    // },
+    clvCrowdCount() {
+      this.$alert('人群将会重新计算，请不要频繁操作', '提示', {
+        confirmButtonText: '确定',
+        showClose:false,
+        callback: action => {
+          let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
+          let data = {
+            id:this.$route.query.id,
+            rule_name: this.userNameTie,
+            brand_id: this.ifDataExtension.brand_id,
+            cycle_id: this.ifDataExtension.cycle_id,
+            vip_channel_name: this.ifDataExtension.vip_channel_name,
+            enter_first: this.ifDataExtension.enter_first,
+            purchase_week: this.ifDataExtension.purchase_week,
+            purchase_first: this.ifDataExtension.purchase_first,
+            excluded_guide:this.ifDataExtension.excluded_guide,
+            command_code:this.propsData.defaultData.command_code,
+            command_name:this.propsData.defaultData.command_name,
+            created_by:getSessionItem.user_info
+          };
+          if(this.ifDataExtension.reg_brand_id != null ) {
+            data.reg_brand_id = this.ifDataExtension.reg_brand_id
+          }
+          this.$.post("rule/update",data).then(res=>{
+            if(res.data.code == 200) {
+              this.getCrowdCount()
+            }else{
+              this.$message(res.data.msg)
+            }
+          })
+          this.openDataContent = false
+          this.openData = true
+        }
+      })
+    },
+    getCrowdCount() {
+      this.$.get('rule/getCrowdCount?id='+this.$route.query.id).then(res=>{
+        if(res.data.code == 200) {
+          if(res.data.data == -1) {
+            this.propsData.crowdCountIcon = true
+            this.ifDataExtension.crowd_count = '人群数量计算中'
+            setTimeout(() => {
+              this.getCrowdCount()
+            }, 10000)
+          }else if(res.data.data == 0){
+            this.propsData.crowdCountIcon = false
+            this.ifDataExtension.crowd_count = '人群数量计算失败'
+          }else{
+            this.propsData.crowdCountIcon = false
+            this.ifDataExtension.crowd_count = res.data.data
+          }
+        }else{
+          this.$message(res.data.data)
+        }
+      })
+    },
     backlevelSms() {
-      this.openSmsContent = false
-      this.openSms = true
+      this.propsSms.dataSelected = 2
+      if(this.propsSms.ifSms.template_text == null && this.propsSms.ifSms.sms_channel_content == null) {
+        this.openSmsContent = false
+      }else{
+        this.openSmsContent = false
+        this.openSms = true
+      }
     },
     smsLists() {
       this.$.get("template/getTemplate",{params:{brandId:this.ifDataExtension.brand_id,templateName:this.propsSms.SearchSms}}).then(res=>{
@@ -1043,8 +1119,17 @@ export default {
         })
     },
     saveMessage() {
+      if(this.propsSms.sendSmsVal == null || this.propsSms.sendSmsVal == '') {
+        this.$message('请选择短信渠道')
+        return false
+      }
       let smsObj = this.propsSms.sendSmsList.filter(item => item.channel_content == this.propsSms.sendSmsVal)
+      let reg = ""
       if(this.propsSms.dataSelected == 2) {
+        if(this.propsSms.ifSmsDmp.template_id == 0) {
+          this.$message('请选择短信内容')
+          return false
+        }
         let objDataTwo = {
           template_text:this.propsSms.ifSmsDmp.template_text,
           sms_channel_content:this.propsSms.sendSmsVal,
@@ -1052,8 +1137,6 @@ export default {
           template_id:this.propsSms.ifSmsDmp.template_id
         }
         this.propsSms.ifSms = objDataTwo
-        this.openSmsContent = false
-        this.openSms = true
       }else if(this.propsSms.dataSelected == 3){
         if(!this.propsSms.editTitleVal) {
           this.$message('请输入title')
@@ -1063,24 +1146,24 @@ export default {
           this.$message('模板内容不可以为空')
           return false
         }
-        let reg = this.propsSms.editMsg
-        if(reg.indexOf(" $XXX$ ")==-1 && this.propsSms.couponShow == true) {
-          this.$message('模板内容格式不正确')
-          return false
-        }else if(reg.indexOf(" $XXX$ ")!=-1 && this.propsSms.couponShow == false) {
-          this.$confirm('文案内容中含有 $XXX$ 是否继续？', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.smsCreatedMessage()
-          }).catch(() => {
-            return false
-          })
-          return false
-        }
-        this.smsCreatedMessage()
       }
+      this.propsSms.dataSelected == 3 ? reg = this.propsSms.editMsg:reg = this.propsSms.ifSms.template_text
+      if(reg.indexOf(" $XXX$ ")==-1 && this.propsSms.couponShow == true) {
+        this.$message('模板内容格式不正确')
+        return false
+      }else if(reg.indexOf(" $XXX$ ")!=-1 && this.propsSms.couponShow == false) {
+        this.$confirm('文案内容中含有 $XXX$ 是否继续？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.propsSms.dataSelected == 3 ? this.smsCreatedMessage():(this.openSmsContent = false,this.openSms = true)
+        }).catch(() => {
+          return false
+        })
+        return false
+      }
+      this.propsSms.dataSelected == 3 ? this.smsCreatedMessage():(this.openSmsContent = false,this.openSms = true)
       if(this.propsSms.ifSms.template_id != this.getSaveDataDetail.saveDataDetail.template_id || 
         this.propsSms.ifSms.sms_channel_id != this.getSaveDataDetail.saveDataDetail.sms_channel_id) {
           this.testDis = true
@@ -1120,9 +1203,14 @@ export default {
     },
     sms() {
       this.smsLists();
+      this.propsSms.dataSelected = 2
       this.propsSms.editTitleVal = ''
       this.propsSms.editMsg = ''
-      this.openSms = true
+      if(this.propsSms.ifSms.template_text == null && this.propsSms.ifSms.sms_channel_content == null) {
+        this.openSmsContent = true
+      }else{
+        this.openSms = true
+      }
     },
     selectTime() {
       this.openTime = true
