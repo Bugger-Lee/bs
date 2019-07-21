@@ -199,7 +199,7 @@
                 </el-col>
               </div>
               <div class="select-msg-table">
-                <el-table :data="dmpTable" style="width: 100%" highlight-current-row  @current-change="dmpTableIndex" height="220">
+                <el-table :data="dmpTable" ref="singleTable" style="width: 100%" highlight-current-row  @current-change="dmpTableIndex" height="220">
                   <el-table-column prop="name" label="Crowd Title" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="crowd_count" label="Quantity" show-overflow-tooltip> </el-table-column>
                   <!-- <el-table-column prop="status" label="Status" show-overflow-tooltip></el-table-column> -->
@@ -228,7 +228,7 @@
         </div>
       </el-col>
       <span slot="footer">
-        <el-button @click="openDataContentProps = false" >Cancel</el-button>
+        <el-button @click="backlevel('cancel')" >Cancel</el-button>
         <el-button type="primary" @click="backlevel(2)">Summary</el-button>
       </span>
     </el-dialog>
@@ -301,6 +301,11 @@ export default {
     // 取消  确定
     backlevel(val) {
       this.$emit("backlevel",val)
+      if(val == 'cancel') {
+        if(!this.ifDataExtension) {
+          this.$refs.singleTable.setCurrentRow();
+        }
+      }
     },
 
     dmpTableIndex(val) {

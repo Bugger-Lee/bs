@@ -747,35 +747,80 @@ export default {
         }
       });
     },
-    backlevel(val) {
-      if (val == 1) {
-        if(this.ifDataExtension != '') {
-          this.openDataContent = false;
-          this.openData = true;
-        }else{
-          this.openDataContent = false;
+    dataOrigin() {
+      if(!this.ifDataExtension) {
+        this.propsData.brandVal = null
+        this.propsData.periodVal = null
+        this.propsData.newPeriod = ''
+        this.propsData.newBuy = ''
+        this.propsData.newMbmber = ''
+        this.propsData.shoppings = ''
+        this.propsData.registerVal = ''
+        this.propsData.regBrandVal = ''
+      }else{
+        this.propsData.brandVal = this.ifDataExtension.brand
+        this.propsData.periodVal = this.ifDataExtension.period
+        if(this.propsData.registerVal) {
+          this.propsData.registerVal = this.ifDataExtension.register.split(",")
         }
-      } else if (val == 2) {
-        this.dataSummary();
-      } else if (val == "edit") {
-        this.openDataContent = true;
-        this.openData = false;
+        this.propsData.regBrandVal = this.ifDataExtension.reg_brand_id
+        this.propsData.newPeriod = this.ifDataExtension.newPeriod
+        this.propsData.newBuy = this.ifDataExtension.newBuy
+        this.propsData.newMbmber = this.ifDataExtension.newMbmber
+        this.propsData.shoppings = this.ifDataExtension.excluded_guide
       }
     },
+    backlevel(val) {
+      switch (val) {
+        case 1:
+          if(this.ifDataExtension != '') {
+            this.openDataContent = false;
+            this.openData = true;
+          }else{
+            this.openDataContent = false;
+          }
+        break;
+        case 2:
+          this.dataSummary()
+        break; 
+        case 'edit':
+          this.openDataContent = true;
+          this.openData = false;
+        break;
+        case 'cancel': 
+          this.openDataContent = false
+          this.dataOrigin()
+        break;
+      } 
+    },
     PromotionLevel(val) {
-      if (val == 1) {
-        if(this.propsTicket.ifPromotion != '') {
-          this.openTicketContent = false;
-          this.openTicket = true;
-        }else{
-          this.openTicketContent = false;
-        }
-      } else if (val == 2) {
-        this.promotionSummary()
-      } else if (val == "edit") {
-        this.openTicketContent = true;
-        this.openTicket = false;
-      }
+      switch (val) {
+        case 1:
+          if(this.propsTicket.ifPromotion != '') {
+            this.openTicketContent = false;
+            this.openTicket = true;
+          }else{
+            this.openTicketContent = false;
+          }
+        break;
+        case 2:
+          this.promotionSummary()
+        break; 
+        case 'edit':
+          this.openTicketContent = true;
+          this.openTicket = false;
+        break;
+        case 'cancel': 
+          this.openTicketContent = false
+          // if(!this.propsTicket.ifPromotion) {
+          //   this.checkedActive = undefined
+          //   this.checkedDiscounts = undefined
+          // }else{
+          //   this.checkedActive = this.propsTicket.ifPromotion.camp_coupon_id
+          //   this.checkedDiscounts = this.propsTicket.ifPromotion.coupon_id
+          // }
+        break;
+      } 
     },
     ifCheckedVal(val) {
       let active = [];
@@ -799,7 +844,8 @@ export default {
       })
     },
     promotionSummary() {
-      if (this.checkedActive == undefined || this.checkedDiscounts == undefined) {
+      if (this.checkedActive == undefined && this.checkedDiscounts == undefined || 
+      this.checkedActive == '' && this.checkedDiscounts == '') {
         this.$message({
           showClose: true,
           message: "请您选择优惠券或活动券",
@@ -1303,25 +1349,39 @@ export default {
     },
     sltSmsContent(val) {
       this.openSms = false;
-      if (val.name == "close1") {
-        this.openSmsContent = false;
-      } else if (val.name == "openNext") {
-        this.openSmsContent = true;
-        this.propsSms.editTitleVal = ''
-        this.propsSms.editMsg = ''
-      } else if (val.name == "saveMsg") {
-        this.saveMessage();
-      } else if (val.name == "inputBlur") {
-        this.inputBlur(val.value, val.id , val.templt);
-      } else if (val.name = "tableIndex") {
-        if(val.id) {
-          if (this.propsSms.ifSmsDmp == '') {
-            this.propsSms.ifSmsDmp = {}
+      switch (val.name) {
+        case "close1":
+          this.openSmsContent = false;          
+        break;
+        case "openNext":
+          this.openSmsContent = true;
+          this.propsSms.editTitleVal = ''
+          this.propsSms.editMsg = ''
+        break; 
+        case 'saveMsg':
+          this.saveMessage()
+        break;
+        case 'inputBlur': 
+          this.inputBlur(val.value, val.id , val.templt);
+        break;
+        case 'tableIndex': 
+          if(val.id) {
+            if (this.propsSms.ifSmsDmp == '') {
+              this.propsSms.ifSmsDmp = {}
+            }
+            this.propsSms.ifSmsDmp.template_text = val.document_text
+            this.propsSms.ifSmsDmp.id = val.id
           }
-          this.propsSms.ifSmsDmp.template_text = val.document_text
-          this.propsSms.ifSmsDmp.id = val.id
-        }
-      }
+        break;
+        case 'cancel': 
+          this.openSmsContent = false
+          if(!this.propsSms.ifSms) {
+            this.propsSms.sendSmsVal = null
+          }else{
+            this.propsSms.sendSmsVal = this.propsSms.ifSms.sms_channel_content
+          }
+        break;
+      } 
     },
     inputBlur(val, id,templt) {
       if (val == "") {

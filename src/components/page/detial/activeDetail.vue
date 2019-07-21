@@ -866,15 +866,32 @@ export default {
       }
     },
     backlevel(val) {
-      if(val == 1) {
-        this.openDataContent = false
-        this.openData = true
-      }else if(val == 2){
-        this.dataSummary()
-      }else if(val == 'edit') {
-        this.openDataContent = true
-        this.openData = false
-      }
+      switch (val) {
+        case 1:
+          this.openDataContent = false
+          this.openData = true
+        break;
+        case 2:
+          this.dataSummary()
+        break; 
+        case 'edit':
+          this.openDataContent = true
+          this.openData = false
+        break;
+        case 'cancel': 
+          this.openDataContent = false
+          this.propsData.brandVal = this.ifDataExtension.brand_name
+          this.propsData.periodVal = this.ifDataExtension.cycle_type
+          if(this.propsData.registerVal.length == 0) {
+            this.propsData.registerVal = this.ifDataExtension.vip_channel_name.split(",")
+          }
+          this.propsData.regBrandVal = this.ifDataExtension.reg_brand_name
+          this.propsData.newPeriod = this.ifDataExtension.enter_first
+          this.propsData.newBuy = this.ifDataExtension.purchase_first
+          this.propsData.newMbmber = this.ifDataExtension.purchase_week
+          this.propsData.shoppings = this.ifDataExtension.excluded_guide
+        break;
+      } 
     },
     backChange(val) {
       this.openTicket = false
@@ -1071,28 +1088,42 @@ export default {
     },
     sltSmsContent(val) {
       this.openSms = false
-      if (val.name == 'close1') {
-        this.openSmsContent = false
-      } else if (val.name == 'openNext') {
-        this.openSmsContent = true
-        this.propsSms.editTitleVal = ''
-        this.propsSms.editMsg = ''
-      }else if(val.name == 'saveMsg') {
-        if (this.propsSms.ifSmsDmp == '') {
-          this.propsSms.ifSmsDmp = {}
-          this.propsSms.ifSmsDmp.template_text = this.propsSms.ifSms.template_text,
-          this.propsSms.ifSmsDmp.template_id = this.propsSms.ifSms.template_id
-        }
-        this.saveMessage()
-      }else if(val.name == 'inputBlur') {
-        this.inputBlur(val.value,val.id,val.templt)
-      } else if (val.name = "tableIndex") {
-        if(val.id) {
-          this.propsSms.ifSmsDmp = {}
-          this.propsSms.ifSmsDmp.template_text = val.document_text
-          this.propsSms.ifSmsDmp.template_id = val.id
-        }
-      }
+      switch (val.name) {
+        case "close1":
+          this.openSmsContent = false;          
+        break;
+        case "openNext":
+          this.openSmsContent = true;
+          this.propsSms.editTitleVal = ''
+          this.propsSms.editMsg = ''
+        break; 
+        case 'saveMsg':
+          if (this.propsSms.ifSmsDmp == '') {
+            this.propsSms.ifSmsDmp = {}
+            this.propsSms.ifSmsDmp.template_text = this.propsSms.ifSms.template_text,
+            this.propsSms.ifSmsDmp.template_id = this.propsSms.ifSms.template_id
+          }
+          this.saveMessage()
+        break;
+        case 'inputBlur': 
+          this.inputBlur(val.value,val.id,val.templt)
+        break;
+        case 'tableIndex': 
+          if(val.id) {
+            this.propsSms.ifSmsDmp = {}
+            this.propsSms.ifSmsDmp.template_text = val.document_text
+            this.propsSms.ifSmsDmp.template_id = val.id
+          }
+        break;
+        case 'cancel': 
+          this.openSmsContent = false
+          if(!this.propsSms.ifSms) {
+             this.propsSms.sendSmsVal = ''
+          }else{
+            this.propsSms.sendSmsVal = this.propsSms.ifSms.sms_channel_content
+          }
+        break;
+      } 
     },
     inputBlur(val,id,templt) {
         if(val == '') {
