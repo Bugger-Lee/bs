@@ -109,7 +109,7 @@
                   </el-col>
                 </div>
                 <div class="select-msg-table">
-                  <el-table ref='singleTable' :data="smsTable" style="width: 100%"  highlight-current-row  @current-change="tableIndex" height="220" setCurrentRow>
+                  <el-table ref='singleTable' :data="smsTable" style="width: 100%"  highlight-current-row  @current-change="tableIndex" height="220">
                     <el-table-column prop="template_name" label="Title" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="brand_name" label="Brand" show-overflow-tooltip> </el-table-column>
                     <el-table-column prop="document_text" label="Sms Content" show-overflow-tooltip>

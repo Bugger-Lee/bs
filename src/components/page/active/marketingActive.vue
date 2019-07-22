@@ -315,7 +315,7 @@
           <span class="data-title-time"><i class="icon-time1"></i></span>Wait By Duration
         </span>
         <span slot="footer">
-          <el-button @click="openTime = false">Cancel</el-button>
+          <el-button @click="cancelTime()">Cancel</el-button>
           <el-button type="primary" @click="doneTime()">Done</el-button>
         </span>
         <popupOpenTime :timeType="timeType" 
@@ -586,7 +586,8 @@ export default {
       let objData = {
         crotabData:this.cron_express,
         schulder_time:this.timeType.dateTimeVal,
-        retired_time:this.timeType.dateEndVal
+        retired_time:this.timeType.dateEndVal,
+        periodData:datas
       }
       this.timeType.timeTypeData = objData
       if(this.saveUpdate == true) {
@@ -598,6 +599,24 @@ export default {
         }
       }
       this.openTime = false;
+    },
+    cancelTime() {
+      if(!this.timeType.timeTypeData) {
+        this.timeType.dateTimeVal = ''
+        this.timeType.dateEndVal = ''
+        this.timeType.timeVal = 'Days'
+        this.timeType.timeWeek = ''
+        this.timeType.timeMonths = ''
+        this.timeType.timePicker = ''
+      }else{
+        this.timeType.dateTimeVal = this.timeType.timeTypeData.schulder_time
+        this.timeType.dateEndVal = this.timeType.timeTypeData.retired_time
+        this.timeType.timeVal = this.timeType.timeTypeData.periodData.loopType
+        this.timeType.timeWeek = this.timeType.timeTypeData.periodData.wloopValue
+        this.timeType.timeMonths = this.timeType.timeTypeData.periodData.mloopValue
+        this.timeType.timePicker = this.timeType.timeTypeData.periodData.effectTime
+      }
+      this.openTime = false
     },
     updateJorney() {
       if(this.propsData.data_socure == 'CLV-Data' || this.propsData.data_socure == '') {
@@ -629,7 +648,7 @@ export default {
       let data = {
         rule_name: this.currentTimeVal,
         sms_channel_id: this.propsSms.ifSms.sms_channel_id,
-        template_id: this.propsSms.ifSms.id,
+        template_id: this.propsSms.ifSms.template_id,
         brand_id: this.ifDataExtension.brand,
         vip_channel_name: this.ifDataExtension.register || '',
         schulder_time: this.timeType.timestamp,
@@ -1419,7 +1438,7 @@ export default {
           template_text: this.propsSms.ifSmsDmp.template_text,
           sms_channel_content:this.propsSms.sendSmsVal,
           sms_channel_id: sms_data[0].id,
-          id:this.propsSms.ifSmsDmp.id
+          template_id:this.propsSms.ifSmsDmp.id
         }
         this.propsSms.ifSms = objData;
       } else if (this.propsSms.dataSelected == 3) {
@@ -1475,7 +1494,7 @@ export default {
             template_text: this.propsSms.editMsg,
             sms_channel_content:this.propsSms.sendSmsVal,
             sms_channel_id: sms_data[0].id,
-            id:res.data.data
+            template_id:res.data.data
           };
           this.propsSms.ifSms = objDataThree;
           this.openSmsContent = false;
