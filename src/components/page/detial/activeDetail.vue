@@ -199,7 +199,7 @@
         <span class="data-title-time"><i class="icon-time1"></i></span>Wait By Duration
       </span>
       <span slot="footer">
-        <el-button @click="openTime = false">Cancel</el-button>
+        <el-button @click="cancelTime()">Cancel</el-button>
         <el-button type="primary" @click="doneTime()">Done</el-button>
       </span>
       <popupOpenTime :timeType = "timeType" 
@@ -429,7 +429,8 @@ export default {
       let objData = {
         cron_express:this.cron_express,
         schulder_time:this.timeType.dateTimeVal,
-        retired_time:this.timeType.dateEndVal
+        retired_time:this.timeType.dateEndVal,
+        periodData:datas
       }
       this.timeType.timeTypeData = objData
       if(this.timeType.timeTypeData.cron_express != this.getSaveDataDetail.saveDataDetail.cron_express ||
@@ -437,6 +438,22 @@ export default {
         parseInt(new Date(this.timeType.timeTypeData.retired_time).getTime()) != parseInt(new Date(this.getSaveDataDetail.saveDataDetail.retired_time).getTime())) {
           this.testDis = true
           this.runDis = true
+      }
+      this.openTime = false
+    },
+    cancelTime() {
+      this.timeType.dateTimeVal = this.timeType.timeTypeData.schulder_time
+      this.timeType.dateEndVal = this.timeType.timeTypeData.retired_time
+      if(this.timeType.timeTypeData.cron_express) {
+        this.timeType.timeVal = this.timeType.timeTypeData.periodData.loopType
+        this.timeType.timeWeek = this.timeType.timeTypeData.periodData.wloopValue
+        this.timeType.timeMonths = this.timeType.timeTypeData.periodData.mloopValue
+        this.timeType.timePicker = this.timeType.timeTypeData.periodData.effectTime
+      }else{
+        this.timeType.timeVal = 'Days'
+        this.timeType.timeWeek = ''
+        this.timeType.timeMonths = ''
+        this.timeType.timePicker = ''
       }
       this.openTime = false
     },
@@ -756,14 +773,20 @@ export default {
           this.propsData.newMbmber = this.ifDataExtension.purchase_week
           this.propsData.shoppings = this.ifDataExtension.excluded_guide
           if (res.data.data.cron_express) {
-          this.cronChangeDate(res.data.data)
-          this.timeType.timeVal = this.cronChangeDate(res.data.data).loopType
-          let dayVal = this.cronChangeDate(res.data.data).loopTime.split(':')
-          this.timeType.timePicker = new Date(0,0,0,dayVal[0],dayVal[1])
-          let timeMonths = this.cronChangeDate(res.data.data).loopValue
-          let date_new = new Date()
-          this.timeType.timeMonths = new Date(date_new.getFullYear(),date_new.getMonth(),timeMonths)
-          this.timeType.timeWeek = this.cronChangeDate(res.data.data).loopValue
+            this.cronChangeDate(res.data.data)
+            this.timeType.timeVal = this.cronChangeDate(res.data.data).loopType
+            let dayVal = this.cronChangeDate(res.data.data).loopTime.split(':')
+            this.timeType.timePicker = new Date(0,0,0,dayVal[0],dayVal[1])
+            let timeMonths = this.cronChangeDate(res.data.data).loopValue
+            let date_new = new Date()
+            this.timeType.timeMonths = new Date(date_new.getFullYear(),date_new.getMonth(),timeMonths)
+            this.timeType.timeWeek = this.cronChangeDate(res.data.data).loopValue
+            this.timeType.timeTypeData.periodData={
+              loopType: this.timeType.timeVal,
+              wloopValue: this.timeType.timeWeek,
+              mloopValue: this.timeType.timeMonths,
+              effectTime: this.timeType.timePicker
+            }
           }
         }else{
           this.$message(res.data.msg)

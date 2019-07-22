@@ -304,6 +304,9 @@ export default {
       if(val == 'cancel') {
         if(!this.ifDataExtension) {
           this.$refs.singleTable.setCurrentRow();
+        }else{
+          let row = this.dmpTable.filter(item => item.id == this.ifDataExtension.crowd_id)
+          this.$refs.singleTable.setCurrentRow(row[0]);
         }
       }
     },
@@ -337,6 +340,12 @@ export default {
       }
     },
     handleSizeChange(val) {
+      if(!this.ifDataExtension) {
+          this.$refs.singleTable.setCurrentRow();
+      }else{
+        let row = this.dmpTable.filter(item => item.id == this.ifDataExtension.crowd_id)
+        this.$refs.singleTable.setCurrentRow(row[0]);
+      }
       this.currentPage = val
     }
   }
