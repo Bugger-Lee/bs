@@ -604,7 +604,7 @@ export default {
       })
     },
     popupTicket() {
-      if(this.ifTicket.camp_coupon_id !='' || this.ifTicket.coupon_id != '') {
+      if(this.ifTicket.camp_coupon_id || this.ifTicket.coupon_id) {
         this.openTicket = true
       }else{
         this.openTicketContent = true
@@ -926,7 +926,7 @@ export default {
     },
     PromotionLevel(val) {
       if(val == 1) {
-        if(this.ifTicket.camp_coupon_id !='' || this.ifTicket.coupon_id != '') {
+        if(this.ifTicket.camp_coupon_id|| this.ifTicket.coupon_id) {
           this.openTicketContent = false
           this.openTicket = true
         }else{

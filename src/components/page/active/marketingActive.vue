@@ -831,13 +831,6 @@ export default {
         break;
         case 'cancel': 
           this.openTicketContent = false
-          // if(!this.propsTicket.ifPromotion) {
-          //   this.checkedActive = undefined
-          //   this.checkedDiscounts = undefined
-          // }else{
-          //   this.checkedActive = this.propsTicket.ifPromotion.camp_coupon_id
-          //   this.checkedDiscounts = this.propsTicket.ifPromotion.coupon_id
-          // }
         break;
       } 
     },
@@ -854,8 +847,8 @@ export default {
       }
       let activeData = [...new Set(active)].join(",");
       let discountsData = [...new Set(discounts)].join(",");
-      this.checkedActive = activeData;
-      this.checkedDiscounts = discountsData;
+      this.propsTicket.checkedActive = activeData;
+      this.propsTicket.checkedDiscounts = discountsData;
     },
     dmpTables() {
       this.$.get("crowd/getCrowdList",{params:{crowdName:this.propsData.SearchDmp}}).then(res=>{
@@ -863,8 +856,8 @@ export default {
       })
     },
     promotionSummary() {
-      if (this.checkedActive == undefined && this.checkedDiscounts == undefined || 
-      this.checkedActive == '' && this.checkedDiscounts == '') {
+      if (this.propsTicket.checkedActive == undefined && this.propsTicket.checkedDiscounts == undefined || 
+      this.propsTicket.checkedActive == '' && this.propsTicket.checkedDiscounts == '') {
         this.$message({
           showClose: true,
           message: "请您选择优惠券或活动券",
@@ -873,8 +866,8 @@ export default {
         return false;
       }
       let obj = {
-        camp_coupon_id: this.checkedActive,
-        coupon_id: this.checkedDiscounts
+        camp_coupon_id: this.propsTicket.checkedActive,
+        coupon_id: this.propsTicket.checkedDiscounts
       }
       this.propsTicket.ifPromotion = obj
       if(this.saveUpdate == true) {
