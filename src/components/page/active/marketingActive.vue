@@ -134,11 +134,11 @@
         <el-col :span="1" class="middle-style"></el-col>
         <el-col :span="18" class="marketing-drag">
           <ul class="imaginary" v-if="!ifSmsDrag">
-            <li class="imaginary-circle"></li>
+            <li class="imaginary-circle" :class="{'border-new': circleBorder}"></li>
             <li class="imaginary-wire">---------></li>
-            <li class="imaginary-square imaginary-squares"></li>
+            <li class="imaginary-square imaginary-squares" :class="{'border-new': squareBorder}"></li>
             <li class="imaginary-wire">-------></li>
-            <li class="imaginary-rhombus"></li>
+            <li class="imaginary-rhombus" :class="{'border-new': rhombusBorder}"></li>
             <li class="imaginary-wire">-------></li>
             <li class="imaginary-square"></li>
             <li class="imaginary-wire">-------></li>
@@ -318,8 +318,8 @@
           <el-button @click="cancelTime()">Cancel</el-button>
           <el-button type="primary" @click="doneTime()">Done</el-button>
         </span>
-        <popupOpenTime :timeType="timeType" 
-        :ifDisabled="ifDisabled" 
+        <popupOpenTime :timeType="timeType"
+        :ifDisabled="ifDisabled"
         :ifActiveDis="ifActiveDis"
         @timeCarryOnce="timeCarryOnce"></popupOpenTime>
       </el-dialog>
@@ -475,7 +475,10 @@ export default {
       ifActiveDis:false,
       sourcesType:[],
       getSaveData:'',
-      warnTips:""
+      warnTips:"",
+      circleBorder: false, // 控制border-1变色
+      squareBorder: false, // 控制border-2变色
+      rhombusBorder: false, // 控制border-3变色
     };
   },
   created() {
@@ -517,7 +520,7 @@ export default {
         }).then(() => {
           this.$router.push('./')
         }).catch(() => {
-            return false       
+            return false
         })
       }else{
         this.$router.push('./')
@@ -632,7 +635,7 @@ export default {
       }
       if(this.currentTimeVal == '' ||
         this.propsSms.ifSms.sms_channel_id == 'undefined' ||
-        this.propsSms.ifSms.id == 'undefined' || 
+        this.propsSms.ifSms.id == 'undefined' ||
         !this.ifDataExtension.brand ||
         this.timeType.timestamp == '') {
           this.$message('请完成所有数据输入')
@@ -698,7 +701,7 @@ export default {
             if(urlData == "rule/insert") {
               this.systemId = res.data.data
             }
-            this.$router.push({path:'/activeDetail',query:{id:this.systemId}}) 
+            this.$router.push({path:'/activeDetail',query:{id:this.systemId}})
           }else{
             this.testDis = false
           }
@@ -801,16 +804,16 @@ export default {
         break;
         case 2:
           this.dataSummary()
-        break; 
+        break;
         case 'edit':
           this.openDataContent = true;
           this.openData = false;
         break;
-        case 'cancel': 
+        case 'cancel':
           this.openDataContent = false
           this.dataOrigin()
         break;
-      } 
+      }
     },
     PromotionLevel(val) {
       switch (val) {
@@ -824,12 +827,12 @@ export default {
         break;
         case 2:
           this.promotionSummary()
-        break; 
+        break;
         case 'edit':
           this.openTicketContent = true;
           this.openTicket = false;
         break;
-        case 'cancel': 
+        case 'cancel':
           this.openTicketContent = false
           // if(!this.propsTicket.ifPromotion) {
           //   this.checkedActive = undefined
@@ -839,7 +842,7 @@ export default {
           //   this.checkedDiscounts = this.propsTicket.ifPromotion.coupon_id
           // }
         break;
-      } 
+      }
     },
     ifCheckedVal(val) {
       let active = [];
@@ -863,7 +866,7 @@ export default {
       })
     },
     promotionSummary() {
-      if (this.checkedActive == undefined && this.checkedDiscounts == undefined || 
+      if (this.checkedActive == undefined && this.checkedDiscounts == undefined ||
       this.checkedActive == '' && this.checkedDiscounts == '') {
         this.$message({
           showClose: true,
@@ -938,7 +941,7 @@ export default {
         this.ifDataExtension = dmpObjData
       }
       if(this.saveUpdate == true) {
-        if(this.ifDataExtension.brand != this.getSaveData.brand_id || 
+        if(this.ifDataExtension.brand != this.getSaveData.brand_id ||
         this.ifDataExtension.register != this.getSaveData.vip_channel_name ||
         this.ifDataExtension.crowd_name != this.getSaveData.crowd_name ||
         this.ifDataExtension.period != this.getSaveData.cycle_id ||
@@ -1302,7 +1305,7 @@ export default {
       }else{
         this.smsLists();
         if(this.propsSms.ifSms != '') {
-          this.openSms = true;          
+          this.openSms = true;
         }else{
           this.openSmsContent = true
         }
@@ -1348,14 +1351,14 @@ export default {
             break;
           case 'newBuy':
             val.name === this.propsData.newBuy ? this.propsData.newBuy = '' : this.propsData.newBuy = val.name
-            break; 
+            break;
           case 'newMbmber':
             val.name === this.propsData.newMbmber ? this.propsData.newMbmber = '' : this.propsData.newMbmber = val.name
             break;
-          default: 
-            val.name === this.propsData.shoppings ? this.propsData.shoppings = '' : this.propsData.shoppings = val.name            
+          default:
+            val.name === this.propsData.shoppings ? this.propsData.shoppings = '' : this.propsData.shoppings = val.name
             break;
-        } 
+        }
       }
     },
     sltPromotion(val) {
@@ -1370,20 +1373,20 @@ export default {
       this.openSms = false;
       switch (val.name) {
         case "close1":
-          this.openSmsContent = false;          
+          this.openSmsContent = false;
         break;
         case "openNext":
           this.openSmsContent = true;
           this.propsSms.editTitleVal = ''
           this.propsSms.editMsg = ''
-        break; 
+        break;
         case 'saveMsg':
           this.saveMessage()
         break;
-        case 'inputBlur': 
+        case 'inputBlur':
           this.inputBlur(val.value, val.id , val.templt);
         break;
-        case 'tableIndex': 
+        case 'tableIndex':
           if(val.id) {
             if (this.propsSms.ifSmsDmp == '') {
               this.propsSms.ifSmsDmp = {}
@@ -1392,7 +1395,7 @@ export default {
             this.propsSms.ifSmsDmp.id = val.id
           }
         break;
-        case 'cancel': 
+        case 'cancel':
           this.openSmsContent = false
           if(!this.propsSms.ifSms) {
             this.propsSms.sendSmsVal = null
@@ -1400,7 +1403,7 @@ export default {
             this.propsSms.sendSmsVal = this.propsSms.ifSms.sms_channel_content
           }
         break;
-      } 
+      }
     },
     inputBlur(val, id,templt) {
       if (val == "") {
@@ -1469,7 +1472,7 @@ export default {
       }
       this.propsSms.dataSelected == 3 ? this.smsCreatedMessage():(this.openSmsContent = false,this.openSms = true)
       if(this.saveUpdate == true) {
-        if(this.propsSms.ifSms.id != this.getSaveData.template_id || 
+        if(this.propsSms.ifSms.id != this.getSaveData.template_id ||
         this.propsSms.ifSms.sms_channel_id != this.getSaveData.sms_channel_id) {
           this.testDis = true
           this.runDis = true
@@ -1519,7 +1522,14 @@ export default {
         helper: "clone",
         scope: "dragflag",
         appendTo: "body",
-        containment: "parent"
+        containment: "parent",
+        start: function(event, ui) {
+          if (that.ifDrag) {return false}
+          that.circleBorder = true
+        },
+        stop: function(event, ui) {
+          that.circleBorder = false
+        }
       });
       $(".marketing-drag").droppable({
         scope: "dragflag",
@@ -1548,7 +1558,22 @@ export default {
         helper: "clone",
         scope: "dragflag",
         appendTo: "body",
-        containment: "parent"
+        containment: "parent",
+        start: function(event, ui) {
+          if (that.sortDrag == 'sms') {
+            if(event.currentTarget.classList[0] == 'msg-style') {return false}
+            that.rhombusBorder = true
+          } else if(that.sortDrag == 'pro'){
+            if(event.currentTarget.classList[0] == 'crowds-style') {return false}
+            that.rhombusBorder = true
+          } else {
+            that.squareBorder = true
+          }
+        },
+        stop: function(event, ui) {
+          that.squareBorder = false
+          that.rhombusBorder = false
+        }
       });
       $(".marketing-drag").droppable({
         scope: "dragflag",
