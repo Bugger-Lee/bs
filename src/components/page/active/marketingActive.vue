@@ -17,6 +17,7 @@
               <el-input
                   v-model="currentTimeVal"
                   size="mini"
+                  ref="titleInput"
                   :disabled="titleDis"
                 >
                 <i slot="suffix" class="el-icon-edit mr05" style="line-height:28px;cursor: pointer;" @click="editTitle()"></i>
@@ -479,6 +480,7 @@ export default {
     };
   },
   created() {
+    this.titlePrompt()
     this.brandLists();
     this.periodLists();
     this.registerLists();
@@ -508,6 +510,15 @@ export default {
     next();
   },
   methods: {
+    titlePrompt() {
+      this.$alert('请先修改title', '提示', {
+        confirmButtonText: '确定',
+        showClose:false,
+        callback: action => {
+          
+        }
+      })
+    },
     goToHome() {
       if(this.warnTips == 1) {
         this.$confirm('Journey Builder未保存,是否继续？', '提示', {
@@ -526,6 +537,9 @@ export default {
     editTitle() {
       if(this.saveUpdate != true) {
         this.currentTimeVal = ''
+        this.$nextTick(() => {
+          this.$refs.titleInput.$el.querySelector('input').focus()
+        })
       }
     },
     doneTime() {

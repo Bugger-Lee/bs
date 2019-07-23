@@ -98,26 +98,26 @@
         <el-col :span="1" class="middle-style"></el-col>
         <el-col :span="18" class="marketing-drag">
           <div v-if = 'showFirst'>
-            <div class="window" id="data1" ref="refData1" v-if="ifDrag">
+            <div class="window" id="dataExtenIDOne" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
                 <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
-            <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
+            <div class="window" id="smsIDOne" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
               </span>
             </div>
             <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
-            <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
+            <div class="window" id="timeIDOne" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
                 <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
+            <div class="window" id="overIDOne" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
                 <i class="icon-wancheng1"></i>
               </span>
@@ -125,32 +125,32 @@
             <div ref="refData4div" v-if="ifSmsDrag">Over</div>
           </div>
           <div v-else>
-            <div class="window" id="data1" ref="refData1" v-if="ifDrag">
+            <div class="window" id="dataExtenIDTwo" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
                 <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
-            <div class="window" id="return12" ref="refData2" v-if="ifSmsDrag">
+            <div class="window" id="smsIDTwo" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
               </span>
             </div>
             <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
-            <div class="window" id="return23" ref="refData3" v-if="ifSmsDrag">
+            <div class="window" id="timeIDTwo" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
                 <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div class="window" id="newreturn" ref="newData">
+            <div class="window" id="ticketIDTwo" ref="newData">
               <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
             <div ref="newrefDatadiv">Coupon</div>
-            <div class="window" id="return34" ref="refData4" v-if="ifSmsDrag">
+            <div class="window" id="overIDTwo" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
                 <i class="icon-wancheng1"></i>
               </span>
@@ -492,9 +492,9 @@ export default {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
         }
         jsplumb.jsPlumb.deleteConnection(allconn[0]);
-        this.jsPlumb("data1", "return1");
-        this.jsPlumb("return1", "return2");
-        this.jsPlumb("return2", "return3");
+        this.jsPlumb("dataExtenIDOne", "smsIDOne");
+        this.jsPlumb("smsIDOne", "timeIDOne");
+        this.jsPlumb("timeIDOne", "overIDOne");
         if(this.statusTestRunVal != 2) {
           this.dragInit()
         }
@@ -542,10 +542,10 @@ export default {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
         }
         jsplumb.jsPlumb.deleteConnection(allconn[0]);
-        this.jsPlumb("data1", "newreturn");
-        this.jsPlumb("newreturn", "return12");
-        this.jsPlumb("return12", "return23");
-        this.jsPlumb("return23", "return34");
+        this.jsPlumb("dataExtenIDTwo", "ticketIDTwo");
+        this.jsPlumb("ticketIDTwo", "smsIDTwo");
+        this.jsPlumb("smsIDTwo", "timeIDTwo");
+        this.jsPlumb("timeIDTwo", "overIDTwo");
       });
     },
     jsPlumb(ele1, ele2) {
