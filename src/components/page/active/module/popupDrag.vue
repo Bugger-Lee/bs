@@ -95,7 +95,7 @@
           <el-col :span="19" class="r-content-r" v-if="propsData.data_socure == 'CLV-Data'">
             <div class="select-option">
               <el-col :span="12">
-                <div class="ml10">
+                <div class="ml10 mtPer6">
                   <span class="redStar">*</span>
                   <span>Select Brand</span>&nbsp;
                   <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brand" class="select-option-classify">
@@ -107,7 +107,7 @@
                     ></el-option>
                   </el-select>
                 </div>
-                <div class="ml10">
+                <div class="ml10 mtPer6">
                   <span class="redStar">*</span>
                   <span>Select Period</span>
                   <el-select v-model="propsData.periodVal"  clearable placeholder="Pls select period" class="select-option-classify">
@@ -120,7 +120,7 @@
                     ></el-option>
                   </el-select>
                 </div>
-                <div class="ml10">
+                <div class="ml10 mtPer6">
                   <span class="redStar">*</span>
                   <span>Registered Channels</span>
                   <el-select v-model="propsData.registerVal" clearable multiple placeholder="Pls select registered channels" class="select-option-classify">
@@ -131,7 +131,7 @@
                     ></el-option>
                   </el-select>
                 </div>
-                <div class="ml10">
+                <div class="ml10 mtPer6">
                   <span class="ml15">&nbsp;Registered Brand</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <el-select v-model="propsData.regBrandVal" clearable placeholder="Pls select registered brand" class="select-option-classify">
                     <el-option
