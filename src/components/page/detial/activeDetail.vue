@@ -369,7 +369,7 @@ export default {
   },
   methods: {
     goToHome() {
-      if(this.warnTips == '') {
+      if(this.warnTips == 1) {
         this.$confirm('Journey Builder未保存,是否继续？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -440,6 +440,7 @@ export default {
           this.runDis = true
       }
       this.openTime = false
+      this.warnTips = 1
     },
     cancelTime() {
       this.timeType.dateTimeVal = this.timeType.timeTypeData.schulder_time
@@ -667,7 +668,7 @@ export default {
         }
         this.$.post('rule/update',data).then(res=>{
           if(res.data.code == 200) {
-            this.warnTips = 1
+            this.warnTips = 2
             this.testDis = false
             this.$message(res.data.msg)
             sessionStorage.setItem("saveDataDetail", JSON.stringify(data))
@@ -952,6 +953,7 @@ export default {
       }
       this.openTicket = true
       this.openTicketContent = false
+      this.warnTips = 1
     },
     ifCheckedVal(val) {
       let active = []
@@ -1027,6 +1029,7 @@ export default {
       }
       this.openDataContent = false
       this.openData = true
+      this.warnTips = 1
     },
     clvCrowdCount() {
       this.$alert('人群将会重新计算，请不要频繁操作', '提示', {
@@ -1146,6 +1149,13 @@ export default {
             this.propsSms.sendSmsVal = this.propsSms.ifSms.sms_channel_content
           }
         break;
+        case 'deleteIndex':
+          this.$.get("template/delete?id="+val.row.id).then(res=>{
+            if(res.data.code == 200) {
+              this.smsLists()
+            }
+          })
+        break;
       } 
     },
     inputBlur(val,id,templt) {
@@ -1223,6 +1233,7 @@ export default {
           this.testDis = true
           this.runDis = true
       }
+      this.warnTips = 1
     },
     smsCreatedMessage() {
       let getSessionItem = JSON.parse(sessionStorage.getItem("user"));

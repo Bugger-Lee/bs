@@ -120,6 +120,19 @@
                     </el-table-column>
                     <el-table-column prop="created_time" label="Created Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
                     <el-table-column prop="created_by" label="Creator" show-overflow-tooltip></el-table-column>
+                    <el-table-column
+                      fixed="right"
+                      label="操作"
+                      width="50">
+                      <template slot-scope="scope">
+                        <el-button
+                          @click.native.prevent="deleteIndexList(scope, smsTable)"
+                          type="text"
+                          size="small">
+                          移除
+                        </el-button>
+                      </template>
+                    </el-table-column>
                   </el-table>
                 </div>
                 <div class="select-msg-page">
@@ -297,6 +310,10 @@ export default {
       }
       value.name = 'tableIndex'
      this.$emit('sltSmsContent', value)
+    },
+    deleteIndexList(value) {
+      value.name = 'deleteIndex'
+      this.$emit('sltSmsContent', value)
     },
     clickText(index) {
       let result = []
