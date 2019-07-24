@@ -697,9 +697,6 @@ export default {
         }else if(val == "stop") {
           this.statusTestRunVal = 3
         }
-        this.showFirst = true
-        this.propsSms.couponShow = false
-        this.dragInit1(200, 320);
         this.$.get("rule/updateStatus",{params: { id: this.$route.query.id, status: this.statusTestRunVal }}).then(res=>{
           if(res.data.code == 200) {
             if(this.statusTestRunVal == 1 || this.statusTestRunVal == 2) {
