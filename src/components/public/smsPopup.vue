@@ -112,7 +112,14 @@
                   <el-table ref='singleTable' :data="smsTable" style="width: 100%"  highlight-current-row  @current-change="tableIndex" height="220">
                     <el-table-column prop="template_name" label="Title" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="brand_name" label="Brand" show-overflow-tooltip> </el-table-column>
-                    <el-table-column prop="document_text" label="Sms Content" show-overflow-tooltip>
+                    <el-table-column prop="document_text" show-overflow-tooltip>
+                      <template slot="header">
+                        <span>Sms Content
+                          <el-tooltip class="item" effect="dark" content="塞劵文案必须包含 $XXX$ ,不塞劵可包含可不包含" placement="top-start">
+                            <i class="el-icon-question ml10"></i>
+                          </el-tooltip>
+                        </span>
+                      </template>
                       <template slot-scope="scope">
                         <span v-if="scope.$index != change_index" @click="clickText(scope.$index)">{{scope.row.document_text}}</span>
                         <el-input v-else :placeholder="scope.row.document_text" v-model="input_text" @blur="clickPopup({name:'inputBlur',value:input_text,id:scope.row.id,templt:scope.row.template_name})"></el-input>

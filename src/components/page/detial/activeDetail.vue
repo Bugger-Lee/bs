@@ -2,7 +2,7 @@
   <div class="activeDetail">
     <div class="marketing">
       <div class="marketing-header">
-        <el-col :span="12" class="marketing-header-l">
+        <el-col :span="18" class="marketing-header-l">
           <span class="l-icon ml10">
             <i class="el-icon-location"></i>
           </span>
@@ -16,8 +16,10 @@
             </div>
           </div>
           <span class="l-status" v-if="this.taskStatusMsg">{{this.taskStatusMsg}}</span>
+          <span class="l-status bgcYessow" v-if="this.couponCountMsg != 0">Coupon Count：{{this.couponCountMsg}}</span>
+          <span class="l-status bgcGree" v-if="this.sendCountMsg != 0">Send Count：{{this.sendCountMsg}}</span>
         </el-col>
-        <el-col :span="12" class="marketing-header-r">
+        <el-col :span="6" class="marketing-header-r">
           <el-button-group class="mr05">
             <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailUpdate == true" @click="detailStatus('update')">Update</el-button>
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.testDis == false}" v-if="this.detailTest == true" :disabled="testDis" @click="detailStatus('test')">Test</el-button>
@@ -348,6 +350,8 @@ export default {
       ifActiveDis:false,
       getSaveDataDetail:'',
       taskStatusMsg:'',
+      couponCountMsg:'',
+      sendCountMsg:'',
       warnTips:""
     };
   },
@@ -366,6 +370,7 @@ export default {
     this.sourcesList()
     this.dmpTables()
     this.taskStatus()
+    this.jobRecord()
   },
   methods: {
     goToHome() {
@@ -441,6 +446,12 @@ export default {
       }
       this.openTime = false
       this.warnTips = 1
+    },
+    jobRecord() {
+      this.$.get("jobRecord/getLast?ruleId="+this.$route.query.id).then(res=>{
+        this.couponCountMsg = res.data.data.coupon_count
+        this.sendCountMsg = res.data.data.send_count
+      })
     },
     cancelTime() {
       this.timeType.dateTimeVal = this.timeType.timeTypeData.schulder_time
@@ -701,6 +712,7 @@ export default {
               this.detailRun = false
               this.detailTest = false
               this.detailStop = true
+              this.jobRecord()
               this.$confirm("您已经成功执行此操作,是否跳转到首页?", "提示", {
               confirmButtonText: "是",
               cancelButtonText: "否"
@@ -1213,7 +1225,7 @@ export default {
       }
       this.propsSms.dataSelected == 3 ? reg = this.propsSms.editMsg:reg = this.propsSms.ifSms.template_text
       if(reg.indexOf(" $XXX$ ")==-1 && this.propsSms.couponShow == true) {
-        this.$message('模板内容格式不正确')
+        this.$message('模板内容必须包含 $XXX$ ')
         return false
       }else if(reg.indexOf(" $XXX$ ")!=-1 && this.propsSms.couponShow == false) {
         this.$confirm('文案内容中含有 $XXX$ 是否继续？', '提示', {

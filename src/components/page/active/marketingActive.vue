@@ -1470,7 +1470,7 @@ export default {
       }
       this.propsSms.dataSelected == 3 ? reg = this.propsSms.editMsg:reg = this.propsSms.ifSms.template_text
       if(reg.indexOf(" $XXX$ ")==-1 && this.propsSms.couponShow == true) {
-        this.$message('模板内容格式不正确')
+        this.$message('模板内容必须包含 $XXX$ ')
         return false
       }else if(reg.indexOf(" $XXX$ ")!=-1 && this.propsSms.couponShow == false) {
         this.$confirm('文案内容中含有 $XXX$ 是否继续？', '提示', {
