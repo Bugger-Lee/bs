@@ -24,7 +24,7 @@
         <div v-if="ifTicket.camp_coupon_id != '' || ifTicket.coupon_id != ''" class="data-content-apply" style="min-height:100px;">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">DATA EXTENSION PROPERTIES</span>
-            <el-button class="bth" @click="PromotionLevel('edit')" v-if="this.statusTestRunVal != 2">Edit</el-button>
+            <el-button class="bth" @click="PromotionLevel('edit')" v-if="!((this.statusTestRunVal == 2) || (this.statusTestRunVal==4))">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
             <P class="pttb" v-if="ifTicket.camp_coupon_id != ''"><span>Promotion ID : {{ifTicket.camp_coupon_id}}</span><span></span></P>

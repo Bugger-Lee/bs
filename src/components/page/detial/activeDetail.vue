@@ -16,8 +16,8 @@
             </div>
           </div>
           <span class="l-status" v-if="this.taskStatusMsg">{{this.taskStatusMsg}}</span>
-          <span class="l-status bgcYessow" v-if="this.couponCountMsg != 0">Coupon Count：{{this.couponCountMsg}}</span>
-          <span class="l-status bgcGree" v-if="this.sendCountMsg != 0">Send Count：{{this.sendCountMsg}}</span>
+          <span class="l-status bgcYessow" v-if="this.couponCountMsg">Coupon Count：{{this.couponCountMsg}}</span>
+          <span class="l-status bgcGree" v-if="this.sendCountMsg">Send Count：{{this.sendCountMsg}}</span>
         </el-col>
         <el-col :span="6" class="marketing-header-r">
           <el-button-group class="mr05">
@@ -25,6 +25,7 @@
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.testDis == false}" v-if="this.detailTest == true" :disabled="testDis" @click="detailStatus('test')">Test</el-button>
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.runDis == false}" v-if="this.detailRun == true" :disabled="runDis" @click="detailStatus('run')">Run</el-button>
             <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">Stop</el-button>
+            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailOver == true">Completed</el-button>
           </el-button-group>
         </el-col>
       </div>
@@ -228,6 +229,7 @@ export default {
       detailTest:true,
       detailRun:true,
       detailStop:false,
+      detailOver:false,
       ifDrag: true,
       ifSmsDrag: true,
       openData:false,
@@ -506,7 +508,7 @@ export default {
         this.jsPlumb("dataExtenIDOne", "smsIDOne");
         this.jsPlumb("smsIDOne", "timeIDOne");
         this.jsPlumb("timeIDOne", "overIDOne");
-        if(this.statusTestRunVal != 2) {
+        if(!((this.statusTestRunVal == 2) || (this.statusTestRunVal==4))) {
           this.dragInit()
         }
       });
@@ -695,6 +697,9 @@ export default {
         }else if(val == "stop") {
           this.statusTestRunVal = 3
         }
+        this.showFirst = true
+        this.propsSms.couponShow = false
+        this.dragInit1(200, 320);
         this.$.get("rule/updateStatus",{params: { id: this.$route.query.id, status: this.statusTestRunVal }}).then(res=>{
           if(res.data.code == 200) {
             if(this.statusTestRunVal == 1 || this.statusTestRunVal == 2) {
@@ -800,6 +805,14 @@ export default {
               mloopValue: this.timeType.timeMonths,
               effectTime: this.timeType.timePicker
             }
+          }
+          if(res.data.data.status == '4') {
+            this.detailUpdate = false
+            this.detailTest = false
+            this.detailRun = false
+            this.detailStop = false
+            this.detailOver = true
+            this.statusTestRunVal = 4
           }
         }else{
           this.$message(res.data.msg)
@@ -1291,7 +1304,7 @@ export default {
     },
     selectTime() {
       this.openTime = true
-      if(this.statusTestRunVal == 2) {
+      if(this.statusTestRunVal == 2 || this.statusTestRunVal == 4) {
         this.ifDisabled = true
         this.ifActiveDis = true
       }else{

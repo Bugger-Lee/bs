@@ -24,7 +24,7 @@
         <div v-if="propsSms.ifSms != ''" class="data-content-apply" style="min-height:100px;">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">Message Definition</span>
-            <el-button class="bth" @click="clickPopup({name:'openNext'})" v-if="this.statusTestRunVal != 2">Edit</el-button>
+            <el-button class="bth" @click="clickPopup({name:'openNext'})" v-if="!((this.statusTestRunVal == 2) || (this.statusTestRunVal==4))">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
             <P class="pttb" v-if="propsSms.ifSms.template_text"><span>Content : {{propsSms.ifSms.template_text}}</span><span></span></P>
