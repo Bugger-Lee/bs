@@ -1389,6 +1389,7 @@ export default {
           this.openSmsContent = true;
           this.propsSms.editTitleVal = ''
           this.propsSms.editMsg = ''
+          this.propsSms.dataSelected = 2
         break;
         case 'saveMsg':
           this.saveMessage()

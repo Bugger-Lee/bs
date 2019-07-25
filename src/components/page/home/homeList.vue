@@ -34,7 +34,7 @@
         <el-col :span="24">{{this.JourneyTotal}}  Journeys</el-col>
       </div>
       <div class="list-content mt20">
-        <el-col :span="6" class="list-content-l">
+        <el-col :span="4" class="list-content-l">
           <p class="list-content-l-tit ml15">Folders</p>
           <div class="list-content-l-tree">
             <el-tree :data="modelClv" style="font-size:14px;" :highlight-current="true" @node-click="treeModes" ref="journeyTree" node-key="journeyId" class="mt10">
@@ -47,7 +47,7 @@
           </div>
         </el-col>
         <div class="list-content-r">
-          <el-col :span="17" style="width:100%;">
+          <el-col :span="20" style="width:100%;">
             <el-table
               ref="multipleTable"
               :data="tableData"
@@ -297,7 +297,7 @@ export default {
       .list-content-r {
         height: 97%;
         background: #fff;
-        width: 75%;
+        width: 83%;
         float: right;
       }
     }
