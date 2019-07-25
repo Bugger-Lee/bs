@@ -24,7 +24,7 @@
         <div v-if="ifTicket.camp_coupon_id != '' || ifTicket.coupon_id != ''" class="data-content-apply" style="min-height:100px;">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">DATA EXTENSION PROPERTIES</span>
-            <el-button class="bth" @click="PromotionLevel('edit')" v-if="this.statusTestRunVal != 2">Edit</el-button>
+            <el-button class="bth" @click="PromotionLevel('edit')" v-if="!((this.statusTestRunVal == 2) || (this.statusTestRunVal==4))">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
             <P class="pttb" v-if="ifTicket.camp_coupon_id != ''"><span>Promotion ID : {{ifTicket.camp_coupon_id}}</span><span></span></P>
@@ -196,21 +196,25 @@ export default {
       this.ifChecked(result_arr)
     },
     checked() {
-      // 活动券
-      let arr = this.ifTicket.camp_coupon_id.split(',')
-      let arr2 = this.ifTicket.coupon_id.split(',')
-      arr = arr.concat(arr2)
-      let result_arr = []
-      for(var i=0;i<arr.length;i++) {
-        for(var j=0;j<this.propsTicket.salesTable.length;j++) {
-          if(arr[i] == this.propsTicket.salesTable[j].sal_id) {
-            result_arr.push(this.propsTicket.salesTable[j])
+      if(!this.ifTicket.camp_coupon_id && !this.ifTicket.coupon_id) {
+        return false
+      }else{
+        // 活动券
+        let arr = this.ifTicket.camp_coupon_id.split(',')
+        let arr2 = this.ifTicket.coupon_id.split(',')
+        arr = arr.concat(arr2)
+        let result_arr = []
+        for(var i=0;i<arr.length;i++) {
+          for(var j=0;j<this.propsTicket.salesTable.length;j++) {
+            if(arr[i] == this.propsTicket.salesTable[j].sal_id) {
+              result_arr.push(this.propsTicket.salesTable[j])
+            }
           }
+          // 优惠券
+        result_arr.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row,true)
+        });
         }
-        // 优惠券
-      result_arr.forEach(row => {
-        this.$refs.multipleTable.toggleRowSelection(row,true)
-      });
       }
     },
     // 搜索框

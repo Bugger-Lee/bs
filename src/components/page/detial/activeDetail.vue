@@ -2,7 +2,7 @@
   <div class="activeDetail">
     <div class="marketing">
       <div class="marketing-header">
-        <el-col :span="12" class="marketing-header-l">
+        <el-col :span="18" class="marketing-header-l">
           <span class="l-icon ml10">
             <i class="el-icon-location"></i>
           </span>
@@ -16,13 +16,16 @@
             </div>
           </div>
           <span class="l-status" v-if="this.taskStatusMsg">{{this.taskStatusMsg}}</span>
+          <span class="l-status bgcYessow" v-if="this.couponCountMsg">Coupon Count：{{this.couponCountMsg}}</span>
+          <span class="l-status bgcGree" v-if="this.sendCountMsg">Send Count：{{this.sendCountMsg}}</span>
         </el-col>
-        <el-col :span="12" class="marketing-header-r">
+        <el-col :span="6" class="marketing-header-r">
           <el-button-group class="mr05">
             <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailUpdate == true" @click="detailStatus('update')">Update</el-button>
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.testDis == false}" v-if="this.detailTest == true" :disabled="testDis" @click="detailStatus('test')">Test</el-button>
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.runDis == false}" v-if="this.detailRun == true" :disabled="runDis" @click="detailStatus('run')">Run</el-button>
             <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">Stop</el-button>
+            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailOver == true">Completed</el-button>
           </el-button-group>
         </el-col>
       </div>
@@ -98,26 +101,26 @@
         <el-col :span="1" class="middle-style"></el-col>
         <el-col :span="18" class="marketing-drag">
           <div v-if = 'showFirst'>
-            <div class="window" id="data1" ref="refData1" v-if="ifDrag">
+            <div class="window" id="dataExtenIDOne" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
                 <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
-            <div class="window" id="return1" ref="refData2" v-if="ifSmsDrag">
+            <div class="window" id="smsIDOne" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
               </span>
             </div>
             <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
-            <div class="window" id="return2" ref="refData3" v-if="ifSmsDrag">
+            <div class="window" id="timeIDOne" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
                 <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div class="window" id="return3" ref="refData4" v-if="ifSmsDrag">
+            <div class="window" id="overIDOne" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
                 <i class="icon-wancheng1"></i>
               </span>
@@ -125,32 +128,32 @@
             <div ref="refData4div" v-if="ifSmsDrag">Over</div>
           </div>
           <div v-else>
-            <div class="window" id="data1" ref="refData1" v-if="ifDrag">
+            <div class="window" id="dataExtenIDTwo" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
                 <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
               </span>
             </div>
             <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
-            <div class="window" id="return12" ref="refData2" v-if="ifSmsDrag">
+            <div class="window" id="smsIDTwo" ref="refData2" v-if="ifSmsDrag">
               <span class="msg-style" @click="sms()">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
               </span>
             </div>
             <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
-            <div class="window" id="return23" ref="refData3" v-if="ifSmsDrag">
+            <div class="window" id="timeIDTwo" ref="refData3" v-if="ifSmsDrag">
               <span class="ctl-style" @click="selectTime()">
                 <i class="icon-time1"></i>
               </span>
             </div>
             <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div class="window" id="newreturn" ref="newData">
+            <div class="window" id="ticketIDTwo" ref="newData">
               <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
               </span>
             </div>
             <div ref="newrefDatadiv">Coupon</div>
-            <div class="window" id="return34" ref="refData4" v-if="ifSmsDrag">
+            <div class="window" id="overIDTwo" ref="refData4" v-if="ifSmsDrag">
               <span class="crowd-style">
                 <i class="icon-wancheng1"></i>
               </span>
@@ -226,6 +229,7 @@ export default {
       detailTest:true,
       detailRun:true,
       detailStop:false,
+      detailOver:false,
       ifDrag: true,
       ifSmsDrag: true,
       openData:false,
@@ -348,6 +352,8 @@ export default {
       ifActiveDis:false,
       getSaveDataDetail:'',
       taskStatusMsg:'',
+      couponCountMsg:'',
+      sendCountMsg:'',
       warnTips:""
     };
   },
@@ -366,10 +372,11 @@ export default {
     this.sourcesList()
     this.dmpTables()
     this.taskStatus()
+    this.jobRecord()
   },
   methods: {
     goToHome() {
-      if(this.warnTips == '') {
+      if(this.warnTips == 1) {
         this.$confirm('Journey Builder未保存,是否继续？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -440,6 +447,13 @@ export default {
           this.runDis = true
       }
       this.openTime = false
+      this.warnTips = 1
+    },
+    jobRecord() {
+      this.$.get("jobRecord/getLast?ruleId="+this.$route.query.id).then(res=>{
+        this.couponCountMsg = res.data.data.coupon_count
+        this.sendCountMsg = res.data.data.send_count
+      })
     },
     cancelTime() {
       this.timeType.dateTimeVal = this.timeType.timeTypeData.schulder_time
@@ -491,10 +505,10 @@ export default {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
         }
         jsplumb.jsPlumb.deleteConnection(allconn[0]);
-        this.jsPlumb("data1", "return1");
-        this.jsPlumb("return1", "return2");
-        this.jsPlumb("return2", "return3");
-        if(this.statusTestRunVal != 2) {
+        this.jsPlumb("dataExtenIDOne", "smsIDOne");
+        this.jsPlumb("smsIDOne", "timeIDOne");
+        this.jsPlumb("timeIDOne", "overIDOne");
+        if(!((this.statusTestRunVal == 2) || (this.statusTestRunVal==4))) {
           this.dragInit()
         }
       });
@@ -541,10 +555,10 @@ export default {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
         }
         jsplumb.jsPlumb.deleteConnection(allconn[0]);
-        this.jsPlumb("data1", "newreturn");
-        this.jsPlumb("newreturn", "return12");
-        this.jsPlumb("return12", "return23");
-        this.jsPlumb("return23", "return34");
+        this.jsPlumb("dataExtenIDTwo", "ticketIDTwo");
+        this.jsPlumb("ticketIDTwo", "smsIDTwo");
+        this.jsPlumb("smsIDTwo", "timeIDTwo");
+        this.jsPlumb("timeIDTwo", "overIDTwo");
       });
     },
     jsPlumb(ele1, ele2) {
@@ -604,7 +618,7 @@ export default {
       })
     },
     popupTicket() {
-      if(this.ifTicket.camp_coupon_id !='' || this.ifTicket.coupon_id != '') {
+      if(this.ifTicket.camp_coupon_id || this.ifTicket.coupon_id) {
         this.openTicket = true
       }else{
         this.openTicketContent = true
@@ -667,7 +681,7 @@ export default {
         }
         this.$.post('rule/update',data).then(res=>{
           if(res.data.code == 200) {
-            this.warnTips = 1
+            this.warnTips = 2
             this.testDis = false
             this.$message(res.data.msg)
             sessionStorage.setItem("saveDataDetail", JSON.stringify(data))
@@ -700,6 +714,7 @@ export default {
               this.detailRun = false
               this.detailTest = false
               this.detailStop = true
+              this.jobRecord()
               this.$confirm("您已经成功执行此操作,是否跳转到首页?", "提示", {
               confirmButtonText: "是",
               cancelButtonText: "否"
@@ -787,6 +802,14 @@ export default {
               mloopValue: this.timeType.timeMonths,
               effectTime: this.timeType.timePicker
             }
+          }
+          if(res.data.data.status == '4') {
+            this.detailUpdate = false
+            this.detailTest = false
+            this.detailRun = false
+            this.detailStop = false
+            this.detailOver = true
+            this.statusTestRunVal = 4
           }
         }else{
           this.$message(res.data.msg)
@@ -926,7 +949,7 @@ export default {
     },
     PromotionLevel(val) {
       if(val == 1) {
-        if(this.ifTicket.camp_coupon_id !='' || this.ifTicket.coupon_id != '') {
+        if(this.ifTicket.camp_coupon_id|| this.ifTicket.coupon_id) {
           this.openTicketContent = false
           this.openTicket = true
         }else{
@@ -952,6 +975,7 @@ export default {
       }
       this.openTicket = true
       this.openTicketContent = false
+      this.warnTips = 1
     },
     ifCheckedVal(val) {
       let active = []
@@ -1027,6 +1051,7 @@ export default {
       }
       this.openDataContent = false
       this.openData = true
+      this.warnTips = 1
     },
     clvCrowdCount() {
       this.$alert('人群将会重新计算，请不要频繁操作', '提示', {
@@ -1146,6 +1171,13 @@ export default {
             this.propsSms.sendSmsVal = this.propsSms.ifSms.sms_channel_content
           }
         break;
+        case 'deleteIndex':
+          this.$.get("template/delete?id="+val.row.id).then(res=>{
+            if(res.data.code == 200) {
+              this.smsLists()
+            }
+          })
+        break;
       } 
     },
     inputBlur(val,id,templt) {
@@ -1203,7 +1235,7 @@ export default {
       }
       this.propsSms.dataSelected == 3 ? reg = this.propsSms.editMsg:reg = this.propsSms.ifSms.template_text
       if(reg.indexOf(" $XXX$ ")==-1 && this.propsSms.couponShow == true) {
-        this.$message('模板内容格式不正确')
+        this.$message('模板内容必须包含 $XXX$ ')
         return false
       }else if(reg.indexOf(" $XXX$ ")!=-1 && this.propsSms.couponShow == false) {
         this.$confirm('文案内容中含有 $XXX$ 是否继续？', '提示', {
@@ -1223,6 +1255,7 @@ export default {
           this.testDis = true
           this.runDis = true
       }
+      this.warnTips = 1
     },
     smsCreatedMessage() {
       let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
@@ -1268,7 +1301,7 @@ export default {
     },
     selectTime() {
       this.openTime = true
-      if(this.statusTestRunVal == 2) {
+      if(this.statusTestRunVal == 2 || this.statusTestRunVal == 4) {
         this.ifDisabled = true
         this.ifActiveDis = true
       }else{

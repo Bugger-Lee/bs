@@ -24,7 +24,7 @@
         <div v-if="ifDataExtension != ''" class="data-content-apply">
           <p class="data-content-apply-header">
             <span style="font-size:16px;font-weight:600;">DATA EXTENSION PROPERTIES</span>
-            <el-button class="bth" @click="backlevel('edit')" v-if="this.statusTestRunVal != 2">Edit</el-button>
+            <el-button class="bth" @click="backlevel('edit')" v-if="!((this.statusTestRunVal == 2) || (this.statusTestRunVal==4))">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
             <P class="pttb" v-if="ifDataExtension.brand_name"><span>Brands : {{ifDataExtension.brand_name}}</span><span></span></P>
@@ -92,7 +92,7 @@
           <el-col :span="19" class="r-content-r" v-if="this.propsData.defaultData.command_name == 'CLV-Data'">
             <div class="select-option">
               <el-col :span="12">
-                <div class="ml10">
+                <div class="ml10 mtPer6">
                   <span class="redStar">*</span>
                   <span>Select Brand</span>&nbsp;
                   <el-select v-model="propsData.brandVal" clearable placeholder="Pls select brand" class="select-option-classify">
@@ -103,7 +103,7 @@
                     ></el-option>
                   </el-select>
                 </div>
-                <div class="ml10">
+                <div class="ml10 mtPer6">
                   <span class="redStar">*</span>
                   <span>Select Period</span>
                   <el-select v-model="propsData.periodVal"  clearable placeholder="Pls select period" class="select-option-classify">
@@ -115,7 +115,7 @@
                     ></el-option>
                   </el-select>
                 </div>
-                <div class="ml10">
+                <div class="ml10 mtPer6">
                   <span class="redStar">*</span>
                   <span>Registered Channels</span>
                   <el-select v-model="propsData.registerVal" clearable multiple placeholder="Pls select registered channels" class="select-option-classify">
@@ -126,7 +126,7 @@
                     ></el-option>
                   </el-select>
                 </div>
-                <div class="ml10">
+                <div class="ml10 mtPer6">
                   <span class="ml15">&nbsp;Registered Brand</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <el-select v-model="propsData.regBrandVal" clearable placeholder="Pls select registered brand" class="select-option-classify">
                     <el-option

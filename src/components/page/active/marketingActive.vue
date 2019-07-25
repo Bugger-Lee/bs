@@ -17,6 +17,7 @@
               <el-input
                   v-model="currentTimeVal"
                   size="mini"
+                  ref="titleInput"
                   :disabled="titleDis"
                 >
                 <i slot="suffix" class="el-icon-edit mr05" style="line-height:28px;cursor: pointer;" @click="editTitle()"></i>
@@ -482,6 +483,7 @@ export default {
     };
   },
   created() {
+    this.titlePrompt()
     this.brandLists();
     this.periodLists();
     this.registerLists();
@@ -511,8 +513,17 @@ export default {
     next();
   },
   methods: {
+    titlePrompt() {
+      this.$alert('请先修改title', '提示', {
+        confirmButtonText: '确定',
+        showClose:false,
+        callback: action => {
+          
+        }
+      })
+    },
     goToHome() {
-      if(this.warnTips == '') {
+      if(this.warnTips == 1) {
         this.$confirm('Journey Builder未保存,是否继续？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -529,6 +540,9 @@ export default {
     editTitle() {
       if(this.saveUpdate != true) {
         this.currentTimeVal = ''
+        this.$nextTick(() => {
+          this.$refs.titleInput.$el.querySelector('input').focus()
+        })
       }
     },
     doneTime() {
@@ -602,6 +616,7 @@ export default {
         }
       }
       this.openTime = false;
+      this.warnTips = 1
     },
     cancelTime() {
       if(!this.timeType.timeTypeData) {
@@ -692,7 +707,7 @@ export default {
       this.$.post(urlData, data).then(res => {
         this.$message(res.data.msg)
         if (res.data.code == 200) {
-          this.warnTips = 1
+          this.warnTips = 2
           if(this.saveSave == true) {
             this.saveSave = false
             this.saveUpdate = true
@@ -834,13 +849,6 @@ export default {
         break;
         case 'cancel':
           this.openTicketContent = false
-          // if(!this.propsTicket.ifPromotion) {
-          //   this.checkedActive = undefined
-          //   this.checkedDiscounts = undefined
-          // }else{
-          //   this.checkedActive = this.propsTicket.ifPromotion.camp_coupon_id
-          //   this.checkedDiscounts = this.propsTicket.ifPromotion.coupon_id
-          // }
         break;
       }
     },
@@ -857,8 +865,8 @@ export default {
       }
       let activeData = [...new Set(active)].join(",");
       let discountsData = [...new Set(discounts)].join(",");
-      this.checkedActive = activeData;
-      this.checkedDiscounts = discountsData;
+      this.propsTicket.checkedActive = activeData;
+      this.propsTicket.checkedDiscounts = discountsData;
     },
     dmpTables() {
       this.$.get("crowd/getCrowdList",{params:{crowdName:this.propsData.SearchDmp}}).then(res=>{
@@ -866,8 +874,8 @@ export default {
       })
     },
     promotionSummary() {
-      if (this.checkedActive == undefined && this.checkedDiscounts == undefined ||
-      this.checkedActive == '' && this.checkedDiscounts == '') {
+      if (this.propsTicket.checkedActive == undefined && this.propsTicket.checkedDiscounts == undefined || 
+      this.propsTicket.checkedActive == '' && this.propsTicket.checkedDiscounts == '') {
         this.$message({
           showClose: true,
           message: "请您选择优惠券或活动券",
@@ -876,8 +884,8 @@ export default {
         return false;
       }
       let obj = {
-        camp_coupon_id: this.checkedActive,
-        coupon_id: this.checkedDiscounts
+        camp_coupon_id: this.propsTicket.checkedActive,
+        coupon_id: this.propsTicket.checkedDiscounts
       }
       this.propsTicket.ifPromotion = obj
       if(this.saveUpdate == true) {
@@ -889,6 +897,7 @@ export default {
       }
       this.openTicketContent = false;
       this.openTicket = true;
+      this.warnTips = 1
     },
     dataSummary() {
       if(this.propsData.data_socure == 'CLV-Data') {
@@ -956,6 +965,7 @@ export default {
       }
       this.openDataContent = false;
       this.openData = true;
+      this.warnTips = 1
     },
     clvCrowdCount() {
       this.$alert('人群将会重新计算，请不要频繁操作', '提示', {
@@ -1403,7 +1413,14 @@ export default {
             this.propsSms.sendSmsVal = this.propsSms.ifSms.sms_channel_content
           }
         break;
-      }
+        case 'deleteIndex':
+          this.$.get("template/delete?id="+val.row.id).then(res=>{
+            if(res.data.code == 200) {
+              this.smsLists()
+            }
+          })
+        break;
+      } 
     },
     inputBlur(val, id,templt) {
       if (val == "") {
@@ -1456,7 +1473,7 @@ export default {
       }
       this.propsSms.dataSelected == 3 ? reg = this.propsSms.editMsg:reg = this.propsSms.ifSms.template_text
       if(reg.indexOf(" $XXX$ ")==-1 && this.propsSms.couponShow == true) {
-        this.$message('模板内容格式不正确')
+        this.$message('模板内容必须包含 $XXX$ ')
         return false
       }else if(reg.indexOf(" $XXX$ ")!=-1 && this.propsSms.couponShow == false) {
         this.$confirm('文案内容中含有 $XXX$ 是否继续？', '提示', {
@@ -1478,6 +1495,7 @@ export default {
           this.runDis = true
         }
       }
+      this.warnTips = 1
     },
     smsCreatedMessage() {
       let getSessionItem = JSON.parse(sessionStorage.getItem("user"));

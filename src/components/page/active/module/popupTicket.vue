@@ -92,7 +92,7 @@
                 </el-input>
               </div>
               <div class="select-msg-table">
-                <el-table :data="salesTable" style="width: 100%" height="220" @selection-change="ifChecked">
+                <el-table :data="salesTable" ref="multipleTable" style="width: 100%" height="220" @selection-change="ifChecked">
                   <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column prop="sal_id" label="Coupon ID" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="coupon_type" label="Type" show-overflow-tooltip></el-table-column>
@@ -161,6 +161,11 @@ export default {
     },
     openDataContentProps:{
       get() {
+        if(this.openDataContent) {
+            setTimeout(()=>{
+              this.checked()
+            },500)
+        }
         return this.openDataContent
       },
       set(v) {
@@ -205,16 +210,40 @@ export default {
       }
       this.$emit('ifCheckedVal', allTicket)
     },
+    checked() {
+      if(!this.propsTicket.ifPromotion.camp_coupon_id && !this.propsTicket.ifPromotion.coupon_id) {
+        return false
+      }else{
+        let arr = this.propsTicket.ifPromotion.camp_coupon_id.split(',')
+        let arr2 = this.propsTicket.ifPromotion.coupon_id.split(',')
+        arr = arr.concat(arr2)
+        let result_arr = []
+        for(var i=0;i<arr.length;i++) {
+          for(var j=0;j<this.propsTicket.salesTable.length;j++) {
+            if(arr[i] == this.propsTicket.salesTable[j].sal_id) {
+              result_arr.push(this.propsTicket.salesTable[j])
+            }
+          }
+          result_arr.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row,true)
+          })
+        }
+      }
+    },
     tabSelect(val) {
       if (val == '1') {
         this.$emit("PromotionLevel",val)
       } else {
         this.dataSelected = val
+        this.$nextTick(() => {
+          this.checked()
+        })
       }
     },
     // 翻页
     handleSizeChange(val) {
       this.currentPage = val
+      this.checked()
     }
   }
 };
