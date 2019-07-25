@@ -1076,6 +1076,9 @@ export default {
           if(this.ifDataExtension.reg_brand_id != null ) {
             data.reg_brand_id = this.ifDataExtension.reg_brand_id
           }
+          if(this.ifDataExtension.crowd_count != "人群数量计算中" && this.ifDataExtension.crowd_count != "人群数量计算失败") {
+            data.crowd_count = this.ifDataExtension.crowd_count
+          }
           this.$.post("rule/update",data).then(res=>{
             if(res.data.code == 200) {
               this.getCrowdCount()

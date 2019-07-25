@@ -183,12 +183,20 @@ export default {
     },
     // 删除
     deleteIndexList(val) {
-      this.$.post("rule/delete?id="+val.row.id).then(res=>{
-        this.$message(res.data.msg)
-        if(res.data.code == 200) {
-          this.homeLists()
-        }
-      })
+      this.$confirm('是否删除此条journeys', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$.post("rule/delete?id="+val.row.id).then(res=>{
+            this.$message(res.data.msg)
+            if(res.data.code == 200) {
+              this.homeLists()
+            }
+          })
+        }).catch(() => {
+            return false
+        })
     },
     // 调度命令
     orderLists() {
