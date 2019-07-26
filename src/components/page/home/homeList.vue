@@ -183,7 +183,7 @@ export default {
     },
     // 删除
     deleteIndexList(val) {
-      this.$confirm('是否删除此条journeys', '提示', {
+      this.$confirm('是否删除此条Journey', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
