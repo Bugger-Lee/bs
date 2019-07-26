@@ -969,54 +969,72 @@ export default {
       this.openData = true;
       this.warnTips = 1
     },
-    clvCrowdCount() {
-      this.$alert('人群将会重新计算，请不要频繁操作', '提示', {
-        confirmButtonText: '确定',
-        showClose:false,
-        callback: action => {
-          let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
-          let data = {
-            rule_name: this.currentTimeVal,
-            brand_id: this.ifDataExtension.brand,
-            cycle_id: this.ifDataExtension.period,
-            vip_channel_name: this.ifDataExtension.register,
-            enter_first: this.ifDataExtension.newPeriod,
-            purchase_week: this.ifDataExtension.newMbmber ,
-            purchase_first: this.ifDataExtension.newBuy,
-            excluded_guide:this.ifDataExtension.excluded_guide,
-            command_code: this.propsData.data_code,
-            command_name:this.propsData.data_socure,
-            created_by:getSessionItem.user_info
-          };
-          if(this.ifDataExtension.reg_brand_id != null ) {
-            data.reg_brand_id = this.ifDataExtension.reg_brand_id
-          }
-          if(this.propsData.clvCrowdCountNum != '') {
-            data.crowd_count = this.propsData.clvCrowdCountNum
-          }
-          if(this.systemId == '') {
-            this.$.post("rule/insert",data).then(res=>{
-              if(res.data.code == 200) {
-                this.systemId = res.data.data
-                this.getCrowdCount()
-              }else{
-                this.$message(res.data.msg)
-              }
-            })
-          }else{
-            data.id = this.systemId
-            this.$.post("rule/update",data).then(res=>{
-              if(res.data.code == 200) {
-                this.getCrowdCount()
-              }else{
-                this.$message(res.data.msg)
-              }
-            })
-          }
-          this.openDataContent = false;
-          this.openData = true;
+    alertClvCount() {
+        let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
+        let data = {
+          rule_name: this.currentTimeVal,
+          brand_id: this.ifDataExtension.brand,
+          cycle_id: this.ifDataExtension.period,
+          vip_channel_name: this.ifDataExtension.register,
+          enter_first: this.ifDataExtension.newPeriod,
+          purchase_week: this.ifDataExtension.newMbmber ,
+          purchase_first: this.ifDataExtension.newBuy,
+          excluded_guide:this.ifDataExtension.excluded_guide,
+          command_code: this.propsData.data_code,
+          command_name:this.propsData.data_socure,
+          created_by:getSessionItem.user_info
+        };
+        if(this.ifDataExtension.reg_brand_id != null ) {
+          data.reg_brand_id = this.ifDataExtension.reg_brand_id
         }
-      })
+        if(this.propsData.clvCrowdCountNum != '') {
+          data.crowd_count = this.propsData.clvCrowdCountNum
+        }
+        if(this.systemId == '') {
+          this.$.post("rule/insert",data).then(res=>{
+            if(res.data.code == 200) {
+              this.systemId = res.data.data
+              this.getCrowdCount()
+              sessionStorage.setItem("saveData", JSON.stringify(data))
+              this.getSaveData = JSON.parse(sessionStorage.getItem("saveData"))
+            }else{
+              this.$message(res.data.msg)
+            }
+          })
+        }else{
+          data.id = this.systemId
+          this.$.post("rule/update",data).then(res=>{
+            if(res.data.code == 200) {
+              this.getCrowdCount()
+              sessionStorage.setItem("saveData", JSON.stringify(data))
+              this.getSaveData = JSON.parse(sessionStorage.getItem("saveData"))
+            }else{
+              this.$message(res.data.msg)
+            }
+        })
+      }
+      this.openDataContent = false;
+      this.openData = true;
+    },
+    clvCrowdCount() {
+      if(this.ifDataExtension.brand != this.getSaveData.brand_id ||
+        this.ifDataExtension.register != this.getSaveData.vip_channel_name ||
+        this.ifDataExtension.period != this.getSaveData.cycle_id ||
+        this.ifDataExtension.newPeriod != this.getSaveData.enter_first ||
+        this.ifDataExtension.newBuy != this.getSaveData.purchase_first ||
+        this.ifDataExtension.newMbmber != this.getSaveData.purchase_week ||
+        this.ifDataExtension.reg_brand_id != this.getSaveData.reg_brand_id ||
+        this.ifDataExtension.excluded_guide != this.getSaveData.excluded_guide) {
+          this.$alert('人群将会重新计算，请不要频繁操作', '提示', {
+            confirmButtonText: '确定',
+            showClose:false,
+            callback: action => {
+              this.alertClvCount()
+            }
+          })
+      }else{
+        this.alertClvCount()
+      }
     },
     backlevelSms(val) {
       this.propsSms.dataSelected = 2

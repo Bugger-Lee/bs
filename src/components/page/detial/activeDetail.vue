@@ -21,7 +21,7 @@
         </el-col>
         <el-col :span="6" class="marketing-header-r">
           <el-button-group class="mr05">
-            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailUpdate == true" @click="detailStatus('update')">Update</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.UpdateDis == false}" v-if="this.detailUpdate == true" @click="detailStatus('update')">Update</el-button>
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.testDis == false}" v-if="this.detailTest == true" :disabled="testDis" @click="detailStatus('test')">Test</el-button>
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.runDis == false}" v-if="this.detailRun == true" :disabled="runDis" @click="detailStatus('run')">Run</el-button>
             <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">Stop</el-button>
@@ -241,6 +241,7 @@ export default {
       openTime:false,
       testDis:false,
       runDis:false,
+      UpdateDis:false,
       propsData:{
           brandList: [],
           periodList: [],
@@ -352,6 +353,7 @@ export default {
       ifDisabled:false,
       ifActiveDis:false,
       getSaveDataDetail:'',
+      getClvDetail:'',
       taskStatusMsg:'',
       couponCountMsg:'',
       sendCountMsg:'',
@@ -449,6 +451,7 @@ export default {
       }
       this.openTime = false
       this.warnTips = 1
+      this.clvDataEmpty()
     },
     jobRecord() {
       this.$.get("jobRecord/getLast?ruleId="+this.$route.query.id).then(res=>{
@@ -750,6 +753,9 @@ export default {
           }
           sessionStorage.setItem("saveDataDetail", JSON.stringify(saveDataDetail));
           this.getSaveDataDetail = JSON.parse(sessionStorage.getItem("saveDataDetail"))
+
+          sessionStorage.setItem("getClvDetail", JSON.stringify(this.propsData.defaultData));
+          this.getClvDetail = JSON.parse(sessionStorage.getItem("getClvDetail"))
           if(res.data.data.camp_coupon_id || res.data.data.coupon_id) {
             this.showFirst = true
             this.propsSms.couponShow = true
@@ -813,10 +819,25 @@ export default {
             this.detailOver = true
             this.statusTestRunVal = 4
           }
+          this.clvDataEmpty()          
         }else{
           this.$message(res.data.msg)
         }
       })
+    },
+    // 当数据源为clv时，需判断数据是否为空
+    clvDataEmpty() {
+      if(this.propsData.defaultData.command_name == 'CLV-Data') {
+        if(!this.propsSms.ifSms.template_id || 
+        !this.propsSms.ifSms.sms_channel_id ||
+        this.timeType.dateTimeVal == '1970-1-1 8:0:0') {
+          this.testDis = true
+          this.runDis = true
+          this.UpdateDis = true
+        }else{
+          this.UpdateDis = false
+        }
+      }
     },
     // 调度命令
     sourcesList() {
@@ -997,6 +1018,9 @@ export default {
     },
     dataSummary() {
       let item_data = this.propsData.brandList.filter(item => item.brand_name == this.propsData.brandVal)
+      if(!this.ifDataExtension.crowd_name) {
+        this.ifDataExtension.crowd_name = null
+      }
       if(this.propsData.defaultData.command_name == 'CLV-Data') {
         let reVal = this.propsData.registerVal.join(',')
         let item2_data = this.propsData.periodList.filter(item => item.cycle_type == this.propsData.periodVal)
@@ -1019,6 +1043,17 @@ export default {
           this.ifDataExtension.reg_brand_id = regBrand[0].id
         }
         this.clvCrowdCount()
+        if(this.ifDataExtension.brand_id != this.getSaveDataDetail.saveDataDetail.brand_id || 
+          this.ifDataExtension.vip_channel_name != this.getSaveDataDetail.saveDataDetail.vip_channel_name ||
+          this.ifDataExtension.cycle_id != this.getSaveDataDetail.saveDataDetail.cycle_id ||
+          this.ifDataExtension.enter_first != this.getSaveDataDetail.saveDataDetail.enter_first ||
+          this.ifDataExtension.purchase_first != this.getSaveDataDetail.saveDataDetail.purchase_first ||
+          this.ifDataExtension.purchase_week != this.getSaveDataDetail.saveDataDetail.purchase_week ||
+          this.ifDataExtension.reg_brand_id != this.getSaveDataDetail.saveDataDetail.reg_brand_id ||
+          this.ifDataExtension.excluded_guide != this.getSaveDataDetail.saveDataDetail.excluded_guide){
+            this.testDis = true
+            this.runDis = true
+        }
         return false
       }else if(this.propsData.defaultData.command_name == 'DMP-Data') {
         if(this.propsData.crowdDmp == '') {
@@ -1035,63 +1070,75 @@ export default {
           crowd_count:this.propsData.crowdDmp.crowd_count
         }
         this.ifDataExtension = objDataDmp
+        if(this.ifDataExtension.brand_id != this.getSaveDataDetail.saveDataDetail.brand_id || 
+          this.ifDataExtension.crowd_name != this.getSaveDataDetail.saveDataDetail.crowd_name){
+          this.testDis = true
+          this.runDis = true
+        }
       }
       if(this.ifDataExtension.crowd_name == undefined) {
         this.ifDataExtension.crowd_name = ''
-      }
-      if(this.ifDataExtension.brand_id != this.getSaveDataDetail.saveDataDetail.brand_id || 
-        this.ifDataExtension.vip_channel_name != this.getSaveDataDetail.saveDataDetail.vip_channel_name ||
-        this.ifDataExtension.crowd_name != this.getSaveDataDetail.saveDataDetail.crowd_name ||
-        this.ifDataExtension.cycle_id != this.getSaveDataDetail.saveDataDetail.cycle_id ||
-        this.ifDataExtension.enter_first != this.getSaveDataDetail.saveDataDetail.enter_first ||
-        this.ifDataExtension.purchase_first != this.getSaveDataDetail.saveDataDetail.purchase_first ||
-        this.ifDataExtension.purchase_week != this.getSaveDataDetail.saveDataDetail.purchase_week ||
-        this.ifDataExtension.reg_brand_id != this.getSaveDataDetail.saveDataDetail.reg_brand_id ||
-        this.ifDataExtension.excluded_guide != this.getSaveDataDetail.saveDataDetail.excluded_guide){
-          this.testDis = true
-          this.runDis = true
       }
       this.openDataContent = false
       this.openData = true
       this.warnTips = 1
     },
-    clvCrowdCount() {
-      this.$alert('人群将会重新计算，请不要频繁操作', '提示', {
-        confirmButtonText: '确定',
-        showClose:false,
-        callback: action => {
-          let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
-          let data = {
-            id:this.$route.query.id,
-            rule_name: this.userNameTie,
-            brand_id: this.ifDataExtension.brand_id,
-            cycle_id: this.ifDataExtension.cycle_id,
-            vip_channel_name: this.ifDataExtension.vip_channel_name,
-            enter_first: this.ifDataExtension.enter_first,
-            purchase_week: this.ifDataExtension.purchase_week,
-            purchase_first: this.ifDataExtension.purchase_first,
-            excluded_guide:this.ifDataExtension.excluded_guide,
-            command_code:this.propsData.defaultData.command_code,
-            command_name:this.propsData.defaultData.command_name,
-            created_by:getSessionItem.user_info
-          };
-          if(this.ifDataExtension.reg_brand_id != null ) {
-            data.reg_brand_id = this.ifDataExtension.reg_brand_id
-          }
-          if(this.propsData.clvCrowdCountNum != '') {
-            data.crowd_count = this.propsData.clvCrowdCountNum
-          }
-          this.$.post("rule/update",data).then(res=>{
-            if(res.data.code == 200) {
-              this.getCrowdCount()
-            }else{
-              this.$message(res.data.msg)
-            }
-          })
-          this.openDataContent = false
-          this.openData = true
+    alertClvCount() {
+      let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
+      let data = {
+        id:this.$route.query.id,
+        rule_name: this.userNameTie,
+        brand_id: this.ifDataExtension.brand_id,
+        cycle_id: this.ifDataExtension.cycle_id,
+        vip_channel_name: this.ifDataExtension.vip_channel_name,
+        enter_first: this.ifDataExtension.enter_first,
+        purchase_week: this.ifDataExtension.purchase_week,
+        purchase_first: this.ifDataExtension.purchase_first,
+        excluded_guide:this.ifDataExtension.excluded_guide,
+        command_code:this.propsData.defaultData.command_code,
+        command_name:this.propsData.defaultData.command_name,
+        created_by:getSessionItem.user_info
+      }
+      if(this.ifDataExtension.reg_brand_id != null ) {
+        data.reg_brand_id = this.ifDataExtension.reg_brand_id
+      }
+      if(this.propsData.clvCrowdCountNum != '') {
+        data.crowd_count = this.propsData.clvCrowdCountNum
+      }
+      this.$.post("rule/update",data).then(res=>{
+        if(res.data.code == 200) {
+          this.getCrowdCount()
+          sessionStorage.setItem("getClvDetail", JSON.stringify(data));
+          this.getClvDetail = JSON.parse(sessionStorage.getItem("getClvDetail"))
+        }else{
+          this.$message(res.data.msg)
         }
       })
+      this.openDataContent = false
+      this.openData = true
+    },
+    clvCrowdCount() {
+      if(this.ifDataExtension.reg_brand_id == undefined) {
+        this.ifDataExtension.reg_brand_id = 0
+      }
+      if(this.ifDataExtension.brand_id != this.getClvDetail.brand_id || 
+        this.ifDataExtension.vip_channel_name != this.getClvDetail.vip_channel_name ||
+        this.ifDataExtension.cycle_id != this.getClvDetail.cycle_id ||
+        this.ifDataExtension.enter_first != this.getClvDetail.enter_first ||
+        this.ifDataExtension.purchase_first != this.getClvDetail.purchase_first ||
+        this.ifDataExtension.purchase_week != this.getClvDetail.purchase_week ||
+        this.ifDataExtension.reg_brand_id != this.getClvDetail.reg_brand_id ||
+        this.ifDataExtension.excluded_guide != this.getClvDetail.excluded_guide){
+          this.$alert('人群将会重新计算，请不要频繁操作', '提示', {
+            confirmButtonText: '确定',
+            showClose:false,
+            callback: action => {
+              this.alertClvCount()
+            }
+          })
+      }else{
+        this.alertClvCount()
+      }
     },
     getCrowdCount() {
       this.$.get('rule/getCrowdCount?id='+this.$route.query.id).then(res=>{
@@ -1263,6 +1310,7 @@ export default {
           this.runDis = true
       }
       this.warnTips = 1
+      this.clvDataEmpty()
     },
     smsCreatedMessage() {
       let getSessionItem = JSON.parse(sessionStorage.getItem("user"));
