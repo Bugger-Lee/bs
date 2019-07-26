@@ -441,7 +441,8 @@ export default {
         SearchDmp:"",
         shoppings:"",
         regBrandVal:null,
-        crowdDmp:""
+        crowdDmp:"",
+        clvCrowdCountNum:""
       },
       propsTicket:{
         salesTable: [],
@@ -688,8 +689,8 @@ export default {
         data.crowd_id = this.ifDataExtension.crowd_id
         data.crowd_name = this.ifDataExtension.crowd_name
       }
-      if(this.ifDataExtension.crowd_count != "人群数量计算中" && this.ifDataExtension.crowd_count != "人群数量计算失败") {
-        data.crowd_count = this.ifDataExtension.crowd_count
+      if(this.propsData.clvCrowdCountNum != '') {
+        data.crowd_count = this.propsData.clvCrowdCountNum
       }
       if(this.ifDataExtension.reg_brand_id != null ) {
         data.reg_brand_id = this.ifDataExtension.reg_brand_id
@@ -740,6 +741,7 @@ export default {
           }else{
             this.propsData.crowdCountIcon = false
             this.ifDataExtension.crowd_count = res.data.data
+            this.propsData.clvCrowdCountNum = res.data.data
           }
         }else{
           this.$message(res.data.data)
@@ -989,10 +991,8 @@ export default {
           if(this.ifDataExtension.reg_brand_id != null ) {
             data.reg_brand_id = this.ifDataExtension.reg_brand_id
           }
-          if(this.ifDataExtension.crowd_count != "人群数量计算中" && 
-          this.ifDataExtension.crowd_count != "人群数量计算失败" &&
-          this.ifDataExtension.crowd_count != "") {
-            data.crowd_count = this.ifDataExtension.crowd_count
+          if(this.propsData.clvCrowdCountNum != '') {
+            data.crowd_count = this.propsData.clvCrowdCountNum
           }
           if(this.systemId == '') {
             this.$.post("rule/insert",data).then(res=>{

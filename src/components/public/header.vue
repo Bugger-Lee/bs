@@ -137,7 +137,7 @@ export default {
   }
   .headers-right {
     float: right;
-    width: 15%;
+    min-width: 15%;
     text-align: center;
     .headers-right-r {
       margin-right: 20px;
