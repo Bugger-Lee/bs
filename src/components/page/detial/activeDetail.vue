@@ -21,7 +21,7 @@
         </el-col>
         <el-col :span="6" class="marketing-header-r">
           <el-button-group class="mr05">
-            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.UpdateDis == false}" v-if="this.detailUpdate == true" @click="detailStatus('update')">Update</el-button>
+            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.UpdateDis == false}" v-if="this.detailUpdate == true" :disabled="UpdateDis" @click="detailStatus('update')">Update</el-button>
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.testDis == false}" v-if="this.detailTest == true" :disabled="testDis" @click="detailStatus('test')">Test</el-button>
             <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.runDis == false}" v-if="this.detailRun == true" :disabled="runDis" @click="detailStatus('run')">Run</el-button>
             <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">Stop</el-button>
