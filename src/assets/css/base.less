@@ -256,11 +256,12 @@ html,body{
   cursor: pointer;
   color: #409eff;
 }
-
+body{
+  min-height: 600px;
+}
 @media (max-width: 900px){
   body{
       min-width: 900px;
-      min-height: 600px;
   }
   .headers{
     min-width: 900px;
@@ -269,11 +270,12 @@ html,body{
     display: none;
   }
   .el-dialog{
-    min-width: 500px !important;
-    min-height: 500px !important;
+    min-width: 600px;
   }
 }
-
+.el-dialog{
+  min-height: 500px;
+}
 // 背景色
 .bgcYessow{
   background-color: #ffcd43 !important;

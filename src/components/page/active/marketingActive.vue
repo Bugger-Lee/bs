@@ -1262,17 +1262,17 @@ export default {
       this.$nextTick(() => {
         this.$refs.newData.style.position = "absolute";
         this.$refs.newData.style.top = top + "px";
-        this.$refs.newData.style.left = left + -80 + "px";
+        this.$refs.newData.style.left = left + -90 + "px";
         this.$refs.newrefDatadiv.style.position = "absolute";
         this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + -85 + "px";
+        this.$refs.newrefDatadiv.style.left = left + -95 + "px";
 
         this.$refs.refData2.style.position = "absolute";
         this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 60 + "px";
+        this.$refs.refData2.style.left = left + 30 + "px";
         this.$refs.refData2div.style.position = "absolute";
         this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 65 + "px";
+        this.$refs.refData2div.style.left = left + 35 + "px";
 
         this.$refs.refData3.style.position = "absolute";
         this.$refs.refData3.style.top = top + "px";
