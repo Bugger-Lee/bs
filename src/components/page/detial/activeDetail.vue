@@ -99,7 +99,7 @@
           </el-menu>
         </el-col>
         <el-col :span="1" class="middle-style"></el-col>
-        <el-col :span="18" class="marketing-drag">
+        <el-col :span="18" class="marketing-drag" style='position:relative;'>
           <div v-if = 'showFirst'>
             <div class="window" id="dataExtenIDOne" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
@@ -160,7 +160,7 @@
             </div>
             <div ref="refData4div" v-if="ifSmsDrag">Over</div>
           </div>
-          
+
         </el-col>
       </div>
     </div>
@@ -183,7 +183,7 @@
         @searchSmsList ="searchSmsList"
         @sltSmsContent ="sltSmsContent">
     </smsPopup>
-    <popupTicket :openData="openTicket" 
+    <popupTicket :openData="openTicket"
       :propsTicket="propsTicket"
       :statusTestRunVal="statusTestRunVal"
       :openDataContent="openTicketContent"
@@ -205,8 +205,8 @@
         <el-button @click="cancelTime()">Cancel</el-button>
         <el-button type="primary" @click="doneTime()">Done</el-button>
       </span>
-      <popupOpenTime :timeType = "timeType" 
-      :ifDisabled="ifDisabled" 
+      <popupOpenTime :timeType = "timeType"
+      :ifDisabled="ifDisabled"
       :ifActiveDis="ifActiveDis"
       @timeCarryOnce="timeCarryOnce"></popupOpenTime>
     </el-dialog>
@@ -252,7 +252,7 @@ export default {
           brandId: '',
           periodVal:'',
           periodShow: '',
-          brandShow:'', 
+          brandShow:'',
           registerVal:[],
           newPeriod:'',
           newBuy:'',
@@ -387,7 +387,7 @@ export default {
         }).then(() => {
           this.$router.push('./')
         }).catch(() => {
-            return false       
+            return false
         })
       }else{
         this.$router.push('./')
@@ -610,7 +610,7 @@ export default {
           ) {
             that.showFirst = true
             that.propsSms.couponShow = true
-            that.dragInit2(200, 320);
+            that.dragInit2(80, 80);
             that.$message('journey有变动，请检查数据')
           }
         }
@@ -759,11 +759,11 @@ export default {
           if(res.data.data.camp_coupon_id || res.data.data.coupon_id) {
             this.showFirst = true
             this.propsSms.couponShow = true
-            this.dragInit2(200, 320);
+            this.dragInit2(80, 80);
           }else{
             this.showFirst = true
             this.propsSms.couponShow = false
-            this.dragInit1(200, 320);
+            this.dragInit1(80, 80);
           }
           this.statusTestRunVal = res.data.data.status
           if(res.data.data.status == 2) {
@@ -819,7 +819,7 @@ export default {
             this.detailOver = true
             this.statusTestRunVal = 4
           }
-          this.clvDataEmpty()          
+          this.clvDataEmpty()
         }else{
           this.$message(res.data.msg)
         }
@@ -828,7 +828,7 @@ export default {
     // 当数据源为clv时，需判断数据是否为空
     clvDataEmpty() {
       if(this.propsData.defaultData.command_name == 'CLV-Data') {
-        if(!this.propsSms.ifSms.template_id || 
+        if(!this.propsSms.ifSms.template_id ||
         !this.propsSms.ifSms.sms_channel_id ||
         this.timeType.dateTimeVal == '1970-1-1 8:0:0') {
           this.testDis = true
@@ -924,14 +924,14 @@ export default {
             break;
           case 'newBuy':
             val.name === this.propsData.newBuy ? this.propsData.newBuy = '' : this.propsData.newBuy = val.name
-            break; 
+            break;
           case 'newMbmber':
             val.name === this.propsData.newMbmber ? this.propsData.newMbmber = '' : this.propsData.newMbmber = val.name
             break;
-          default: 
-            val.name === this.propsData.shoppings ? this.propsData.shoppings = '' : this.propsData.shoppings = val.name            
+          default:
+            val.name === this.propsData.shoppings ? this.propsData.shoppings = '' : this.propsData.shoppings = val.name
             break;
-        } 
+        }
       }
     },
     backlevel(val) {
@@ -942,12 +942,12 @@ export default {
         break;
         case 2:
           this.dataSummary()
-        break; 
+        break;
         case 'edit':
           this.openDataContent = true
           this.openData = false
         break;
-        case 'cancel': 
+        case 'cancel':
           this.openDataContent = false
           this.propsData.brandVal = this.ifDataExtension.brand_name
           this.propsData.periodVal = this.ifDataExtension.cycle_type
@@ -960,7 +960,7 @@ export default {
           this.propsData.newMbmber = this.ifDataExtension.purchase_week
           this.propsData.shoppings = this.ifDataExtension.excluded_guide
         break;
-      } 
+      }
     },
     backChange(val) {
       this.openTicket = false
@@ -1043,7 +1043,7 @@ export default {
           this.ifDataExtension.reg_brand_id = regBrand[0].id
         }
         this.clvCrowdCount()
-        if(this.ifDataExtension.brand_id != this.getSaveDataDetail.saveDataDetail.brand_id || 
+        if(this.ifDataExtension.brand_id != this.getSaveDataDetail.saveDataDetail.brand_id ||
           this.ifDataExtension.vip_channel_name != this.getSaveDataDetail.saveDataDetail.vip_channel_name ||
           this.ifDataExtension.cycle_id != this.getSaveDataDetail.saveDataDetail.cycle_id ||
           this.ifDataExtension.enter_first != this.getSaveDataDetail.saveDataDetail.enter_first ||
@@ -1070,7 +1070,7 @@ export default {
           crowd_count:this.propsData.crowdDmp.crowd_count
         }
         this.ifDataExtension = objDataDmp
-        if(this.ifDataExtension.brand_id != this.getSaveDataDetail.saveDataDetail.brand_id || 
+        if(this.ifDataExtension.brand_id != this.getSaveDataDetail.saveDataDetail.brand_id ||
           this.ifDataExtension.crowd_name != this.getSaveDataDetail.saveDataDetail.crowd_name){
           this.testDis = true
           this.runDis = true
@@ -1121,7 +1121,7 @@ export default {
       if(this.ifDataExtension.reg_brand_id == undefined) {
         this.ifDataExtension.reg_brand_id = 0
       }
-      if(this.ifDataExtension.brand_id != this.getClvDetail.brand_id || 
+      if(this.ifDataExtension.brand_id != this.getClvDetail.brand_id ||
         this.ifDataExtension.vip_channel_name != this.getClvDetail.vip_channel_name ||
         this.ifDataExtension.cycle_id != this.getClvDetail.cycle_id ||
         this.ifDataExtension.enter_first != this.getClvDetail.enter_first ||
@@ -1191,14 +1191,14 @@ export default {
       this.openSms = false
       switch (val.name) {
         case "close1":
-          this.openSmsContent = false;          
+          this.openSmsContent = false;
         break;
         case "openNext":
           this.openSmsContent = true;
           this.propsSms.editTitleVal = ''
           this.propsSms.editMsg = ''
           this.propsSms.dataSelected = 2
-        break; 
+        break;
         case 'saveMsg':
           if (this.propsSms.ifSmsDmp == '') {
             this.propsSms.ifSmsDmp = {}
@@ -1207,17 +1207,17 @@ export default {
           }
           this.saveMessage()
         break;
-        case 'inputBlur': 
+        case 'inputBlur':
           this.inputBlur(val.value,val.id,val.templt)
         break;
-        case 'tableIndex': 
+        case 'tableIndex':
           if(val.id) {
             this.propsSms.ifSmsDmp = {}
             this.propsSms.ifSmsDmp.template_text = val.document_text
             this.propsSms.ifSmsDmp.template_id = val.id
           }
         break;
-        case 'cancel': 
+        case 'cancel':
           this.openSmsContent = false
           if(!this.propsSms.ifSms) {
              this.propsSms.sendSmsVal = ''
@@ -1232,7 +1232,7 @@ export default {
             }
           })
         break;
-      } 
+      }
     },
     inputBlur(val,id,templt) {
         if(val == '') {
@@ -1304,7 +1304,7 @@ export default {
         return false
       }
       this.propsSms.dataSelected == 3 ? this.smsCreatedMessage():(this.openSmsContent = false,this.openSms = true)
-      if(this.propsSms.ifSms.template_id != this.getSaveDataDetail.saveDataDetail.template_id || 
+      if(this.propsSms.ifSms.template_id != this.getSaveDataDetail.saveDataDetail.template_id ||
         this.propsSms.ifSms.sms_channel_id != this.getSaveDataDetail.saveDataDetail.sms_channel_id) {
           this.testDis = true
           this.runDis = true
