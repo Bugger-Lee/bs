@@ -40,7 +40,7 @@
     <el-dialog
       :visible.sync="openDataContentProps"
       :close-on-click-modal="false"
-      class="data-content"
+      class="data-content minWidthNum"
       :show-close="false"
       width="98%">
       <el-col :span="3" class="data-content-l">
