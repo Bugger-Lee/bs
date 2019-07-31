@@ -100,7 +100,7 @@
         </el-col>
         <el-col :span="1" class="middle-style"></el-col>
         <el-col :span="18" class="marketing-drag">
-          <div v-if = 'showFirst'>
+          <div v-if ='showFirst == 1'>
             <div class="window" id="dataExtenIDOne" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
@@ -127,7 +127,7 @@
             </div>
             <div ref="refData4div" v-if="ifSmsDrag">Over</div>
           </div>
-          <div v-else>
+          <div v-if ='showFirst == 2'>
             <div class="window" id="dataExtenIDTwo" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
@@ -347,7 +347,7 @@ export default {
       cron_express:'',
       dayVal:'',
       datedrag: 2,
-      showFirst: true,
+      showFirst: 0,
       statusTestRunVal:'',
       userNameTie:'',
       ifDisabled:false,
@@ -518,7 +518,7 @@ export default {
       });
     },
     dragInit2(top, left) {
-      this.showFirst = false
+      this.showFirst = 2
       this.$nextTick(() => {
         this.$refs.refData1.style.position = "absolute";
         this.$refs.refData1.style.top = top + "px";
@@ -608,7 +608,7 @@ export default {
             180 <= ui.offset.top &&
             ui.offset.top < 230
           ) {
-            that.showFirst = true
+            that.showFirst = 1
             that.propsSms.couponShow = true
             that.dragInit2(200, 320);
             that.$message('journey有变动，请检查数据')
@@ -757,11 +757,11 @@ export default {
           sessionStorage.setItem("getClvDetail", JSON.stringify(this.propsData.defaultData));
           this.getClvDetail = JSON.parse(sessionStorage.getItem("getClvDetail"))
           if(res.data.data.camp_coupon_id || res.data.data.coupon_id) {
-            this.showFirst = true
+            this.showFirst = 1
             this.propsSms.couponShow = true
             this.dragInit2(200, 320);
           }else{
-            this.showFirst = true
+            this.showFirst = 1
             this.propsSms.couponShow = false
             this.dragInit1(200, 320);
           }
