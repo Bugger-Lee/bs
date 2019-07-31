@@ -101,66 +101,65 @@
         <el-col :span="1" class="middle-style"></el-col>
         <el-col :span="18" class="marketing-drag">
           <div v-if ='showFirst == 1'>
-            <div class="window" id="dataExtenIDOne" ref="refData1" v-if="ifDrag">
-              <span class="crowd-style" @click="dataExtension()">
+            <div class="marketing-drag-content">
+              <span class="crowd-style" @click="dataExtension()"  id="dataExtenIDOne">
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
                 <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
               </span>
+              <p>{{this.propsData.defaultData.command_name}}</p>
             </div>
-            <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
-            <div class="window" id="smsIDOne" ref="refData2" v-if="ifSmsDrag">
-              <span class="msg-style" @click="sms()">
+            <div class="marketing-drag-content">
+              <span class="msg-style" @click="sms()" id="smsIDOne">
                 <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
               </span>
+              <p>SMS</p>
             </div>
-            <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
-            <div class="window" id="timeIDOne" ref="refData3" v-if="ifSmsDrag">
-              <span class="ctl-style" @click="selectTime()">
+            <div class="marketing-drag-content">
+              <span class="ctl-style" @click="selectTime()" id="timeIDOne">
                 <i class="icon-time1"></i>
               </span>
+              <p>Time</p>
             </div>
-            <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div class="window" id="overIDOne" ref="refData4" v-if="ifSmsDrag">
-              <span class="crowd-style">
+            <div class="marketing-drag-content">
+              <span class="crowd-style" id="overIDOne">
                 <i class="icon-wancheng1"></i>
               </span>
+              <p>Over</p>
             </div>
-            <div ref="refData4div" v-if="ifSmsDrag">Over</div>
           </div>
           <div v-if ='showFirst == 2'>
-            <div class="window" id="dataExtenIDTwo" ref="refData1" v-if="ifDrag">
-              <span class="crowd-style" @click="dataExtension()">
+            <div class="marketing-drag-content">
+              <span class="crowd-style" @click="dataExtension()" id="dataExtenIDTwo">
                 <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
                 <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
               </span>
+              <p>{{this.propsData.defaultData.command_name}}</p>
             </div>
-            <div ref="refData1div" v-if="ifDrag">{{this.propsData.defaultData.command_name}}</div>
-            <div class="window" id="smsIDTwo" ref="refData2" v-if="ifSmsDrag">
-              <span class="msg-style" @click="sms()">
-                <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
-              </span>
-            </div>
-            <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
-            <div class="window" id="timeIDTwo" ref="refData3" v-if="ifSmsDrag">
-              <span class="ctl-style" @click="selectTime()">
-                <i class="icon-time1"></i>
-              </span>
-            </div>
-            <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div class="window" id="ticketIDTwo" ref="newData">
-              <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
+            <div class="marketing-drag-content">
+              <span class="crowds-style" @click="popupTicket()" id="ticketIDTwo" style="background-color:#ffcd43;">
                 <i class="icon-quanyi-copy-copy"></i>
               </span>
+              <p>Coupon</p>
             </div>
-            <div ref="newrefDatadiv">Coupon</div>
-            <div class="window" id="overIDTwo" ref="refData4" v-if="ifSmsDrag">
-              <span class="crowd-style">
+            <div class="marketing-drag-content">
+              <span class="msg-style" @click="sms()" id="smsIDTwo">
+                <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
+              </span>
+              <p>SMS</p>
+            </div>
+            <div class="marketing-drag-content">
+              <span class="ctl-style" @click="selectTime()" id="timeIDTwo">
+                <i class="icon-time1"></i>
+              </span>
+              <p>Time</p>
+            </div>
+            <div class="marketing-drag-content">
+              <span class="crowd-style" id="overIDTwo">
                 <i class="icon-wancheng1"></i>
               </span>
+              <p>Over</p>
             </div>
-            <div ref="refData4div" v-if="ifSmsDrag">Over</div>
           </div>
-
         </el-col>
       </div>
     </div>
@@ -230,8 +229,6 @@ export default {
       detailRun:true,
       detailStop:false,
       detailOver:false,
-      ifDrag: true,
-      ifSmsDrag: true,
       openData:false,
       openSms:false,
       openTicket:false,
@@ -475,35 +472,35 @@ export default {
       }
       this.openTime = false
     },
-    dragInit1(top, left) {
+    // 拖拽
+    dragInit() {
+      let that = this;
+      $(".crowds-style").draggable({
+        zIndex: 999,
+        helper: "clone",
+        scope: "dragflag",
+        appendTo: "body",
+        containment: "parent"
+      });
+      $(".marketing-drag").droppable({
+        scope: "dragflag",
+        drop: function(event, ui) {
+          if (
+            350 <= ui.offset.left &&
+            ui.offset.left <= 450 &&
+            180 <= ui.offset.top &&
+            ui.offset.top < 230
+          ) {
+            that.showFirst = 1
+            that.propsSms.couponShow = true
+            that.dragInit2()
+            that.$message('journey有变动，请检查数据')
+          }
+        }
+      });
+    },
+    dragInit1() {
       this.$nextTick(() => {
-        this.$refs.refData1.style.position = "absolute";
-        this.$refs.refData1.style.top = top + "px";
-        this.$refs.refData1.style.left = left + "px";
-        this.$refs.refData1div.style.position = "absolute";
-        this.$refs.refData1div.style.top = top + 50 + "px";
-        this.$refs.refData1div.style.left = left + -5 + "px";
-
-        this.$refs.refData2.style.position = "absolute";
-        this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 150 + "px";
-        this.$refs.refData2div.style.position = "absolute";
-        this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 155 + "px";
-
-        this.$refs.refData3.style.position = "absolute";
-        this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 300 + "px";
-        this.$refs.refData3div.style.position = "absolute";
-        this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 300 + 5 + "px";
-
-        this.$refs.refData4.style.position = "absolute";
-        this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 450 + "px";
-        this.$refs.refData4div.style.position = "absolute";
-        this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 450 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
@@ -517,43 +514,9 @@ export default {
         }
       });
     },
-    dragInit2(top, left) {
+    dragInit2() {
       this.showFirst = 2
       this.$nextTick(() => {
-        this.$refs.refData1.style.position = "absolute";
-        this.$refs.refData1.style.top = top + "px";
-        this.$refs.refData1.style.left = left + "px";
-        this.$refs.refData1div.style.position = "absolute";
-        this.$refs.refData1div.style.top = top + 50 + "px";
-        this.$refs.refData1div.style.left = left + -5 + "px";
-
-        this.$refs.newData.style.position = "absolute";
-        this.$refs.newData.style.top = top + "px";
-        this.$refs.newData.style.left = left + 150 + "px";
-        this.$refs.newrefDatadiv.style.position = "absolute";
-        this.$refs.newrefDatadiv.style.top = top + 50 + "px";
-        this.$refs.newrefDatadiv.style.left = left + 147 + "px";
-
-        this.$refs.refData2.style.position = "absolute";
-        this.$refs.refData2.style.top = top + "px";
-        this.$refs.refData2.style.left = left + 300 + "px";
-        this.$refs.refData2div.style.position = "absolute";
-        this.$refs.refData2div.style.top = top + 50 + "px";
-        this.$refs.refData2div.style.left = left + 305 + "px";
-
-        this.$refs.refData3.style.position = "absolute";
-        this.$refs.refData3.style.top = top + "px";
-        this.$refs.refData3.style.left = left + 450 + "px";
-        this.$refs.refData3div.style.position = "absolute";
-        this.$refs.refData3div.style.top = top + 50 + "px";
-        this.$refs.refData3div.style.left = left + 450 + 5 + "px";
-
-        this.$refs.refData4.style.position = "absolute";
-        this.$refs.refData4.style.top = top + "px";
-        this.$refs.refData4.style.left = left + 600 + "px";
-        this.$refs.refData4div.style.position = "absolute";
-        this.$refs.refData4div.style.top = top + 50 + "px";
-        this.$refs.refData4div.style.left = left + 600 + 5 + "px";
         let allconn = jsplumb.jsPlumb.getAllConnections();
         for (var i = 0; i < allconn.length + 1; i++) {
           jsplumb.jsPlumb.deleteConnection(allconn[0]);
@@ -582,38 +545,7 @@ export default {
           paintStyle: { stroke: 'lightgray', strokeWidth: 3 },
           elementsDraggable: false,
           ConnectionsDetachable: false,
-          // overlays: [
-          //   ["Arrow", { width: 10, length: 10, location: 1, id: "arrow" }],
-          //   ["Label", { label: "", id: "label" }]
-          // ]
         });
-      });
-    },
-    // 拖拽
-    dragInit() {
-      let that = this;
-      $(".crowds-style").draggable({
-        zIndex: 999,
-        helper: "clone",
-        scope: "dragflag",
-        appendTo: "body",
-        containment: "parent"
-      });
-      $(".marketing-drag").droppable({
-        scope: "dragflag",
-        drop: function(event, ui) {
-          if (
-            350 <= ui.offset.left &&
-            ui.offset.left <= 450 &&
-            180 <= ui.offset.top &&
-            ui.offset.top < 230
-          ) {
-            that.showFirst = 1
-            that.propsSms.couponShow = true
-            that.dragInit2(200, 320);
-            that.$message('journey有变动，请检查数据')
-          }
-        }
       });
     },
     taskStatus() {
@@ -759,11 +691,11 @@ export default {
           if(res.data.data.camp_coupon_id || res.data.data.coupon_id) {
             this.showFirst = 1
             this.propsSms.couponShow = true
-            this.dragInit2(200, 320);
+            this.dragInit2();
           }else{
             this.showFirst = 1
             this.propsSms.couponShow = false
-            this.dragInit1(200, 320);
+            this.dragInit1()
           }
           this.statusTestRunVal = res.data.data.status
           if(res.data.data.status == 2) {
@@ -1476,8 +1408,13 @@ export default {
         left: 17.2%;
       }
       .marketing-drag {
-        padding: 70px 0 0 50px;
+        padding: 90px 0 0 30px;
         height: 100%;
+        .marketing-drag-content{
+          float: left;
+          text-align:center;
+          margin-left: 70px;
+        }
       }
     }
   }
