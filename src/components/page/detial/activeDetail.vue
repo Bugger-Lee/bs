@@ -99,7 +99,7 @@
           </el-menu>
         </el-col>
         <el-col :span="1" class="middle-style"></el-col>
-        <el-col :span="18" class="marketing-drag" style='position:relative;'>
+        <el-col :span="18" class="marketing-drag">
           <div v-if = 'showFirst'>
             <div class="window" id="dataExtenIDOne" ref="refData1" v-if="ifDrag">
               <span class="crowd-style" @click="dataExtension()">
@@ -610,7 +610,7 @@ export default {
           ) {
             that.showFirst = true
             that.propsSms.couponShow = true
-            that.dragInit2(80, 80);
+            that.dragInit2(200, 320);
             that.$message('journey有变动，请检查数据')
           }
         }
@@ -759,11 +759,11 @@ export default {
           if(res.data.data.camp_coupon_id || res.data.data.coupon_id) {
             this.showFirst = true
             this.propsSms.couponShow = true
-            this.dragInit2(80, 80);
+            this.dragInit2(200, 320);
           }else{
             this.showFirst = true
             this.propsSms.couponShow = false
-            this.dragInit1(80, 80);
+            this.dragInit1(200, 320);
           }
           this.statusTestRunVal = res.data.data.status
           if(res.data.data.status == 2) {
