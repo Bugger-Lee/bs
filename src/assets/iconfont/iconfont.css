@@ -42,6 +42,10 @@
   content: "\e643";
 }
 
+.icon-220:before {
+  content: "\e632";
+}
+
 .icon-liucheng:before {
   content: "\e64c";
 }
