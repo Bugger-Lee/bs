@@ -1,9 +1,7 @@
 <template>
   <div id="app">
     <Header v-if="!$route.meta.ifHeader"></Header>
-    <div class="box" :class="{'pt10':$route.meta.ifHeader}">
-      <router-view></router-view>
-    </div>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -25,14 +23,5 @@ export default {
 #app {
   width: 100%;
   height: 100%;
-}
-.box{
-    width: 100%;
-    height: 100%;
-    background-image: url(./assets/img/homeBackgrounds.jpg);
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    padding-top: 60px;
-    box-sizing: border-box;
 }
 </style>

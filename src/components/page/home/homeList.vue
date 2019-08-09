@@ -243,10 +243,10 @@ export default {
 
 <style scoped lang="less">
 .homeList {
-  width: 98%;
-  height: 98%;
+  width: 100%;
+  height: ~"calc(100% - 30px)";
+  // margin-top: 60px;
   background: #f3f2f2;
-  margin: 0 auto;
   border-radius: 10px;
   .list {
     width: 100%;

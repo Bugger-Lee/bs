@@ -1,25 +1,16 @@
 <template>
   <div class="Header" v-loading.fullscreen.lock="fullscreenLoading">
     <div class="headers">
-      <p class="headers-left">
+      <el-col :span="4" class="headers-left ellipsis">
         <i class="ml15" @click="goToHome()">Journey Builder</i>
-      </p>
-      <p class="headers-center">
-        <span
-          v-for="i in tabList"
-          :key="i.id"
-          :class="{'selectState':changeTab == i.id}"
-          @click="changes(i.id)"
-        >{{i.name}}</span>
-      </p>
-      <div class="headers-right">
-        <div class="headers-right-r">
-          <p class="login-icon ml15">
-            <i class="icon-dengluyonghu"></i>
-          </p>
-          <span class="login-icon-id">{{this.userInfo}}</span>
-        </div>
-      </div>
+      </el-col>
+      <el-col :span="1" class="headers-center">
+        <i class="el-icon-menu"></i>
+      </el-col>
+      <el-col :span="19" class="headers-right">
+        <i class="el-icon-s-custom"></i>
+        <span class="login-icon-id">{{this.userInfo}}</span>
+      </el-col>
     </div>
   <div style="width:100%;height:100%;position:fixed;background:white;" v-if="this.alertIndex==true"></div>
   </div>
@@ -30,13 +21,6 @@ export default {
   name: "Header",
   data() {
     return {
-      tabList: [
-        {
-          id: 1,
-          name: "Journeys"
-        }
-      ],
-      changeTab: 1,
       linkUserId:'',
       userInfo:'',
       fullscreenLoading: false,
@@ -86,9 +70,6 @@ export default {
   //   }
   // },
   methods: {
-    changes(id) {
-      this.changeTab = id;
-    },
     goToHome() {
       this.$router.push('./')
     }
@@ -102,64 +83,31 @@ export default {
 }
 .headers {
   width: 100%;
-  height: 46px;
-  line-height: 46px;
-  background-color: #fff;
-  float: left;
+  height: 60px;
+  background-color: #335ba9;
   position: fixed;
+  line-height: 60px;
   top: 0;
   left: 0;
-  border-bottom: 5px solid #ccc;
+  font-size: 24px;
+  color: #fff;
   .headers-left {
-    font-size: 28px;
-    display: inline-block;
+    background-color: #274885; 
     cursor: pointer;
   }
   .headers-center {
-    display: inline-block;
-    margin-left: 35px;
     height: 100%;
-    font-size: 14px;
-    span {
-      padding: 0 8px;
-      margin-right: 15px;
-      height: 100%;
-      display: inline-block;
-    }
-    .selectState {
-      height: 100%;
-      border-top: 4px solid #923100;
-      border-left: 1px solid #e4e8ee;
-      border-right: 1px solid #e4e8ee;
-      box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.5);
-      background-color: #fff;
-    }
+    padding-left: 10px;
   }
   .headers-right {
-    float: right;
-    min-width: 15%;
-    text-align: center;
-    .headers-right-r {
-      margin-right: 20px;
-      line-height: 0px;
-      margin-top: 5px;
-      .login-icon {
-        width: 35px;
-        height: 35px;
-        background-color: #409eff;
-        display: inline-block;
-        border-radius: 50%;
-        text-align: center;
-        i {
-          color: #fff;
-          font-size: 20px;
-          line-height: 35px;
-        }
-      }
-      .login-icon-id{
-        line-height: 0px;
-        margin-top: 5px;
-      }
+    padding-right: 20px;
+    text-align: right;
+    line-height: 54px;
+    i{
+      vertical-align: middle;
+    }
+    .login-icon-id{
+      font-size: 12px;
     }
   }
 }
