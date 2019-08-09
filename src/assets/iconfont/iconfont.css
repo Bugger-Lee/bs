@@ -218,3 +218,7 @@
   content: "\e60c";
 }
 
+.icon-icon-test-copy:before {
+  content: "\e60b";
+}
+

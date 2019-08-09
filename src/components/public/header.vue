@@ -1,17 +1,37 @@
 <template>
   <div class="Header" v-loading.fullscreen.lock="fullscreenLoading">
-    <div class="headers">
+    <header class="headers">
       <el-col :span="4" class="headers-left ellipsis">
         <i class="ml15" @click="goToHome()">Journey Builder</i>
       </el-col>
       <el-col :span="1" class="headers-center">
-        <i class="el-icon-menu"></i>
+        <i class="el-icon-menu" @click="menuShow"></i>
       </el-col>
       <el-col :span="19" class="headers-right">
         <i class="el-icon-s-custom"></i>
         <span class="login-icon-id">{{this.userInfo}}</span>
       </el-col>
-    </div>
+    </header>
+    <section class="container">
+      <el-col :span="4" class="container-l" :class="{'menu-none':this.isCollapse == true}" >
+        <el-menu :default-active="this.$router.push" router :collapse="isCollapse">
+          <el-submenu :index="i.id" v-for="i in this.menuList" :key="i.id">
+            <template slot="title">
+              <i class="icon-wenjian fs18"></i>
+              <span>{{i.name}}</span>
+            </template>
+            <el-menu-item-group v-for="j in i.children" :key="j.id">
+              <el-menu-item :index="j.path_url">
+                <template slot="title">
+                  <i class="el-icon-star-off fs16"></i>
+                  <span>{{j.name}}</span>
+                </template>
+              </el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+        </el-menu>
+      </el-col>
+    </section>
   <div style="width:100%;height:100%;position:fixed;background:white;" v-if="this.alertIndex==true"></div>
   </div>
 </template>
@@ -24,8 +44,10 @@ export default {
       linkUserId:'',
       userInfo:'',
       fullscreenLoading: false,
-      alertIndex:false
-    };
+      alertIndex:false,
+      menuList: [],
+      isCollapse:false
+    }
   },
   // created() {
   //   let url = window.location.href
@@ -69,17 +91,37 @@ export default {
   //     this.$router.push('./')
   //   }
   // },
+  // created() {
+  //   for(var i=0;i<this.journey.length;i++) {
+  //     console.log(this.journey[i].children)
+  //   }
+  // },
+  created() {
+    this.getMenu()
+  },
   methods: {
     goToHome() {
       this.$router.push('./')
+    },
+    getMenu() {
+      this.$.get("home/getMenu").then(res=>{
+        this.menuList = res.data.data
+      })
+    },
+    menuShow() {
+      if(this.isCollapse == false) {
+        this.isCollapse = true
+      }else{
+        this.isCollapse = false
+      }
     }
   }
 };
 </script>
 <style scoped lang="less">
 .Header {
-  position: fixed;
-  z-index: 100;
+  width: 100%;
+  height: 100%;
 }
 .headers {
   width: 100%;
@@ -98,6 +140,9 @@ export default {
   .headers-center {
     height: 100%;
     padding-left: 10px;
+    i{
+      cursor: pointer;
+    }
   }
   .headers-right {
     padding-right: 20px;
@@ -110,6 +155,32 @@ export default {
       font-size: 12px;
     }
   }
+}
+.container{
+  background-color: #f0f2f5;
+  width: 100%;
+  height: ~"calc(100% - 60px)";
+  padding-top: 60px;
+  .container-l{
+    height: 100%;
+    background-color: #fff;
+    .fs18{
+      font-size: 18px;
+    }
+    .fs16{
+      font-size: 16px;
+    }
+  }
+}
+.el-menu{
+  border-right: none;
+}
+.el-submenu .el-menu-item{
+  height: 40px !important;
+  line-height: 40px !important;
+}
+.menu-none{
+  width: 64px;
 }
 </style>
 

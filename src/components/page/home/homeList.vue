@@ -2,12 +2,12 @@
   <div class="homeList">
     <div class="list">
       <div class="list-head">
-        <el-col :span="12" class="list-head-l ml15">
+        <!-- <el-col :span="12" class="list-head-l ml15">
           <span class="list-head-icon">
             <i class="el-icon-location"></i>
           </span>
           <span>Journeys Dashboard</span>
-        </el-col>
+        </el-col> -->
         <el-col :span="6">
           <el-input
             placeholder="Search by Title"
@@ -244,8 +244,8 @@ export default {
 <style scoped lang="less">
 .homeList {
   width: 100%;
-  height: ~"calc(100% - 30px)";
-  // margin-top: 60px;
+  height: ~"calc(100% - 60px)";
+  padding-top: 60px;
   background: #f3f2f2;
   border-radius: 10px;
   .list {
