@@ -1,96 +1,64 @@
 <template>
-  <div class="homeList">
-    <div class="list">
-      <div class="list-head">
-        <!-- <el-col :span="12" class="list-head-l ml15">
-          <span class="list-head-icon">
-            <i class="el-icon-location"></i>
-          </span>
-          <span>Journeys Dashboard</span>
-        </el-col> -->
-        <el-col :span="6">
-          <el-input
-            placeholder="Search by Title"
-            clearable
-            style="width:70%;"
-            prefix-icon="el-icon-search"
-            @keyup.enter.native="searchHomeList"
-            v-model="searchListVal"
-          ></el-input>
-        </el-col>
-        <el-col :span="5">
-          <el-select v-model="JourneyVal" clearable placeholder="Create New Journey" class="fr mt15" style="line-height:0px;">
-            <el-option
-              v-for="item in selectList"
-              :key="item.id"
-              :label="item.label"
-              @click.native="newActive()"
-              :value="item.label"
-            ></el-option>
-          </el-select>
-        </el-col>
-      </div>
-      <div class="list-num ml15">
-        <el-col :span="24">{{this.JourneyTotal}}  Journeys</el-col>
-      </div>
-      <div class="list-content mt20">
-        <el-col :span="4" class="list-content-l">
-          <p class="list-content-l-tit ml15">Folders</p>
-          <div class="list-content-l-tree">
-            <el-tree :data="modelClv" style="font-size:14px;" :highlight-current="true" @node-click="treeModes" ref="journeyTree" node-key="journeyId" class="mt10">
-              <span  slot-scope="{ node, data }">
-                  <span>
-                      <i :class="data.icon" class="mr05"></i>{{ node.label }}
-                  </span>
-              </span>
-            </el-tree>
-          </div>
-        </el-col>
-        <div class="list-content-r">
-          <el-col :span="20" style="width:100%;">
-            <el-table
-              ref="multipleTable"
-              :data="tableData"
-              :height="tableHeight"
-              tooltip-effect="dark"
-              style="width: 100%"
-              v-loadmore="getMoreDate"
-            >
-              <el-table-column prop="rule_name" label="Journey Title" show-overflow-tooltip>
-                <template slot-scope="scope">
-                  <span @click="goToDetail(scope.row.id)" class="mouseAfter">{{ scope.row.rule_name}}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="status_name" label="Status" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="command_name" label="Crowd Type" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="crowd_count" label="Crowd Count" show-overflow-tooltip></el-table-column>
-              <el-table-column label="Time" show-overflow-tooltip>
-                <template slot-scope="scope">
-                  <span>{{scope.row.schulder_time}}</span>
-                  <span v-if='scope.row.retired_time'>- {{scope.row.retired_time}}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="created_by" label="Creator" show-overflow-tooltip></el-table-column>
-              <el-table-column
-                fixed="right"
-                label="操作"
-                width="80">
-                <template slot-scope="scope">
-                  <el-button
-                    @click.native.prevent="deleteIndexList(scope, tableData)"
-                    type="text"
-                    size="small">
-                    移除
-                  </el-button>
-                </template>
-              </el-table-column>
-              <div style="text-align:center; padding: 10px 0" slot="append" v-if="showLoading"><i class="el-icon-loading" style="color:#1589ee;font-size:35px;"></i></div>
-            </el-table>
-          </el-col>
-        </div>
-      </div>
+  <el-col :span="20" class="tableLists">
+    <div class="table-header">
+      <el-input
+      placeholder="Search by Title"
+      clearable
+      style="width:20%;"
+      size="small"
+      prefix-icon="el-icon-search"
+      @keyup.enter.native="searchHomeList"
+      v-model="searchListVal"
+    ></el-input>
+    <el-select v-model="JourneyVal" size="small" clearable placeholder="Create New Journey" style="line-height:0px;">
+      <el-option
+        v-for="item in selectList"
+        :key="item.id"
+        :label="item.label"
+        @click.native="newActive()"
+        :value="item.label"
+      ></el-option>
+    </el-select>
     </div>
-  </div>
+    <el-table
+      ref="multipleTable"
+      :data="tableData"
+      border
+      size="mini"
+      tooltip-effect="dark"
+      v-loadmore="getMoreDate"
+    >
+      <el-table-column prop="rule_name" label="Journey Title" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span @click="goToDetail(scope.row.id)" class="mouseAfter">{{ scope.row.rule_name}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="status_name" label="Status" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="command_name" label="Crowd Type" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="crowd_count" label="Crowd Count" show-overflow-tooltip></el-table-column>
+      <el-table-column label="Time" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{scope.row.schulder_time}}</span>
+          <span v-if='scope.row.retired_time'>- {{scope.row.retired_time}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="created_by" label="Creator" show-overflow-tooltip></el-table-column>
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="80">
+        <template slot-scope="scope">
+          <el-button
+            @click.native.prevent="deleteIndexList(scope, tableData)"
+            type="text"
+            size="small">
+            移除
+          </el-button>
+        </template>
+      </el-table-column>
+      <div style="text-align:center; padding: 10px 0" slot="append" v-if="showLoading"><i class="el-icon-loading" style="color:#1589ee;font-size:35px;"></i></div>
+    </el-table>
+  </el-col>
 </template>
 
 <script>
@@ -106,21 +74,12 @@ export default {
       ],
       JourneyVal: "",
       searchListVal: "",
-      modelClv: [
-        {
-          label: "All  Journeys",
-          icon: 'icon-wenjian',
-          journeyId:1,
-          children: []
-        }
-      ],
       tableData: [],
       totalDate: [], //总数据
       page: 1,//当前页
       total_page: '',//总页数
       JourneyTotal:'',
       ruleName:'',
-      tableHeight: window.innerHeight - 200,
       showLoading: false,
       crowdVal:''
     };
@@ -128,24 +87,10 @@ export default {
   created() {
     this.homeLists()
     this.orderLists()
-    this.treeJourneys()
   },
   methods: {
     newActive() {
       this.$router.push('/marketingActive')
-    },
-    treeJourneys() {
-      this.$nextTick(() => {
-        this.$refs.journeyTree.setCurrentKey(this.modelClv[0].journeyId); 
-      })
-    },
-    treeModes(data) {
-      if(data.label == 'All  Journeys') {
-        this.crowdVal = ''
-      }else{
-        this.crowdVal = data.label
-      }
-      this.homeLists()
     },
     getMoreDate() {
       if (this.showLoading) {
@@ -242,73 +187,16 @@ export default {
 </script>
 
 <style scoped lang="less">
-.homeList {
+.tableLists{
+  background-color: #fff;
   width: 100%;
-  height: ~"calc(100% - 60px)";
-  padding-top: 60px;
-  background: #f3f2f2;
-  border-radius: 10px;
-  .list {
+  height: 100%;
+  overflow-x: scroll;
+  padding: 15px;
+  .table-header{
     width: 100%;
-    height: 100%;
-    .list-head {
-      width: 100%;
-      height: 70px;
-      line-height: 70px;
-      .list-head-l {
-        float: left;
-        clear: right;
-        span {
-          font-weight: 600;
-        }
-        .list-head-icon {
-          width: 32px;
-          height: 32px;
-          text-align: center;
-          line-height: 32px;
-          border-radius: 5px;
-          background-color: #fcb95b;
-          display: inline-block;
-          i {
-            color: #fff;
-            font-size: 20px;
-          }
-        }
-      }
-      .list-head-r {
-        float: right;
-      }
-    }
-    .list-num {
-      font-size: 12px;
-      padding: 0 0 15px 0;
-    }
-    .list-content {
-      width: 100%;
-      border-top: 1px solid #dddbda;
-      height: 82%;
-      border-radius: 0px 0px 10px 10px;
-      .list-content-l {
-        height: 96%;
-        .list-content-l-tit {
-          height: 40px;
-          line-height: 40px;
-        }
-        .list-content-l-tree {
-          width: 96%;
-          height: 92%;
-          background: #fff;
-          border: 1px solid #ccc;
-          margin-left: 5px;
-        }
-      }
-      .list-content-r {
-        height: 97%;
-        background: #fff;
-        width: 83%;
-        float: right;
-      }
-    }
+    height: 60px;
+    line-height: 60px;
   }
 }
 </style>

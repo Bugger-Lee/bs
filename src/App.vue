@@ -1,12 +1,11 @@
 <template>
   <div id="app">
-    <Header v-if="!$route.meta.ifHeader"></Header>
-    <router-view></router-view>
+    <appRouterViev></appRouterViev>
   </div>
 </template>
 
 <script>
-import Header from './components/public/header'
+import appRouterViev from './components/public/appRouterViev'
 export default {
   name: 'App',
   data() {
@@ -15,12 +14,12 @@ export default {
     }
   },
   components:{
-    Header
+    appRouterViev
   }
 }
 </script>
 <style scoped lang="less">
-#app {
+#app{
   width: 100%;
   height: 100%;
 }
