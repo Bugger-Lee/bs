@@ -1,330 +1,312 @@
 <template>
   <div class="marketingActive">
-    <div class="marketing">
-      <div class="marketing-header">
-        <el-col :span="12" class="marketing-header-l">
-          <span class="l-icon ml10">
-            <i class="el-icon-location"></i>
-          </span>
-          <div class="l-tit">
-            <p class="l-tit-t">
-              <span>
-                <a @click="goToHome()" style="cursor:pointer;">HomePage</a>
-                <i>> Journey</i>
-              </span>
-            </p>
-            <p>
-              <el-input
-                  v-model="currentTimeVal"
-                  size="mini"
-                  ref="titleInput"
-                  :disabled="titleDis"
-                >
-                <i slot="suffix" class="el-icon-edit mr05" style="line-height:28px;cursor: pointer;" @click="editTitle()"></i>
-              </el-input>
-            </p>
-          </div>
-        </el-col>
-        <el-col :span="12" class="marketing-header-r">
-          <el-button-group class="mr05">
-            <el-button
-              type="primary"
-              class="pd-btn pd-back ifColor"
-              v-if="this.saveSave==true"
-              @click="updateJorney()"
-            >Save</el-button>
-            <el-button
-              type="primary"
-              v-if="this.saveUpdate==true"
-              class="pd-btn pd-back ifColor"
-              @click="updateJorney()"
-            >Update</el-button>
-            <el-button
-              type="primary"
-              v-if="this.saveTest==true"
-              :disabled="this.testDis"
-              class="pd-btn pd-back"
-              :class="{'ifColor':this.testDis == false}"
-              @click="testRunJourney('test')"
-            >Test</el-button>
-          </el-button-group>
+    <el-col :span="4" class="marketing-l">
+      <p class="marketing-theme-tit ml10">Builder</p>
+      <el-menu default-active="2" class="marketing-theme-l">
+        <el-submenu index="1">
+          <template slot="title">
+            <span>ENTRY SOURCES</span>
+          </template>
+          <el-menu-item-group>
+            <ul class="theme-l-tmp">
+              <li v-for="i in sourcesType" :key="i.id">
+                <span class="crowd-style" :title ='i.command_name' :slot='i.command_code'>
+                  <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="i.command_name == 'CLV-Data'"></i>
+                  <i class="icon-renqun1" v-if="i.command_name == 'DMP-Data'"></i>
+                </span>
+                <p>{{i.command_name}}</p>
+              </li>
+            </ul>
+          </el-menu-item-group>
+        </el-submenu>
+        <el-submenu index="2">
+          <template slot="title">
+            <span>RIGHTS</span>
+          </template>
+          <el-menu-item-group>
+            <ul class="theme-l-tmp">
+              <li>
+                <span class="crowds-style" style="background-color:#ffcd43;">
+                  <i class="icon-quanyi-copy-copy"></i>
+                </span>
+                <p>Coupon</p>
+              </li>
+            </ul>
+          </el-menu-item-group>
+        </el-submenu>
+        <el-submenu index="3">
+          <template slot="title">
+            <span>ACTIVITIES</span>
+          </template>
+          <el-submenu index="2-1" class="marketing-el-submenu-children">
+            <span slot="title">Messages</span>
+            <el-menu-item-group>
+              <ul class="theme-l-tmp">
+                <li>
+                  <span class="msg-style">
+                    <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
+                  </span>
+                  <p>SMS</p>
+                </li>
+              </ul>
+            </el-menu-item-group>
+          </el-submenu>
+          <el-submenu index="2-2" class="marketing-el-submenu-children">
+            <span slot="title">Flow Control</span>
+            <el-menu-item-group>
+              <ul class="theme-l-tmp">
+                <li>
+                  <span class="ctl-style">
+                    <i class="icon-time1"></i>
+                  </span>
+                  <p>Wait By</p>
+                  <p>Duration</p>
+                </li>
+              </ul>
+            </el-menu-item-group>
+          </el-submenu>
+        </el-submenu>
+      </el-menu>
+    </el-col>
+    <el-col :span="20" class="marketing-r">
+      <div class="marketing-r-t">
+        <el-input
+          v-model="currentTimeVal"
+          size="mini"
+          style="width:25%"
+          ref="titleInput"
+          :disabled="titleDis"
+          >
+          <i slot="suffix" class="el-icon-edit mr05" style="line-height:28px;cursor: pointer;" @click="editTitle()"></i>
+        </el-input>
+        <el-button-group>
           <el-button
             type="primary"
-            class="disBtn mr15"
+            class="pd-back ifColor"
+            v-if="this.saveSave==true"
+            @click="updateJorney()"
+          >Save</el-button>
+          <el-button
+            type="primary"
+            v-if="this.saveUpdate==true"
+            class="pd-back ifColor"
+            @click="updateJorney()"
+          >Update</el-button>
+          <el-button
+            type="primary"
+            v-if="this.saveTest==true"
+            :disabled="this.testDis"
+            class="pd-back"
+            :class="{'ifColor':this.testDis == false}"
+            @click="testRunJourney('test')"
+          >Test</el-button>
+          <el-button
+            type="primary"
+            class="pd-back"
             v-if="this.saveRunning==true"
             :disabled="this.runDis"
+            :class="{'ifColor':this.runDis == false}"
             @click="testRunJourney('runing')"
           >Run</el-button>
           <el-button
             type="primary"
-            class="pd-btn mr15"
-             v-if="this.saveStop==true"
+            class="pd-back"
+            v-if="this.saveStop==true"
             @click="testRunJourney('stop')"
           >Stop</el-button>
-        </el-col>
+        </el-button-group>
       </div>
-      <div class="marketing-theme">
-        <el-col :span="4" style="height:99%;overflow-y:scroll;">
-          <p class="marketing-theme-tit ml10">Builder</p>
-          <el-menu default-active="2" class="marketing-theme-l">
-            <el-submenu index="1">
-              <template slot="title">
-                <span>ENTRY SOURCES</span>
-              </template>
-              <el-menu-item-group>
-                <ul class="theme-l-tmp">
-                  <li v-for="i in sourcesType" :key="i.id">
-                    <span class="crowd-style" :title ='i.command_name' :slot='i.command_code'>
-                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="i.command_name == 'CLV-Data'"></i>
-                      <i class="icon-renqun1" v-if="i.command_name == 'DMP-Data'"></i>
-                    </span>
-                    <p>{{i.command_name}}</p>
-                  </li>
-                </ul>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-submenu index="2">
-              <template slot="title">
-                <span>RIGHTS</span>
-              </template>
-              <el-menu-item-group>
-                <ul class="theme-l-tmp">
-                  <li>
-                    <span class="crowds-style" style="background-color:#ffcd43;">
-                      <i class="icon-quanyi-copy-copy"></i>
-                    </span>
-                    <p>Coupon</p>
-                  </li>
-                </ul>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-submenu index="3">
-              <template slot="title">
-                <span>ACTIVITIES</span>
-              </template>
-              <el-submenu index="2-1" class="marketing-el-submenu-children">
-                <span slot="title">Messages</span>
-                <el-menu-item-group>
-                  <ul class="theme-l-tmp">
-                    <li>
-                      <span class="msg-style">
-                        <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
-                      </span>
-                      <p>SMS</p>
-                    </li>
-                  </ul>
-                </el-menu-item-group>
-              </el-submenu>
-              <el-submenu index="2-2" class="marketing-el-submenu-children">
-                <span slot="title">Flow Control</span>
-                <el-menu-item-group>
-                  <ul class="theme-l-tmp">
-                    <li>
-                      <span class="ctl-style">
-                        <i class="icon-time1"></i>
-                      </span>
-                      <p>Wait By</p>
-                      <p>Duration</p>
-                    </li>
-                  </ul>
-                </el-menu-item-group>
-              </el-submenu>
-            </el-submenu>
-          </el-menu>
-        </el-col>
-        <el-col :span="1" class="middle-style"></el-col>
-        <el-col :span="18" class="marketing-drag">
-          <ul class="imaginary" v-if="!ifSmsDrag">
-            <li class="imaginary-circle" :class="{'border-new': circleBorder}"></li>
-            <li class="imaginary-wire">---------></li>
-            <li class="imaginary-square imaginary-squares" :class="{'border-new': squareBorder}"></li>
-            <li class="imaginary-wire">-------></li>
-            <li class="imaginary-rhombus" :class="{'border-new': rhombusBorder}"></li>
-            <li class="imaginary-wire">-------></li>
-            <li class="imaginary-square"></li>
-            <li class="imaginary-wire">-------></li>
-            <li class="imaginary-rhombus"></li>
-            <li class="imaginary-wire transforb">-----------</li>
-            <li class="imaginary-wire transforl">-----------></li>
-            <li class="imaginary-square transforr"></li>
-            <li class="imaginary-wire">-------></li>
-            <li class="imaginary-square"></li>
-          </ul>
-          <div v-if="showFirst">
-            <div  id="data1" ref="refData1" v-if="ifDrag">
-              <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
-                <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
-              </span>
-            </div>
-            <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
-            <div  id="return1" ref="refData2" v-if="ifSmsDrag">
-              <span class="msg-style" @click="sms()">
-                <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
-              </span>
-            </div>
-            <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
-            <div  id="newreturn" ref="newData" v-if="ifProDrag">
-              <span class="crowds-style"  @click="popupTicket()" style="background-color:#ffcd43;">
-                <i class="icon-quanyi-copy-copy"></i>
-              </span>
-            </div>
-            <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
-            <div  id="return2" ref="refData3" v-if="ifSmsDrag">
-              <span class="ctl-style" @click="selectTime()">
-                <i class="icon-time1"></i>
-              </span>
-            </div>
-            <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div  id="return3" ref="refData4" v-if="ifSmsDrag">
-              <span class="crowd-style">
-                <i class="icon-wancheng1"></i>
-              </span>
-            </div>
-            <div ref="refData4div" v-if="ifSmsDrag">Over</div>
+      <div class="marketing-r-b">
+        <ul class="imaginary" v-if="!ifSmsDrag">
+          <li class="imaginary-circle" :class="{'border-new': circleBorder}"></li>
+          <li class="imaginary-wire">---------></li>
+          <li class="imaginary-square imaginary-squares" :class="{'border-new': squareBorder}"></li>
+          <li class="imaginary-wire">-------></li>
+          <li class="imaginary-rhombus" :class="{'border-new': rhombusBorder}"></li>
+          <li class="imaginary-wire">-------></li>
+          <li class="imaginary-square"></li>
+          <li class="imaginary-wire">-------></li>
+          <li class="imaginary-rhombus"></li>
+          <li class="imaginary-wire transforb">-----------</li>
+          <li class="imaginary-wire transforl">-----------></li>
+          <li class="imaginary-square transforr"></li>
+          <li class="imaginary-wire">-------></li>
+          <li class="imaginary-square"></li>
+        </ul>
+        <div v-if="showFirst">
+          <div  id="data1" ref="refData1" v-if="ifDrag">
+            <span class="crowd-style" @click="dataExtension()">
+              <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
+              <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
+            </span>
           </div>
-          <div v-if="showSecend">
-            <div  id="data1" ref="refData1" v-if="ifDrag">
-              <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
-                <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
-              </span>
-            </div>
-            <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
-            <div  id="newreturn1" ref="newData" v-if="ifProDrag">
-              <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
-                <i class="icon-quanyi-copy-copy"></i>
-              </span>
-            </div>
-            <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
-            <div  id="return222" ref="refData3" v-if="ifSmsDrag">
-              <span class="ctl-style" @click="selectTime()">
-                <i class="icon-time1"></i>
-              </span>
-            </div>
-            <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div  id="return333" ref="refData4" v-if="ifSmsDrag">
-              <span class="crowd-style">
-                <i class="icon-wancheng1"></i>
-              </span>
-            </div>
-            <div ref="refData4div" v-if="ifSmsDrag">Over</div>
+          <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
+          <div  id="return1" ref="refData2" v-if="ifSmsDrag">
+            <span class="msg-style" @click="sms()">
+              <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
+            </span>
           </div>
-          <div v-if="showLast">
-            <div  id="data1" ref="refData1" v-if="ifDrag">
-              <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
-                <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
-              </span>
-            </div>
-            <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
-            <div  id="return1111" ref="refData2" v-if="ifSmsDrag">
-              <span class="msg-style" @click="sms()">
-                <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
-              </span>
-            </div>
-            <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
-            <div  id="newreturn11" ref="newData" v-if="ifProDrag">
-              <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
-                <i class="icon-quanyi-copy-copy"></i>
-              </span>
-            </div>
-            <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
-            <div  id="return2222" ref="refData3" v-if="ifSmsDrag">
-              <span class="ctl-style" @click="selectTime()">
-                <i class="icon-time1"></i>
-              </span>
-            </div>
-            <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div  id="return3333" ref="refData4" v-if="ifSmsDrag">
-              <span class="crowd-style">
-                <i class="icon-wancheng1"></i>
-              </span>
-            </div>
-            <div ref="refData4div" v-if="ifSmsDrag">Over</div>
+          <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
+          <div  id="newreturn" ref="newData" v-if="ifProDrag">
+            <span class="crowds-style"  @click="popupTicket()" style="background-color:#ffcd43;">
+              <i class="icon-quanyi-copy-copy"></i>
+            </span>
           </div>
-          <div v-if="showFirst1">
-            <div  id="data1" ref="refData1" v-if="ifDrag">
-              <span class="crowd-style" @click="dataExtension()">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
-                <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
-              </span>
-            </div>
-            <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
-            <div  id="return11" ref="refData2" v-if="ifSmsDrag">
-              <span class="msg-style" @click="sms()">
-                <i class="icon-duanxin2-copy"  style="font-size:32px;"></i>
-              </span>
-            </div>
-            <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
-            <div  id="newreturn" ref="newData" v-if="ifProDrag">
-              <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
-                <i class="icon-quanyi-copy-copy"></i>
-              </span>
-            </div>
-            <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
-            <div  id="return22" ref="refData3" v-if="ifSmsDrag">
-              <span class="ctl-style" @click="selectTime()">
-                <i class="icon-time1"></i>
-              </span>
-            </div>
-            <div ref="refData3div" v-if="ifSmsDrag">Time</div>
-            <div  id="return33" ref="refData4" v-if="ifSmsDrag">
-              <span class="crowd-style">
-                <i class="icon-wancheng1"></i>
-              </span>
-            </div>
-            <div ref="refData4div" v-if="ifSmsDrag">Over</div>
+          <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
+          <div  id="return2" ref="refData3" v-if="ifSmsDrag">
+            <span class="ctl-style" @click="selectTime()">
+              <i class="icon-time1"></i>
+            </span>
           </div>
-        </el-col>
+          <div ref="refData3div" v-if="ifSmsDrag">Time</div>
+          <div  id="return3" ref="refData4" v-if="ifSmsDrag">
+            <span class="crowd-style">
+              <i class="icon-wancheng1"></i>
+            </span>
+          </div>
+          <div ref="refData4div" v-if="ifSmsDrag">Over</div>
+        </div>
+        <div v-if="showSecend">
+          <div  id="data1" ref="refData1" v-if="ifDrag">
+            <span class="crowd-style" @click="dataExtension()">
+              <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
+              <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
+            </span>
+          </div>
+          <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
+          <div  id="newreturn1" ref="newData" v-if="ifProDrag">
+            <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
+              <i class="icon-quanyi-copy-copy"></i>
+            </span>
+          </div>
+          <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
+          <div  id="return222" ref="refData3" v-if="ifSmsDrag">
+            <span class="ctl-style" @click="selectTime()">
+              <i class="icon-time1"></i>
+            </span>
+          </div>
+          <div ref="refData3div" v-if="ifSmsDrag">Time</div>
+          <div  id="return333" ref="refData4" v-if="ifSmsDrag">
+            <span class="crowd-style">
+              <i class="icon-wancheng1"></i>
+            </span>
+          </div>
+          <div ref="refData4div" v-if="ifSmsDrag">Over</div>
+        </div>
+        <div v-if="showLast">
+          <div  id="data1" ref="refData1" v-if="ifDrag">
+            <span class="crowd-style" @click="dataExtension()">
+              <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
+              <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
+            </span>
+          </div>
+          <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
+          <div  id="return1111" ref="refData2" v-if="ifSmsDrag">
+            <span class="msg-style" @click="sms()">
+              <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
+            </span>
+          </div>
+          <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
+          <div  id="newreturn11" ref="newData" v-if="ifProDrag">
+            <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
+              <i class="icon-quanyi-copy-copy"></i>
+            </span>
+          </div>
+          <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
+          <div  id="return2222" ref="refData3" v-if="ifSmsDrag">
+            <span class="ctl-style" @click="selectTime()">
+              <i class="icon-time1"></i>
+            </span>
+          </div>
+          <div ref="refData3div" v-if="ifSmsDrag">Time</div>
+          <div  id="return3333" ref="refData4" v-if="ifSmsDrag">
+            <span class="crowd-style">
+              <i class="icon-wancheng1"></i>
+            </span>
+          </div>
+          <div ref="refData4div" v-if="ifSmsDrag">Over</div>
+        </div>
+        <div v-if="showFirst1">
+          <div  id="data1" ref="refData1" v-if="ifDrag">
+            <span class="crowd-style" @click="dataExtension()">
+              <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.data_socure == 'CLV-Data'"></i>
+              <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
+            </span>
+          </div>
+          <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
+          <div  id="return11" ref="refData2" v-if="ifSmsDrag">
+            <span class="msg-style" @click="sms()">
+              <i class="icon-duanxin2-copy"  style="font-size:32px;"></i>
+            </span>
+          </div>
+          <div ref="refData2div" v-if="ifSmsDrag">SMS</div>
+          <div  id="newreturn" ref="newData" v-if="ifProDrag">
+            <span class="crowds-style" @click="popupTicket()" style="background-color:#ffcd43;">
+              <i class="icon-quanyi-copy-copy"></i>
+            </span>
+          </div>
+          <div ref="newrefDatadiv" v-if="ifProDrag">Coupon</div>
+          <div  id="return22" ref="refData3" v-if="ifSmsDrag">
+            <span class="ctl-style" @click="selectTime()">
+              <i class="icon-time1"></i>
+            </span>
+          </div>
+          <div ref="refData3div" v-if="ifSmsDrag">Time</div>
+          <div  id="return33" ref="refData4" v-if="ifSmsDrag">
+            <span class="crowd-style">
+              <i class="icon-wancheng1"></i>
+            </span>
+          </div>
+          <div ref="refData4div" v-if="ifSmsDrag">Over</div>
+        </div>
       </div>
-      <popupDrag
-        :openData="openData"
-        :propsData="propsData"
-        :openDataContent="openDataContent"
-        :ifDataExtension="ifDataExtension"
-        :statusTestRunVal="statusTestRunVal"
-        @backlevel="backlevel"
-        @searchDmpList="searchDmpList"
-        @sltDataContent="sltDataContent"
-      ></popupDrag>
-      <smsPopup
-        :openData="openSms"
-        :propsSms="propsSms"
-        :openDataContent="openSmsContent"
-        :statusTestRunVal="statusTestRunVal"
-        @backlevelSms="backlevelSms"
-        @searchSmsList="searchSmsList"
-        @sltSmsContent="sltSmsContent"
-      ></smsPopup>
-      <popupTicket :openData="openTicket"
-      :openDataContent="openTicketContent"
+    </el-col>
+    <popupDrag
+      :openData="openData"
+      :propsData="propsData"
+      :openDataContent="openDataContent"
+      :ifDataExtension="ifDataExtension"
       :statusTestRunVal="statusTestRunVal"
-      @searchDate="searchDate"
-      :propsTicket = "propsTicket"
-      @ifCheckedVal="ifCheckedVal"
-      @PromotionLevel="PromotionLevel"
-      @sltPromotion="sltPromotion">
-      </popupTicket>
-      <el-dialog
-        :visible.sync="openTime"
-        :close-on-click-modal="false"
-        class="openTime"
-        width="45%"
-      >
-        <span slot="title" class="data-title">
-          <span class="data-title-time"><i class="icon-time1"></i></span>Wait By Duration
-        </span>
-        <span slot="footer">
-          <el-button @click="cancelTime()">Cancel</el-button>
-          <el-button type="primary" @click="doneTime()">Done</el-button>
-        </span>
-        <popupOpenTime :timeType="timeType"
-        :ifDisabled="ifDisabled"
-        :ifActiveDis="ifActiveDis"
-        @timeCarryOnce="timeCarryOnce"></popupOpenTime>
-      </el-dialog>
-    </div>
+      @backlevel="backlevel"
+      @searchDmpList="searchDmpList"
+      @sltDataContent="sltDataContent"
+    ></popupDrag>
+    <smsPopup
+      :openData="openSms"
+      :propsSms="propsSms"
+      :openDataContent="openSmsContent"
+      :statusTestRunVal="statusTestRunVal"
+      @backlevelSms="backlevelSms"
+      @searchSmsList="searchSmsList"
+      @sltSmsContent="sltSmsContent"
+    ></smsPopup>
+    <popupTicket :openData="openTicket"
+    :openDataContent="openTicketContent"
+    :statusTestRunVal="statusTestRunVal"
+    @searchDate="searchDate"
+    :propsTicket = "propsTicket"
+    @ifCheckedVal="ifCheckedVal"
+    @PromotionLevel="PromotionLevel"
+    @sltPromotion="sltPromotion">
+    </popupTicket>
+    <el-dialog
+      :visible.sync="openTime"
+      :close-on-click-modal="false"
+      class="openTime"
+      width="45%"
+    >
+      <span slot="title" class="data-title">
+        <span class="data-title-time"><i class="icon-time1"></i></span>Wait By Duration
+      </span>
+      <span slot="footer">
+        <el-button @click="cancelTime()">Cancel</el-button>
+        <el-button type="primary" @click="doneTime()">Done</el-button>
+      </span>
+      <popupOpenTime :timeType="timeType"
+      :ifDisabled="ifDisabled"
+      :ifActiveDis="ifActiveDis"
+      @timeCarryOnce="timeCarryOnce"></popupOpenTime>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -523,21 +505,21 @@ export default {
         }
       })
     },
-    goToHome() {
-      if(this.warnTips == 1) {
-        this.$confirm('Journey Builder未保存,是否继续？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$router.push('./')
-        }).catch(() => {
-            return false
-        })
-      }else{
-        this.$router.push('./')
-      }
-    },
+    // goToHome() {
+    //   if(this.warnTips == 1) {
+    //     this.$confirm('Journey Builder未保存,是否继续？', '提示', {
+    //       confirmButtonText: '确定',
+    //       cancelButtonText: '取消',
+    //       type: 'warning'
+    //     }).then(() => {
+    //       this.$router.push('./')
+    //     }).catch(() => {
+    //         return false
+    //     })
+    //   }else{
+    //     this.$router.push('./')
+    //   }
+    // },
     editTitle() {
       if(this.saveUpdate != true) {
         this.currentTimeVal = ''
@@ -1573,7 +1555,7 @@ export default {
           that.circleBorder = false
         }
       });
-      $(".marketing-drag").droppable({
+      $(".marketing-r").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
           if (
@@ -1617,7 +1599,7 @@ export default {
           that.rhombusBorder = false
         }
       });
-      $(".marketing-drag").droppable({
+      $(".marketing-r").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
           that.changedrag(ui);
@@ -1693,7 +1675,7 @@ export default {
         scope: "dragflag",
         appendTo: "body"
       });
-      $(".marketing-drag").droppable({
+      $(".marketing-r").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
           if (
@@ -1712,90 +1694,33 @@ export default {
 </script>
 <style lang="less" scoped>
 .marketingActive {
-  width: 100%;
-  height: 100%;
-  .marketing {
-    width: 98%;
-    height: 98.5%;
-    margin: auto;
-    background-color: #fff;
-    border-radius: 10px;
-    .marketing-header {
-      width: 100%;
-      height: 60px;
-      background-color: #f3f2f2;
-      border-radius: 10px 10px 0 0;
-      .marketing-header-l {
-        .l-icon {
-          width: 40px;
-          height: 40px;
-          line-height: 40px;
-          background-color: #fcb95b;
-          border-radius: 5px;
-          text-align: center;
-          float: left;
-          margin: 9px 10px 0px 0px;
-          i {
-            color: #fff;
-            font-size: 20px;
-          }
-        }
-        .l-tit {
-          display: inline-block;
-          margin-top: 5px;
-          .l-tit-t {
-            a {
-              color: #409eff;
-              text-decoration: none;
-              margin-right: 5px;
-            }
-          }
-          .l-tit-b {
-            font-size: 15px;
-            font-weight: 600;
-          }
-        }
+  background-color: #fff;
+  height: 95%;
+  overflow: scroll;
+  padding: 15px;
+  .marketing-l {
+    height:99%;
+    overflow-y:scroll;
+    .marketing-theme-tit {
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+  .marketing-r {
+    .marketing-r-t{
+      text-align: right;
+      .pd-back {
+        padding: 6px 12px;
+        background: none;
+        border: 1px solid #ece2e1;
+        color: #e6e5e4;
       }
-      .marketing-header-r {
-        text-align: right;
-        line-height: 60px;
-        .pd-btn {
-          padding: 6px 12px;
-          background-color: #0070d2;
-          border: none;
-        }
-        .disBtn{
-          padding: 6px 12px;
-          border: none;
-        }
-        .pd-back {
-          background: none;
-          border: 1px solid #ece2e1;
-          color: #e6e5e4;
-        }
-        .ifColor {
-          color: #409eff;
-        }
+      .ifColor {
+        color: #409eff;
       }
     }
-    .marketing-theme {
-      height: 90%;
-      .marketing-theme-tit {
-        height: 40px;
-        line-height: 40px;
-      }
-      .middle-style {
-        width: 10px;
-        height: 80%;
-        position: fixed;
-        border-left: 1px solid #dedede;
-        border-right: 1px solid #dedede;
-        left: 17.2%;
-      }
-      .marketing-drag {
-        padding: 70px 0 0 50px;
-        height: 100%;
-      }
+    .marketing-r-b{
+      padding: 70px 0 0 50px;
     }
   }
 }

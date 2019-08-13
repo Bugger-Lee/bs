@@ -10,13 +10,12 @@
       @keyup.enter.native="searchHomeList"
       v-model="searchListVal"
     ></el-input>
-    <el-select v-model="JourneyVal" size="small" clearable placeholder="Create New Journey" style="line-height:0px;">
+    <el-select v-model="JourneyVal" size="small" clearable style="line-height:0px;">
       <el-option
         v-for="item in selectList"
-        :key="item.id"
-        :label="item.label"
+        :key="item.command_name"
         @click.native="newActive()"
-        :value="item.label"
+        :value="item.command_name"
       ></el-option>
     </el-select>
     </div>
@@ -66,13 +65,8 @@ export default {
   name: "homeList",
   data() {
     return {
-      selectList: [
-        {
-          id: 1,
-          label: "Create Journey from Scratch"
-        }
-      ],
-      JourneyVal: "",
+      selectList: [],
+      JourneyVal: "All Journeys",
       searchListVal: "",
       tableData: [],
       totalDate: [], //总数据
@@ -90,7 +84,12 @@ export default {
   },
   methods: {
     newActive() {
-      this.$router.push('/marketingActive')
+      if(this.JourneyVal == 'All Journeys') {
+        this.crowdVal = ''
+      }else{
+        this.crowdVal = this.JourneyVal
+      }
+      this.homeLists()
     },
     getMoreDate() {
       if (this.showLoading) {
@@ -146,15 +145,12 @@ export default {
     // 调度命令
     orderLists() {
       this.$.get("command/getList?commandName=").then(res=>{
-        let data = res.data.data
-        for (var i=0; i<data.length; i++) {
-          let item = {
-            label: data[i].command_name,
-            icon: 'icon-wenjian',
-            journeyId: i+2
-          }
-          this.modelClv[0].children.push(item)
+        let item = {
+          command_name: 'All Journeys',
+          id:10
         }
+        this.selectList = res.data.data
+        this.selectList.push(item)
       })
     },
     searchHomeList(e) {
@@ -191,7 +187,7 @@ export default {
   background-color: #fff;
   width: 100%;
   height: 100%;
-  overflow-x: scroll;
+  overflow: scroll;
   padding: 15px;
   .table-header{
     width: 100%;

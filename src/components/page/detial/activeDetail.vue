@@ -1,168 +1,150 @@
 <template>
   <div class="activeDetail">
-    <div class="marketing">
-      <div class="marketing-header">
-        <el-col :span="18" class="marketing-header-l">
-          <span class="l-icon ml10">
-            <i class="el-icon-location"></i>
-          </span>
-          <div class="l-tit">
-            <div class="l-tit-t">
-              <p>
-                <a @click="goToHome()" style="cursor:pointer;">HomePage</a>
-                <i>> Journey</i>
-              </p>
-              <p>{{this.userNameTie}}</p>
-            </div>
-          </div>
-          <span class="l-status" v-if="this.taskStatusMsg">{{this.taskStatusMsg}}</span>
-          <span class="l-status bgcYessow" v-if="this.couponCountMsg">Coupon Count：{{this.couponCountMsg}}</span>
-          <span class="l-status bgcGree" v-if="this.sendCountMsg">Send Count：{{this.sendCountMsg}}</span>
-        </el-col>
-        <el-col :span="6" class="marketing-header-r">
-          <el-button-group class="mr05">
-            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.UpdateDis == false}" v-if="this.detailUpdate == true" :disabled="UpdateDis" @click="detailStatus('update')">Update</el-button>
-            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.testDis == false}" v-if="this.detailTest == true" :disabled="testDis" @click="detailStatus('test')">Test</el-button>
-            <el-button type="primary" class="pd-btn pd-back" :class="{'ifColor':this.runDis == false}" v-if="this.detailRun == true" :disabled="runDis" @click="detailStatus('run')">Run</el-button>
-            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">Stop</el-button>
-            <el-button type="primary" class="pd-btn pd-back ifColor" v-if="this.detailOver == true">Completed</el-button>
-          </el-button-group>
-        </el-col>
+    <el-col :span="4" class="marketing-l">
+      <p class="marketing-l-tit ml10">Builder</p>
+      <el-menu default-active="2" class="marketing-theme-l">
+        <el-submenu index="1">
+          <template slot="title">
+            <span>ENTRY SOURCES</span>
+          </template>
+          <el-menu-item-group>
+            <ul class="theme-l-tmp">
+              <li v-for="i in propsData.sourcesType" :key="i.id">
+                <span class="crowd-style">
+                  <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="i.command_name == 'CLV-Data'"></i>
+                  <i class="icon-renqun1" v-if="i.command_name == 'DMP-Data'"></i>
+                </span>
+                <p>{{i.command_name}}</p>
+              </li>
+            </ul>
+          </el-menu-item-group>
+        </el-submenu>
+        <el-submenu index="2">
+          <template slot="title">
+            <span>RIGHTS</span>
+          </template>
+          <el-menu-item-group>
+            <ul class="theme-l-tmp">
+              <li>
+                <span class="crowds-style" style="background-color:#ffcd43;">
+                  <i class="icon-quanyi-copy-copy"></i>
+                </span>
+                <p>Coupon</p>
+              </li>
+            </ul>
+          </el-menu-item-group>
+        </el-submenu>
+        <el-submenu index="3">
+          <template slot="title">
+            <span>ACTIVITIES</span>
+          </template>
+          <el-submenu index="2-1" class="marketing-el-submenu-children">
+            <span slot="title">Messages</span>
+            <el-menu-item-group>
+              <ul class="theme-l-tmp">
+                <li>
+                  <span class="msg-style">
+                    <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
+                  </span>
+                  <p>SMS</p>
+                </li>
+              </ul>
+            </el-menu-item-group>
+          </el-submenu>
+          <el-submenu index="2-2" class="marketing-el-submenu-children">
+            <span slot="title">Flow Control</span>
+            <el-menu-item-group>
+              <ul class="theme-l-tmp">
+                <li>
+                  <span class="ctl-style">
+                    <i class="icon-time1"></i>
+                  </span>
+                  <p>Wait By</p>
+                  <p>Duration</p>
+                </li>
+              </ul>
+            </el-menu-item-group>
+          </el-submenu>
+        </el-submenu>
+      </el-menu>
+    </el-col>
+    <el-col :span="20" class="marketing-r">
+      <div class="marketing-r-t">
+        <span>{{this.userNameTie}}</span>
+        <span class="l-status" v-if="this.taskStatusMsg">{{this.taskStatusMsg}}</span>
+        <span class="l-status bgcYessow" v-if="this.couponCountMsg">Coupon Count：{{this.couponCountMsg}}</span>
+        <span class="l-status bgcGree" v-if="this.sendCountMsg">Send Count：{{this.sendCountMsg}}</span>
+        <el-button-group class="mr05">
+          <el-button type="primary" class="pd-back" :class="{'ifColor':this.UpdateDis == false}" v-if="this.detailUpdate == true" :disabled="UpdateDis" @click="detailStatus('update')">Update</el-button>
+          <el-button type="primary" class="pd-back" :class="{'ifColor':this.testDis == false}" v-if="this.detailTest == true" :disabled="testDis" @click="detailStatus('test')">Test</el-button>
+          <el-button type="primary" class="pd-back" :class="{'ifColor':this.runDis == false}" v-if="this.detailRun == true" :disabled="runDis" @click="detailStatus('run')">Run</el-button>
+          <el-button type="primary" class="pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">Stop</el-button>
+          <el-button type="primary" class="pd-back ifColor" v-if="this.detailOver == true">Completed</el-button>
+        </el-button-group>
       </div>
-      <div class="marketing-theme">
-        <el-col :span="4" style="height:99%;overflow-y:scroll;">
-          <p class="marketing-theme-tit ml10">Builder</p>
-          <el-menu default-active="2" class="marketing-theme-l">
-            <el-submenu index="1">
-              <template slot="title">
-                <span>ENTRY SOURCES</span>
-              </template>
-              <el-menu-item-group>
-                <ul class="theme-l-tmp">
-                  <li v-for="i in propsData.sourcesType" :key="i.id">
-                    <span class="crowd-style">
-                      <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="i.command_name == 'CLV-Data'"></i>
-                      <i class="icon-renqun1" v-if="i.command_name == 'DMP-Data'"></i>
-                    </span>
-                    <p>{{i.command_name}}</p>
-                  </li>
-                </ul>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-submenu index="2">
-              <template slot="title">
-                <span>RIGHTS</span>
-              </template>
-              <el-menu-item-group>
-                <ul class="theme-l-tmp">
-                  <li>
-                    <span class="crowds-style" style="background-color:#ffcd43;">
-                      <i class="icon-quanyi-copy-copy"></i>
-                    </span>
-                    <p>Coupon</p>
-                  </li>
-                </ul>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-submenu index="3">
-              <template slot="title">
-                <span>ACTIVITIES</span>
-              </template>
-              <el-submenu index="2-1" class="marketing-el-submenu-children">
-                <span slot="title">Messages</span>
-                <el-menu-item-group>
-                  <ul class="theme-l-tmp">
-                    <li>
-                      <span class="msg-style">
-                        <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
-                      </span>
-                      <p>SMS</p>
-                    </li>
-                  </ul>
-                </el-menu-item-group>
-              </el-submenu>
-              <el-submenu index="2-2" class="marketing-el-submenu-children">
-                <span slot="title">Flow Control</span>
-                <el-menu-item-group>
-                  <ul class="theme-l-tmp">
-                    <li>
-                      <span class="ctl-style">
-                        <i class="icon-time1"></i>
-                      </span>
-                      <p>Wait By</p>
-                      <p>Duration</p>
-                    </li>
-                  </ul>
-                </el-menu-item-group>
-              </el-submenu>
-            </el-submenu>
-          </el-menu>
-        </el-col>
-        <el-col :span="1" class="middle-style"></el-col>
-        <el-col :span="18" class="marketing-drag">
-          <div v-if ='showFirst == 1'>
-            <div class="marketing-drag-content">
-              <span class="crowd-style" @click="dataExtension()"  id="dataExtenIDOne">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
-                <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
-              </span>
-              <p>{{this.propsData.defaultData.command_name}}</p>
-            </div>
-            <div class="marketing-drag-content">
-              <span class="msg-style" @click="sms()" id="smsIDOne">
-                <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
-              </span>
-              <p>SMS</p>
-            </div>
-            <div class="marketing-drag-content">
-              <span class="ctl-style" @click="selectTime()" id="timeIDOne">
-                <i class="icon-time1"></i>
-              </span>
-              <p>Time</p>
-            </div>
-            <div class="marketing-drag-content">
-              <span class="crowd-style" id="overIDOne">
-                <i class="icon-wancheng1"></i>
-              </span>
-              <p>Over</p>
-            </div>
+      <div class="marketing-r-b">
+        <div v-if ='showFirst == 1'>
+          <div class="marketing-r-content">
+            <span class="crowd-style" @click="dataExtension()"  id="dataExtenIDOne">
+              <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
+              <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
+            </span>
+            <p>{{this.propsData.defaultData.command_name}}</p>
           </div>
-          <div v-if ='showFirst == 2'>
-            <div class="marketing-drag-content">
-              <span class="crowd-style" @click="dataExtension()" id="dataExtenIDTwo">
-                <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
-                <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
-              </span>
-              <p>{{this.propsData.defaultData.command_name}}</p>
-            </div>
-            <div class="marketing-drag-content">
-              <span class="crowds-style" @click="popupTicket()" id="ticketIDTwo" style="background-color:#ffcd43;">
-                <i class="icon-quanyi-copy-copy"></i>
-              </span>
-              <p>Coupon</p>
-            </div>
-            <div class="marketing-drag-content">
-              <span class="msg-style" @click="sms()" id="smsIDTwo">
-                <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
-              </span>
-              <p>SMS</p>
-            </div>
-            <div class="marketing-drag-content">
-              <span class="ctl-style" @click="selectTime()" id="timeIDTwo">
-                <i class="icon-time1"></i>
-              </span>
-              <p>Time</p>
-            </div>
-            <div class="marketing-drag-content">
-              <span class="crowd-style" id="overIDTwo">
-                <i class="icon-wancheng1"></i>
-              </span>
-              <p>Over</p>
-            </div>
+          <div class="marketing-r-content">
+            <span class="msg-style" @click="sms()" id="smsIDOne">
+              <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
+            </span>
+            <p>SMS</p>
           </div>
-        </el-col>
+          <div class="marketing-r-content">
+            <span class="ctl-style" @click="selectTime()" id="timeIDOne">
+              <i class="icon-time1"></i>
+            </span>
+            <p>Time</p>
+          </div>
+          <div class="marketing-r-content">
+            <span class="crowd-style" id="overIDOne">
+              <i class="icon-wancheng1"></i>
+            </span>
+            <p>Over</p>
+          </div>
+        </div>
+        <div v-if ='showFirst == 2'>
+          <div class="marketing-r-content">
+            <span class="crowd-style" @click="dataExtension()" id="dataExtenIDTwo">
+              <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
+              <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
+            </span>
+            <p>{{this.propsData.defaultData.command_name}}</p>
+          </div>
+          <div class="marketing-r-content">
+            <span class="crowds-style" @click="popupTicket()" id="ticketIDTwo" style="background-color:#ffcd43;">
+              <i class="icon-quanyi-copy-copy"></i>
+            </span>
+            <p>Coupon</p>
+          </div>
+          <div class="marketing-r-content">
+            <span class="msg-style" @click="sms()" id="smsIDTwo">
+              <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
+            </span>
+            <p>SMS</p>
+          </div>
+          <div class="marketing-r-content">
+            <span class="ctl-style" @click="selectTime()" id="timeIDTwo">
+              <i class="icon-time1"></i>
+            </span>
+            <p>Time</p>
+          </div>
+          <div class="marketing-r-content">
+            <span class="crowd-style" id="overIDTwo">
+              <i class="icon-wancheng1"></i>
+            </span>
+            <p>Over</p>
+          </div>
+        </div>
       </div>
-    </div>
+    </el-col>
     <popupDrag :openData ="openData"
         :propsData="propsData"
         :statusTestRunVal="statusTestRunVal"
@@ -375,21 +357,21 @@ export default {
     this.jobRecord()
   },
   methods: {
-    goToHome() {
-      if(this.warnTips == 1) {
-        this.$confirm('Journey Builder未保存,是否继续？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$router.push('./')
-        }).catch(() => {
-            return false
-        })
-      }else{
-        this.$router.push('./')
-      }
-    },
+    // goToHome() {
+    //   if(this.warnTips == 1) {
+    //     this.$confirm('Journey Builder未保存,是否继续？', '提示', {
+    //       confirmButtonText: '确定',
+    //       cancelButtonText: '取消',
+    //       type: 'warning'
+    //     }).then(() => {
+    //       this.$router.push('./')
+    //     }).catch(() => {
+    //         return false
+    //     })
+    //   }else{
+    //     this.$router.push('./')
+    //   }
+    // },
     doneTime() {
       let datas = {
         loopType: this.timeType.timeVal,
@@ -482,7 +464,7 @@ export default {
         appendTo: "body",
         containment: "parent"
       });
-      $(".marketing-drag").droppable({
+      $(".marketing-r").droppable({
         scope: "dragflag",
         drop: function(event, ui) {
           if (
@@ -1318,103 +1300,48 @@ export default {
 </script>
 <style lang="less" scoped>
 .activeDetail {
-  width: 100%;
-  height: 100%;
-  .marketing {
-    width: 98%;
-    height: 98.5%;
-    margin: auto;
-    background-color: #fff;
-    border-radius: 10px;
-    .marketing-header {
-      width: 100%;
-      height: 60px;
-      background-color: #f3f2f2;
-      border-radius: 10px 10px 0 0;
-      .marketing-header-l {
-        .l-icon {
-          width: 30px;
-          height: 30px;
-          line-height: 30px;
-          background-color: #fcb95b;
-          border-radius: 5px;
-          display: inline-block;
-          text-align: center;
-          float: left;
-          margin-top: 9px;
-          margin-right: 5px;
-          i {
-            color: #fff;
-            font-size: 20px;
-            line-height: 30px;
-          }
-        }
-        .l-tit {
-          display: inline-block;
-          margin-top: 5px;
-          .l-tit-t {
-            a {
-              color: #409eff;
-              text-decoration: none;
-              margin-right: 5px;
-            }
-          }
-          .l-tit-b {
-            font-size: 15px;
-            font-weight: 600;
-          }
-        }
-        .l-status{
-          margin-left: 30px;
-          color: #fff;
-          font-style: italic;
-          background: gray;
-          opacity: 0.4;
-          padding: 6px 12px;
-          border-radius: 15px;
-          font-size: 10px;
-        }
+  background-color: #fff;
+  height: 95%;
+  overflow: scroll;
+  padding: 15px;
+  .marketing-l {
+     height:99%;
+     overflow-y:scroll;
+    .marketing-l-tit {
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+  .marketing-r {
+    height: 100%;
+    .marketing-r-t{
+      text-align: right;
+      .l-status{
+        margin-left: 30px;
+        color: #fff;
+        font-style: italic;
+        background: gray;
+        opacity: 0.4;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 10px;
       }
-      .marketing-header-r {
-        text-align: right;
-        line-height: 60px;
-        .pd-btn {
-          padding: 6px 12px;
-          background-color: #0070d2;
-          border: none;
-        }
-        .pd-back {
-          background: none;
-          border: 1px solid #ece2e1;
-          color: #e6e5e4;
-        }
-        .ifColor{
-          color:#409eff;
-        }
+      .pd-back {
+        padding: 6px 12px;
+        background: none;
+        border: 1px solid #ece2e1;
+        color: #e6e5e4;
+      }
+      .ifColor{
+        color:#409eff;
       }
     }
-    .marketing-theme {
-      height: 90%;
-      .marketing-theme-tit {
-        height: 40px;
-        line-height: 40px;
-      }
-      .middle-style {
-        width: 10px;
-        height: 80%;
-        position: fixed;
-        border-left: 1px solid #dedede;
-        border-right: 1px solid #dedede;
-        left: 17.2%;
-      }
-      .marketing-drag {
-        padding: 90px 0 0 30px;
-        height: 100%;
-        .marketing-drag-content{
-          float: left;
-          text-align:center;
-          margin-left: 70px;
-        }
+    .marketing-r-b{
+      padding: 50px 0 0 30px;
+      .marketing-r-content{
+        float: left;
+        text-align:center;
+        margin-left: 70px;
       }
     }
   }
