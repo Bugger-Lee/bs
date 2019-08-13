@@ -2,7 +2,7 @@
   <div>
     <header class="headers">
       <el-col :span="4" class="headers-left ellipsis">
-        <i class="ml15" @click="goToHome()">Journey Builder</i>
+        <i class="ml15" @click="goToHome()">SMS Maketing</i>
       </el-col>
       <el-col :span="1" class="headers-center">
         <i class="el-icon-menu" @click="menuShow()"></i>
