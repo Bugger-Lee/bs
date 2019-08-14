@@ -1,18 +1,20 @@
 <template>
   <div class="popupOpenTime">
 		<div class="data-content">
-      <p>Select a duration to hold contacts within the Journey</p>
+      <p>选择一个执行时间或执行周期</p>
       <div class="time-content">
-        <p class="mb10">Duration</p>
+        <p class="mb10">
+          |
+        </p>
           <div class="mb20 mt20">
-            <span>Execute Mode ： </span>
+            <span>执行类型 ： </span>
             <el-tooltip class="item" effect="dark" content="单次执行开始时间即激活时间" placement="top-start">
-              <el-radio v-model="timeType.executeType" :disabled="ifActiveDis" :label="1" @change = "carryOnce(timeType.executeType)">One-Time</el-radio>
+              <el-radio v-model="timeType.executeType" :disabled="ifActiveDis" :label="1" @change = "carryOnce(timeType.executeType)">单次</el-radio>
             </el-tooltip>
-            <el-radio v-model="timeType.executeType" :disabled="ifActiveDis" :label="2" @change = "carryOnce(timeType.executeType)">On Schedule</el-radio>
+            <el-radio v-model="timeType.executeType" :disabled="ifActiveDis" :label="2" @change = "carryOnce(timeType.executeType)">定时</el-radio>
           </div>
           <div class="mb20">
-            <span>Active Time ： </span>
+            <span>开始时间 ： </span>
             <el-date-picker
               style="width:32%;"
               v-model="timeType.dateTimeVal"
@@ -22,7 +24,7 @@
               :picker-options="startTime"
               placeholder="Pls Active Time">
             </el-date-picker>
-            <span class="ml10">End Time ： </span>
+            <span class="ml10">结束时间 ： </span>
             <el-date-picker
               style="width:32%;"
               v-model="timeType.dateEndVal"
@@ -34,7 +36,7 @@
             </el-date-picker>
           </div>
           <div>
-            <span>Execute Time ： </span>
+            <span>定时 ： </span>
             <el-select v-model="timeType.timeVal" value="1" size="small" :disabled = ifDisabled style="width:26%;">
               <el-option
                 v-for="item in timeType.time"

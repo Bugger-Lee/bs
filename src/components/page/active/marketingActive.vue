@@ -14,7 +14,8 @@
                   <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="i.command_name == 'CLV-Data'"></i>
                   <i class="icon-renqun1" v-if="i.command_name == 'DMP-Data'"></i>
                 </span>
-                <p>{{i.command_name}}</p>
+                <p v-if="i.command_name== 'CLV-Data'">CLV-人群</p>
+                <p v-if="i.command_name== 'DMP-Data'">DMP-人群</p>
               </li>
             </ul>
           </el-menu-item-group>
@@ -141,7 +142,10 @@
               <i class="icon-renqun1" v-if="this.propsData.data_socure == 'DMP-Data'"></i>
             </span>
           </div>
-          <div ref="refData1div" v-if="ifDrag">{{propsData.data_socure}}</div>
+          <div ref="refData1div" v-if="ifDrag">
+               <p v-if="this.propsData.data_socure== 'CLV-Data'">CLV-人群</p>
+               <p v-if="this.propsData.data_socure== 'DMP-Data'">DMP-人群</p>
+          </div>
           <div  id="return1" ref="refData2" v-if="ifSmsDrag">
             <span class="msg-style" @click="sms()">
               <i class="icon-duanxin2-copy" style="font-size:32px;"></i>

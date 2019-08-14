@@ -5,11 +5,11 @@
       :close-on-click-modal="false"
       width="50%">
       <span slot="title" class="data-title">
-        <span class="icon-duanxin2-copy" style="background-color:#4dc6bd;border-radius:8px;"></span>SMS Activity Summary
+        <span class="icon-duanxin2-copy" style="background-color:#4dc6bd;border-radius:8px;"></span>当前选中模板
       </span>
       <div class="data-content">
         <p>
-          <span class="redStar">*</span>Message Definition
+          <span class="redStar">*</span>当前短信
         </p>
         <div class="data-content-c" v-if="propsSms.ifSms == ''">
           <img src="../../assets/img/noneData2.png" style="height:240px;">
@@ -23,12 +23,12 @@
         </div>
         <div v-if="propsSms.ifSms != ''" class="data-content-apply" style="min-height:100px;">
           <p class="data-content-apply-header">
-            <span style="font-size:16px;font-weight:600;">Message Definition</span>
+            <span style="font-size:16px;font-weight:600;">当前短信</span>
             <el-button class="bth" @click="clickPopup({name:'openNext'})" v-if="!((this.statusTestRunVal == 2) || (this.statusTestRunVal==4))">Edit</el-button>
           </p>
           <div class="data-content-apply-content mt10">
-            <P class="pttb" v-if="propsSms.ifSms.template_text"><span>Content : {{propsSms.ifSms.template_text}}</span><span></span></P>
-            <P class="pttb" v-if="propsSms.ifSms.sms_channel_content"><span>Sms Channel : {{propsSms.ifSms.sms_channel_content}}</span><span></span></P>
+            <P class="pttb" v-if="propsSms.ifSms.template_text"><span>内容 : {{propsSms.ifSms.template_text}}</span><span></span></P>
+            <P class="pttb" v-if="propsSms.ifSms.sms_channel_content"><span>短信通道 : {{propsSms.ifSms.sms_channel_content}}</span><span></span></P>
           </div>
         </div>
       </div>
@@ -45,26 +45,23 @@
       width="98%">
       <el-col :span="3" class="data-content-l">
         <div class="data-content-summary" :class="{'data-Selected':propsSms.dataSelected == 1}" @click="tabSelect(1)">
-          <p class="summary-title mt10">Summary</p>
+          <p class="summary-title mt10">当前选择模板</p>
         </div>
         <div class="data-content-summary" :class="{'data-Selected':propsSms.dataSelected == 2}" @click="tabSelect(2)">
           <p>
-            <i class="redStar">*</i>Message
-          </p>
-          <p>Definition</p>
+            <i class="redStar">*</i>短信定义</p>
         </div>
         <div class="data-content-summary" :class="{'data-Selected':propsSms.dataSelected == 3}" @click="tabSelect(3)">
-          <p><i class="redStar">*</i>Create</p>
-          <p>Message</p>
+          <p><i class="redStar">*</i>新增短信模板</p>
         </div>
       </el-col>
       <el-col :span="21" v-if="propsSms.dataSelected == 2" class="data-content-r">
         <div class="r-header">
           <p class="r-header-t">
-            <span>Select an SMS Message</span>
+            <span>选择短信内容</span>
             <span class="el-icon-back"  @click="backlevelSms(1)"></span>
           </p>
-          <p class="r-header-b">Select a text message template</p>
+          <p class="r-header-b">选择短信模板</p>
         </div>
         <div class="r-content">
           <el-col :span="5" class="r-content-l">
@@ -88,7 +85,7 @@
                   <el-col :span="12">
                     <el-input
                       class="select-msg-search-ipt"
-                      placeholder="Search by Title"
+                      placeholder="通过短信名称查询"
                       prefix-icon="el-icon-search"
                       @keyup.enter.native="searchSmsList"
                       v-model="propsSms.SearchSms">
@@ -97,8 +94,8 @@
                   <el-col :span="12">
                     <div class="ml10">
                       <span class="redStar">*</span>
-                      <span>SMS Channel</span>
-                      <el-select v-model="propsSms.sendSmsVal" clearable placeholder="Pls Sms Channel" style="display:inline-block;"  class="select-option-classify">
+                      <span>短信通道</span>
+                      <el-select v-model="propsSms.sendSmsVal" clearable placeholder="选择短信通道" style="display:inline-block;"  class="select-option-classify">
                         <el-option
                           v-for="item in propsSms.sendSmsList"
                           :key="item.id"
@@ -110,11 +107,11 @@
                 </div>
                 <div class="select-msg-table">
                   <el-table ref='singleTable' :data="smsTable" style="width: 100%"  highlight-current-row  @current-change="tableIndex" height="220">
-                    <el-table-column prop="template_name" label="Title" show-overflow-tooltip></el-table-column>
-                    <el-table-column prop="brand_name" label="Brand" show-overflow-tooltip> </el-table-column>
+                    <el-table-column prop="template_name" label="名称" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="brand_name" label="品牌" show-overflow-tooltip> </el-table-column>
                     <el-table-column prop="document_text" show-overflow-tooltip>
                       <template slot="header">
-                        <span>Sms Content
+                        <span>短信模板
                           <el-tooltip class="item" effect="dark" content="塞劵文案必须包含 $XXX$ ,不塞劵可包含可不包含" placement="top-start">
                             <i class="el-icon-question ml10"></i>
                           </el-tooltip>
@@ -125,8 +122,8 @@
                         <el-input v-else :placeholder="scope.row.document_text" v-model="input_text" @blur="clickPopup({name:'inputBlur',value:input_text,id:scope.row.id,templt:scope.row.template_name})"></el-input>
                       </template>  
                     </el-table-column>
-                    <el-table-column prop="created_time" label="Created Time" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
-                    <el-table-column prop="created_by" label="Creator" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="created_time" label="创建时间" :formatter="formatDate" show-overflow-tooltip> </el-table-column>
+                    <el-table-column prop="created_by" label="创建人" show-overflow-tooltip></el-table-column>
                     <el-table-column
                       fixed="right"
                       label="操作"
@@ -164,16 +161,16 @@
         <div class="r-sms-content">
           <div class="r-header">
             <p class="r-header-t">
-              <span>Create Message</span>
+              <span>创建短信模板</span>
               <span class="el-icon-back" @click="backlevelSms(1)"></span>
             </p>
           </div>
           <div class="sms-edit">
             <el-col :span="8" class="sms-edit-l">
-              <p class="sms-edit-l-tit">CONTENT</p>
+              <p class="sms-edit-l-tit">内容</p>
               <div style="margin-top:30px;">
                 <span class="redStar">*</span>
-                <span>Title</span>
+                <span>名称</span>
                 <el-input
                     style="width:76%;"
                     placeholder="Pls Edit Title"
@@ -182,7 +179,7 @@
               </div>
               <div class="mt10">
                 <span class="redStar">*</span>
-                <span>SMS Channel</span>
+                <span>短信通道</span>
                 <el-select v-model="propsSms.sendSmsVal" clearable placeholder="Pls Sms Channel" style="display:inline-block;"  class="select-option-classify">
                   <el-option
                     v-for="item in propsSms.sendSmsList"
@@ -192,7 +189,7 @@
                 </el-select>
               </div>
               <div class="sms-edit-l-content">
-                <p><span class="redStar">*</span><i class="el-icon-edit"></i>Edit message template</p>
+                <p><span class="redStar">*</span><i class="el-icon-edit"></i>短信模板文案</p>
                 <textarea v-if="propsSms.couponShow == true" rows="6" placeholder="Edit message template (塞劵文案格式包含 $XXX$ )" v-model="propsSms.editMsg">
 
                 </textarea>
@@ -202,11 +199,11 @@
               </div>
             </el-col>
             <el-col :span="16" class="sms-edit-r">
-              <p class="sms-edit-r-tit">LOOK OVER</p>
+              <p class="sms-edit-r-tit">预览</p>
               <div class="sms-edit-r-content">
                 <div class="content-tit">
                   <span><i class="icon-dengluyonghu"></i></span>
-                  <p style="font-size:13px;">[FROM NAME]</p>
+                  <p style="font-size:13px;">[发送人]</p>
                 </div>
                 <div class="content-tit-see ml15 mt20">
                   <span>{{this.propsSms.editMsg}}</span>
@@ -217,8 +214,8 @@
         </div>
       </el-col>
       <span slot="footer">
-        <el-button @click="clickPopup({name:'cancel'})">Cancel</el-button>
-        <el-button type="primary" @click="clickPopup({name:'saveMsg'})">Save Meaasge</el-button>
+        <el-button @click="clickPopup({name:'cancel'})">取消</el-button>
+        <el-button type="primary" @click="clickPopup({name:'saveMsg'})">保存</el-button>
       </span>
     </el-dialog>
   </div>

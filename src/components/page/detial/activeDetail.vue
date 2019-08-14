@@ -14,7 +14,8 @@
                   <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="i.command_name == 'CLV-Data'"></i>
                   <i class="icon-renqun1" v-if="i.command_name == 'DMP-Data'"></i>
                 </span>
-                <p>{{i.command_name}}</p>
+                <p v-if="i.command_name== 'CLV-Data'">CLV-人群</p>
+                <p v-if="i.command_name== 'DMP-Data'">DMP-人群</p>
               </li>
             </ul>
           </el-menu-item-group>
@@ -88,7 +89,10 @@
               <i class="icon-dbsshujukubeifenDBS-copy-copy-copy" v-if="this.propsData.defaultData.command_name == 'CLV-Data'"></i>
               <i class="icon-renqun1" v-if="this.propsData.defaultData.command_name == 'DMP-Data'"></i>
             </span>
-            <p>{{this.propsData.defaultData.command_name}}</p>
+
+            <p v-if="this.propsData.defaultData.command_name== 'CLV-Data'">CLV-人群</p>
+            <p v-if="this.propsData.defaultData.command_name== 'DMP-Data'">DMP-人群</p>
+
           </div>
           <div class="marketing-r-content">
             <span class="msg-style" @click="sms()" id="smsIDOne">
@@ -179,11 +183,11 @@
       class="openTime"
       width="45%">
       <span slot="title" class="data-title">
-        <span class="data-title-time"><i class="icon-time1"></i></span>Wait By Duration
+        <span class="data-title-time"><i class="icon-time1"></i></span>执行时间/周期
       </span>
       <span slot="footer">
-        <el-button @click="cancelTime()">Cancel</el-button>
-        <el-button type="primary" @click="doneTime()">Done</el-button>
+        <el-button @click="cancelTime()">取消</el-button>
+        <el-button type="primary" @click="doneTime()">保存</el-button>
       </span>
       <popupOpenTime :timeType = "timeType"
       :ifDisabled="ifDisabled"
