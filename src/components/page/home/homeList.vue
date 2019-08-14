@@ -63,7 +63,9 @@
           </el-button>
         </template>
       </el-table-column>
-      <div style="text-align:center; padding: 10px 0" slot="append" v-if="showLoading"><i class="el-icon-loading" style="color:#1589ee;font-size:35px;"></i></div>
+      <div slot="append" v-if="showLoading" class="loadings">
+        <i class="el-icon-loading"></i>
+      </div>
     </el-table>
   </el-col>
 </template>
@@ -214,6 +216,14 @@ export default {
       line-height:0px;
       float:right;
       line-height: 60px;
+    }
+  }
+  .loadings{
+    text-align:center; 
+    padding: 10px 0;
+    i{
+      color:#1589ee;
+      font-size:35px;
     }
   }
 }

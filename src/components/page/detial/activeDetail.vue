@@ -203,6 +203,7 @@ import popupTicket from "./module/popupTicket.vue"
 import popupOpenTime from "@/components/public/popupOpenTime.vue"
 import popupDrag from "./module/popupDrag.vue"
 import { constants, truncate } from 'fs';
+import { mapActions } from 'vuex'
 export default {
   data() {
     return {
@@ -355,8 +356,10 @@ export default {
     this.dmpTables()
     this.taskStatus()
     this.jobRecord()
+    this.Acommon({isCollapse: true})
   },
   methods: {
+    ...mapActions(['Acommon']),
     // goToHome() {
     //   if(this.warnTips == 1) {
     //     this.$confirm('Journey Builder未保存,是否继续？', '提示', {

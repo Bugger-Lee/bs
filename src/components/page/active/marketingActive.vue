@@ -319,6 +319,7 @@ import popupTicket from "./module/popupTicket.vue";
 import popupOpenTime from "@/components/public/popupOpenTime.vue";
 import { constants } from 'fs';
 import { clearInterval, setTimeout } from 'timers';
+import { mapActions } from 'vuex'
 export default {
   name: "marketingActive",
   data() {
@@ -480,6 +481,7 @@ export default {
       "-" +
       this.currentTimeName.getDate();
     this.currentTimeVal = "New Journey -- May  " + this.currentTimeName;
+    this.Acommon({isCollapse: true})
   },
   components: {
     popupDrag,
@@ -495,7 +497,9 @@ export default {
     jsplumb.jsPlumb.deleteConnection(allconn[0]);
     next();
   },
+
   methods: {
+    ...mapActions(['Acommon']),
     titlePrompt() {
       this.$alert('请先修改title', '提示', {
         confirmButtonText: '确定',

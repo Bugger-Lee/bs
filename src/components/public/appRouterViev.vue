@@ -2,8 +2,8 @@
   <div id="appRouterViev" class="appRouterViev">
     <Header v-if="!$route.meta.ifHeader" @menuShow="menuShow"></Header>
     <section class="container">
-      <navBar :isCollapse="isCollapse"></navBar>
-      <el-col :span="20" class="main" :class="{'menuWidth':this.isCollapse == true}">
+      <navBar></navBar>
+      <el-col :span="20" class="main" :class="{'menuWidth':this.Gcommon.isCollapse == true}">
         <router-view></router-view>
       </el-col>
     </section>
@@ -18,26 +18,22 @@ export default {
   name: 'appRouterViev',
   data() {
     return {
-      isCollapse:false       
     }
   },
   components:{
     Header,
     navBar
   },
-    //   console.log(this.Gcommon.count)
-    // this.Acommon({count: 2})
-    // console.log(this.Gcommon.count)
   computed: {
     ...mapGetters(['Gcommon']) // 引入计算数据
   },
   methods:{
     ...mapActions(['Acommon']), //引入修改vuex数据方法
     menuShow() {
-      if(this.isCollapse == false) {
-        this.isCollapse = true
+      if(this.Gcommon.isCollapse == false) {
+        this.Acommon({isCollapse: true})
       }else{
-        this.isCollapse = false
+        this.Acommon({isCollapse: false})
       }
     }
   }

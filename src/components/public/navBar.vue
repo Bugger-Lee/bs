@@ -1,6 +1,6 @@
 <template>
-  <el-col :span="4" :class="{'menu-none':this.isCollapse == true}" class="aside">
-    <el-menu :default-active="$route.path" router :collapse="isCollapse">
+  <el-col :span="4" :class="{'menu-none':this.Gcommon.isCollapse == true}" class="aside">
+    <el-menu :default-active="$route.path" router :collapse="this.Gcommon.isCollapse">
       <el-submenu :index="i.name" v-for="i in this.menuList" :key="i.id">
         <template slot="title">
           <i class="icon-wenjian fs18"></i>
@@ -19,6 +19,7 @@
   </el-col>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name:"navBar",
   data() {
@@ -28,6 +29,9 @@ export default {
   },
   created() {
     this.getMenu()
+  },
+  computed: {
+    ...mapGetters(['Gcommon']) 
   },
   props:["isCollapse"],
   methods:{
