@@ -1,7 +1,7 @@
 <template>
   <el-col :span="4" :class="{'menu-none':this.isCollapse == true}" class="aside">
-    <el-menu :default-active="this.$router.push" router :collapse="isCollapse">
-      <el-submenu :index="i.id" v-for="i in this.menuList" :key="i.id">
+    <el-menu :default-active="$route.path" router :collapse="isCollapse">
+      <el-submenu :index="i.name" v-for="i in this.menuList" :key="i.id">
         <template slot="title">
           <i class="icon-wenjian fs18"></i>
           <span>{{i.name}}</span>
@@ -42,7 +42,7 @@ export default {
 <style lang="less" scoped>
 .aside{
   height: 100%;
-  background-color: #fff; 
+  background-color: #fff;
   .fs18{
     font-size: 18px;
   }
