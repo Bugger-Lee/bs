@@ -13,6 +13,7 @@
 <script>
 import Header from './header'
 import navBar from './navBar'
+import { mapActions, mapGetters } from 'vuex' //引入mapActions 和 mapGetters
 export default {
   name: 'appRouterViev',
   data() {
@@ -24,7 +25,14 @@ export default {
     Header,
     navBar
   },
+    //   console.log(this.Gcommon.count)
+    // this.Acommon({count: 2})
+    // console.log(this.Gcommon.count)
+  computed: {
+    ...mapGetters(['Gcommon']) // 引入计算数据
+  },
   methods:{
+    ...mapActions(['Acommon']), //引入修改vuex数据方法
     menuShow() {
       if(this.isCollapse == false) {
         this.isCollapse = true

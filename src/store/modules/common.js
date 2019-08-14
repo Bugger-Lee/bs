@@ -1,6 +1,6 @@
 export default {
   state: {
-    count: 1,
+    isCollapse: false,
   },
   mutations: {
     Mcommon(state, data) {

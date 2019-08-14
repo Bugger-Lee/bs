@@ -69,7 +69,6 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex' //引入mapActions 和 mapGetters
 export default {
   name: "homeList",
   data() {
@@ -94,15 +93,8 @@ export default {
   created() {
     this.homeLists()
     this.orderLists()
-    console.log(this.Gcommon.count)
-    this.Acommon({count: 2})
-    console.log(this.Gcommon.count)
-  },
-  computed: {
-    ...mapGetters(['Gcommon']) // 引入计算数据
   },
   methods: {
-    ...mapActions(['Acommon']), //引入修改vuex数据方法
     newActive() {
       if(this.JourneyVal == 'All Journeys') {
         this.crowdVal = ''
