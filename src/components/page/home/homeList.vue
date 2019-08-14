@@ -2,22 +2,30 @@
   <el-col :span="20" class="tableLists">
     <div class="table-header">
       <el-input
-      placeholder="Search by Title"
-      clearable
-      style="width:20%;"
-      size="small"
-      prefix-icon="el-icon-search"
-      @keyup.enter.native="searchHomeList"
-      v-model="searchListVal"
-    ></el-input>
-    <el-select v-model="JourneyVal" size="small" clearable style="line-height:0px;">
-      <el-option
-        v-for="item in selectList"
-        :key="item.command_name"
-        @click.native="newActive()"
-        :value="item.command_name"
-      ></el-option>
-    </el-select>
+        placeholder="Search by Title"
+        clearable
+        style="width:20%;"
+        size="small"
+        prefix-icon="el-icon-search"
+        @keyup.enter.native="searchHomeList"
+        v-model="searchListVal"
+      ></el-input>
+      <el-select v-model="JourneyVal" size="small" clearable style="line-height:0px;">
+        <el-option
+          v-for="item in selectList"
+          :key="item.command_name"
+          @click.native="newActive()"
+          :value="item.command_name"
+        ></el-option>
+      </el-select>
+      <el-select v-model="locationPage" size="small" class="locationPage">
+        <el-option
+          v-for="item in selectLocaltion"
+          :key="item.value"
+          @click.native="locationNew()"
+          :value="item.value"
+        ></el-option>
+      </el-select>
     </div>
     <el-table
       ref="multipleTable"
@@ -67,6 +75,7 @@ export default {
     return {
       selectList: [],
       JourneyVal: "All Journeys",
+      locationPage:"",
       searchListVal: "",
       tableData: [],
       totalDate: [], //总数据
@@ -75,7 +84,10 @@ export default {
       JourneyTotal:'',
       ruleName:'',
       showLoading: false,
-      crowdVal:''
+      crowdVal:'',
+      selectLocaltion:[{
+        value:"新建"
+      }]
     };
   },
   created() {
@@ -90,6 +102,11 @@ export default {
         this.crowdVal = this.JourneyVal
       }
       this.homeLists()
+    },
+    locationNew() {
+      if(this.locationPage == "新建") {
+        this.$router.push('./marketingActive')
+      }
     },
     getMoreDate() {
       if (this.showLoading) {
@@ -193,6 +210,11 @@ export default {
     width: 100%;
     height: 60px;
     line-height: 60px;
+    .locationPage{
+      line-height:0px;
+      float:right;
+      line-height: 60px;
+    }
   }
 }
 </style>
