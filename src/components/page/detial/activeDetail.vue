@@ -1,11 +1,11 @@
 <template>
   <div class="activeDetail">
     <el-col :span="4" class="marketing-l">
-      <p class="marketing-l-tit ml10">Builder</p>
+      <p class="marketing-l-tit ml10">组件</p>
       <el-menu default-active="2" class="marketing-theme-l">
         <el-submenu index="1">
           <template slot="title">
-            <span>ENTRY SOURCES</span>
+            <span>人群</span>
           </template>
           <el-menu-item-group>
             <ul class="theme-l-tmp">
@@ -21,7 +21,7 @@
         </el-submenu>
         <el-submenu index="2">
           <template slot="title">
-            <span>RIGHTS</span>
+            <span>权益</span>
           </template>
           <el-menu-item-group>
             <ul class="theme-l-tmp">
@@ -29,38 +29,37 @@
                 <span class="crowds-style" style="background-color:#ffcd43;">
                   <i class="icon-quanyi-copy-copy"></i>
                 </span>
-                <p>Coupon</p>
+                <p>优惠券</p>
               </li>
             </ul>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="3">
           <template slot="title">
-            <span>ACTIVITIES</span>
+            <span>活动</span>
           </template>
           <el-submenu index="2-1" class="marketing-el-submenu-children">
-            <span slot="title">Messages</span>
+            <span slot="title">触达方式</span>
             <el-menu-item-group>
               <ul class="theme-l-tmp">
                 <li>
                   <span class="msg-style">
                     <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
                   </span>
-                  <p>SMS</p>
+                  <p>短信</p>
                 </li>
               </ul>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2-2" class="marketing-el-submenu-children">
-            <span slot="title">Flow Control</span>
+            <span slot="title">流程控件</span>
             <el-menu-item-group>
               <ul class="theme-l-tmp">
                 <li>
                   <span class="ctl-style">
                     <i class="icon-time1"></i>
                   </span>
-                  <p>Wait By</p>
-                  <p>Duration</p>
+                  <p>执行时间</p>
                 </li>
               </ul>
             </el-menu-item-group>
@@ -75,9 +74,9 @@
         <span class="l-status bgcYessow" v-if="this.couponCountMsg">Coupon Count：{{this.couponCountMsg}}</span>
         <span class="l-status bgcGree" v-if="this.sendCountMsg">Send Count：{{this.sendCountMsg}}</span>
         <el-button-group class="mr05">
-          <el-button type="primary" class="pd-back" :class="{'ifColor':this.UpdateDis == false}" v-if="this.detailUpdate == true" :disabled="UpdateDis" @click="detailStatus('update')">Update</el-button>
-          <el-button type="primary" class="pd-back" :class="{'ifColor':this.testDis == false}" v-if="this.detailTest == true" :disabled="testDis" @click="detailStatus('test')">Test</el-button>
-          <el-button type="primary" class="pd-back" :class="{'ifColor':this.runDis == false}" v-if="this.detailRun == true" :disabled="runDis" @click="detailStatus('run')">Run</el-button>
+          <el-button type="primary" class="pd-back" :class="{'ifColor':this.UpdateDis == false}" v-if="this.detailUpdate == true" :disabled="UpdateDis" @click="detailStatus('update')">修改</el-button>
+          <el-button type="primary" class="pd-back" :class="{'ifColor':this.testDis == false}" v-if="this.detailTest == true" :disabled="testDis" @click="detailStatus('test')">测试</el-button>
+          <el-button type="primary" class="pd-back" :class="{'ifColor':this.runDis == false}" v-if="this.detailRun == true" :disabled="runDis" @click="detailStatus('run')">开始执行</el-button>
           <el-button type="primary" class="pd-back ifColor" v-if="this.detailStop == true" @click="detailStatus('stop')">Stop</el-button>
           <el-button type="primary" class="pd-back ifColor" v-if="this.detailOver == true">Completed</el-button>
         </el-button-group>
@@ -95,19 +94,19 @@
             <span class="msg-style" @click="sms()" id="smsIDOne">
               <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
             </span>
-            <p>SMS</p>
+            <p>短信</p>
           </div>
           <div class="marketing-r-content">
             <span class="ctl-style" @click="selectTime()" id="timeIDOne">
               <i class="icon-time1"></i>
             </span>
-            <p>Time</p>
+            <p>执行时间</p>
           </div>
           <div class="marketing-r-content">
             <span class="crowd-style" id="overIDOne">
               <i class="icon-wancheng1"></i>
             </span>
-            <p>Over</p>
+            <p>结束</p>
           </div>
         </div>
         <div v-if ='showFirst == 2'>
@@ -122,25 +121,25 @@
             <span class="crowds-style" @click="popupTicket()" id="ticketIDTwo" style="background-color:#ffcd43;">
               <i class="icon-quanyi-copy-copy"></i>
             </span>
-            <p>Coupon</p>
+            <p>优惠券</p>
           </div>
           <div class="marketing-r-content">
             <span class="msg-style" @click="sms()" id="smsIDTwo">
               <i class="icon-duanxin2-copy" style="font-size:32px;"></i>
             </span>
-            <p>SMS</p>
+            <p>短信</p>
           </div>
           <div class="marketing-r-content">
             <span class="ctl-style" @click="selectTime()" id="timeIDTwo">
               <i class="icon-time1"></i>
             </span>
-            <p>Time</p>
+            <p>执行时间</p>
           </div>
           <div class="marketing-r-content">
             <span class="crowd-style" id="overIDTwo">
               <i class="icon-wancheng1"></i>
             </span>
-            <p>Over</p>
+            <p>结束</p>
           </div>
         </div>
       </div>

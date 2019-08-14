@@ -35,21 +35,21 @@
       tooltip-effect="dark"
       v-loadmore="getMoreDate"
     >
-      <el-table-column prop="rule_name" label="Journey Title" show-overflow-tooltip>
+      <el-table-column prop="rule_name" label="Journey名称" show-overflow-tooltip>
         <template slot-scope="scope">
           <span @click="goToDetail(scope.row.id)" class="mouseAfter">{{ scope.row.rule_name}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="status_name" label="Status" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="command_name" label="Crowd Type" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="crowd_count" label="Crowd Count" show-overflow-tooltip></el-table-column>
-      <el-table-column label="Time" show-overflow-tooltip>
+      <el-table-column prop="status_name" label="状态" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="command_name" label="人群类型" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="crowd_count" label="人群数" show-overflow-tooltip></el-table-column>
+      <el-table-column label="执行时间/周期" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{scope.row.schulder_time}}</span>
           <span v-if='scope.row.retired_time'>- {{scope.row.retired_time}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="created_by" label="Creator" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="created_by" label="创建人 " show-overflow-tooltip></el-table-column>
       <el-table-column
         fixed="right"
         label="操作"
@@ -76,8 +76,7 @@ export default {
   data() {
     return {
       selectList: [],
-      JourneyVal: "All Journeys",
-      locationPage:"",
+      JourneyVal: "所有类型",
       searchListVal: "",
       tableData: [],
       totalDate: [], //总数据
@@ -98,7 +97,7 @@ export default {
   },
   methods: {
     newActive() {
-      if(this.JourneyVal == 'All Journeys') {
+      if(this.JourneyVal == '所有类型') {
         this.crowdVal = ''
       }else{
         this.crowdVal = this.JourneyVal
@@ -165,7 +164,7 @@ export default {
     orderLists() {
       this.$.get("command/getList?commandName=").then(res=>{
         let item = {
-          command_name: 'All Journeys',
+          command_name: '所有类型',
           id:10
         }
         this.selectList = res.data.data

@@ -4,10 +4,10 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import axios from '@/https/axios'
-import '@/assets/iconfont/iconfont.css'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-import '@/assets/css/base.less'
+import '@/assets/iconfont/iconfont.css' // 小图标
+import ElementUI from 'element-ui' // UI框架
+import 'element-ui/lib/theme-chalk/index.css'  // UI框架
+import '@/assets/css/base.less' // 公共样式
 import 'jquery-ui-dist/jquery-ui'
 import '@/components/need.js'
 import store from './store'
