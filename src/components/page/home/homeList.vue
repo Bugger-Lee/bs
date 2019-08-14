@@ -84,6 +84,7 @@ export default {
       total_page: '',//总页数
       JourneyTotal:'',
       ruleName:'',
+      locationPage:'',
       showLoading: false,
       crowdVal:'',
       selectLocaltion:[{

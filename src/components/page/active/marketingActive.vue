@@ -69,10 +69,12 @@
     </el-col>
     <el-col :span="20" class="marketing-r">
       <div class="marketing-r-t">
+        <span class="redStar">*</span>
         <el-input
           v-model="currentTimeVal"
+          placeholder="请输入title"
           size="mini"
-          style="width:25%"
+          style="width:22%"
           ref="titleInput"
           :disabled="titleDis"
           >
@@ -347,7 +349,6 @@ export default {
       openDataContent: false,
       openSmsContent: false,
       openTime: false,
-      currentTimeName: new Date(),
       timeType: {
         timeVal: "Days",
         executeType: 2,
@@ -466,20 +467,12 @@ export default {
     };
   },
   created() {
-    this.titlePrompt()
-    this.brandLists();
-    this.periodLists();
-    this.registerLists();
-    this.sendSmsLists();
-    this.sourcesList();
-    this.dmpTables();
-    this.currentTimeName =
-      this.currentTimeName.getFullYear() +
-      "-" +
-      (this.currentTimeName.getMonth() + 1) +
-      "-" +
-      this.currentTimeName.getDate();
-    this.currentTimeVal = "New Journey -- May  " + this.currentTimeName;
+    this.brandLists()
+    this.periodLists()
+    this.registerLists()
+    this.sendSmsLists()
+    this.sourcesList()
+    this.dmpTables()
     this.Acommon({isCollapse: true})
   },
   components: {
@@ -499,15 +492,6 @@ export default {
 
   methods: {
     ...mapActions(['Acommon']),
-    titlePrompt() {
-      this.$alert('请先修改title', '提示', {
-        confirmButtonText: '确定',
-        showClose:false,
-        callback: action => {
-          
-        }
-      })
-    },
     // goToHome() {
     //   if(this.warnTips == 1) {
     //     this.$confirm('Journey Builder未保存,是否继续？', '提示', {
@@ -888,7 +872,10 @@ export default {
     },
     dataSummary() {
       if(this.propsData.data_socure == 'CLV-Data') {
-        if(this.propsData.brandVal == null || this.propsData.periodVal == null || this.propsData.registerVal.length === 0) {
+        if(this.propsData.brandVal == null || 
+        this.propsData.periodVal == null || 
+        this.propsData.registerVal.length === 0 ||
+        this.currentTimeVal == '') {
           this.$message({
             showClose: true,
             message: "请您选择必选项",
